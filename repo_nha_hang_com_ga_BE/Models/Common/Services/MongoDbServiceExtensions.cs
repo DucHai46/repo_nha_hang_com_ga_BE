@@ -12,6 +12,7 @@ namespace repo_nha_hang_com_ga_BE.Models.Common.Services
             
             // Đăng ký repository
             services.AddSingleton<IDanhMucNguyeuLieuRepository, DanhMucNguyenLieuRepository>();
+            
 
             return services;
         }

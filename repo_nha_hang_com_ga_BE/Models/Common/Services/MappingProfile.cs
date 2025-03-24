@@ -13,5 +13,8 @@ public class MappingProfile : Profile
         CreateMap(typeof(DanhMucNguyenLieu), typeof(DanhMucNguyenLieuRespond));
         CreateMap(typeof(RequestAddDanhMucNguyenLieu), typeof(DanhMucNguyenLieu));
         CreateMap(typeof(RequestUpdateDanhMucNguyenLieu), typeof(DanhMucNguyenLieu));
+        
+        
+        
     }
 }

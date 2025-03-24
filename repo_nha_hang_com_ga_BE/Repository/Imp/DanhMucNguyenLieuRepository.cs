@@ -137,7 +137,7 @@ public class DanhMucNguyenLieuRepository : IDanhMucNguyeuLieuRepository
     {
         try
         {
-            var newDanhMucNguyenLieu = _mapper.Map<DanhMucNguyenLieu>(request);
+            DanhMucNguyenLieu newDanhMucNguyenLieu = _mapper.Map<DanhMucNguyenLieu>(request);
 
             newDanhMucNguyenLieu.createdDate = DateTimeOffset.UtcNow;
             newDanhMucNguyenLieu.updatedDate = DateTimeOffset.UtcNow;
@@ -219,7 +219,7 @@ public class DanhMucNguyenLieuRepository : IDanhMucNguyeuLieuRepository
     {
         try
         {
-            var existingDanhMuc = await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            var existingDanhMuc = await _collection.Find(x => x.Id == id && x.isDelete == false).FirstOrDefaultAsync();
             if (existingDanhMuc == null)
             {
                 return new RespondAPI<string>(
