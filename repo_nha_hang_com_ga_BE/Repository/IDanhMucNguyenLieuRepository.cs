@@ -6,7 +6,7 @@ using repo_nha_hang_com_ga_BE.Models.Responds.DanhMucNguyenLieu;
 
 namespace repo_nha_hang_com_ga_BE.Repository;
 
-public interface IDanhMucNguyeuLieuRepository
+public interface IDanhMucNguyenLieuRepository
 {
     Task<RespondAPIPaging<List<DanhMucNguyenLieuRespond>>> GetAllDanhMucNguyenLieus(RequestSearchDanhMucNguyenLieu request);
     Task<RespondAPI<DanhMucNguyenLieuRespond>> GetDanhMucNguyenLieuById(string id);

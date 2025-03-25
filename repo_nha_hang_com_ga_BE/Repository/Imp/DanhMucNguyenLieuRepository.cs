@@ -12,7 +12,7 @@ using repo_nha_hang_com_ga_BE.Models.Responds.DanhMucNguyenLieu;
 
 namespace repo_nha_hang_com_ga_BE.Repository.Imp;
 
-public class DanhMucNguyenLieuRepository : IDanhMucNguyeuLieuRepository
+public class DanhMucNguyenLieuRepository : IDanhMucNguyenLieuRepository
 {
     private readonly IMongoCollection<DanhMucNguyenLieu> _collection;
     private readonly IMapper _mapper;
@@ -31,10 +31,10 @@ public class DanhMucNguyenLieuRepository : IDanhMucNguyeuLieuRepository
         try
         {
             var collection = _collection;
-            
+
             var filter = Builders<DanhMucNguyenLieu>.Filter.Empty;
             filter &= Builders<DanhMucNguyenLieu>.Filter.Eq(x => x.isDelete, false);
-            
+
             if (!string.IsNullOrEmpty(request.tenDanhMuc))
             {
                 filter &= Builders<DanhMucNguyenLieu>.Filter.Regex(x => x.tenDanhMuc, new BsonRegularExpression($".*{request.tenDanhMuc}.*"));
@@ -53,26 +53,26 @@ public class DanhMucNguyenLieuRepository : IDanhMucNguyeuLieuRepository
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
-                
+
                 int totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
-                
+
                 int currentPage = request.PageNumber;
                 if (currentPage < 1) currentPage = 1;
                 if (currentPage > totalPages) currentPage = totalPages;
-                
+
                 findOptions.Skip = (currentPage - 1) * request.PageSize;
                 findOptions.Limit = request.PageSize;
-                
+
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var danhMucNguyenLieus = await cursor.ToListAsync();
-                
+
                 var pagingDetail = new PagingDetail(currentPage, request.PageSize, totalRecords);
                 var pagingResponse = new PagingResponse<List<DanhMucNguyenLieuRespond>>
                 {
                     Paging = pagingDetail,
                     Data = danhMucNguyenLieus
                 };
-                
+
                 return new RespondAPIPaging<List<DanhMucNguyenLieuRespond>>(
                     ResultRespond.Succeeded,
                     data: pagingResponse
@@ -82,7 +82,7 @@ public class DanhMucNguyenLieuRepository : IDanhMucNguyeuLieuRepository
             {
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var danhMucNguyenLieus = await cursor.ToListAsync();
-                
+
                 return new RespondAPIPaging<List<DanhMucNguyenLieuRespond>>(
                     ResultRespond.Succeeded,
                     data: new PagingResponse<List<DanhMucNguyenLieuRespond>>

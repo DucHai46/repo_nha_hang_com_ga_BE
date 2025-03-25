@@ -10,38 +10,38 @@ namespace repo_nha_hang_com_ga_BE.Controllers;
 [Route("api/danh-muc-nguyen-lieu")]
 public class DanhMucNguyenLieuController : ControllerBase
 {
-    private readonly IDanhMucNguyeuLieuRepository _repository;
+    private readonly IDanhMucNguyenLieuRepository _repository;
 
-    public DanhMucNguyenLieuController(IDanhMucNguyeuLieuRepository repository)
+    public DanhMucNguyenLieuController(IDanhMucNguyenLieuRepository repository)
     {
         _repository = repository;
     }
-    
+
     [HttpGet("")]
     public async Task<IActionResult> GetAllDanhMucNguyenLieus([FromQuery] RequestSearchDanhMucNguyenLieu request)
     {
         return Ok(await _repository.GetAllDanhMucNguyenLieus(request));
     }
-    
-    [HttpGet("{id}")] 
+
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetDanhMucNguyenLieuById(string id)
     {
         return Ok(await _repository.GetDanhMucNguyenLieuById(id));
     }
-    
+
     [HttpPost("")]
     public async Task<IActionResult> CreateDanhMucNguyenLieu(RequestAddDanhMucNguyenLieu request)
     {
         return Ok(await _repository.CreateDanhMucNguyenLieu(request));
     }
-    
-    [HttpPut("{id}")] 
+
+    [HttpPut("{id}")]
     public async Task<IActionResult> UpdateDanhMucNguyenLieu(string id, RequestUpdateDanhMucNguyenLieu request)
     {
         return Ok(await _repository.UpdateDanhMucNguyenLieu(id, request));
     }
-    
-    [HttpDelete("{id}")] 
+
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDanhMucNguyenLieu(string id)
     {
         return Ok(await _repository.DeleteDanhMucNguyenLieu(id));
