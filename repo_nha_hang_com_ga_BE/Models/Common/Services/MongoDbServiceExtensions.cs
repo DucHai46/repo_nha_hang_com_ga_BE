@@ -9,10 +9,12 @@ namespace repo_nha_hang_com_ga_BE.Models.Common.Services
         {
             // Cấu hình settings từ appsettings.json
             services.Configure<MongoDbSettings>(configuration.GetSection("MongoDbSettings"));
-            
+
             // Đăng ký repository
             services.AddSingleton<IDanhMucNguyeuLieuRepository, DanhMucNguyenLieuRepository>();
-            
+            services.AddSingleton<ILoaiNguyenLieuRepository, LoaiNguyenLieuRepository>();
+            services.AddSingleton<IDonViTinhRepository, DonViTinhRepository>();
+            services.AddSingleton<INguyenLieuRepository, NguyenLieuRepository>();
 
             return services;
         }

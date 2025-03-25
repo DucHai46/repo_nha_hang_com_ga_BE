@@ -10,6 +10,7 @@ public class PagingParameterModel
     public bool IsPaging { get; set; } = true;
 
     [RequiredGreaterThanZero]
+
     public int PageNumber { get; set; } = 1;
 
     private int _pageSize { get; set; } = 20;
