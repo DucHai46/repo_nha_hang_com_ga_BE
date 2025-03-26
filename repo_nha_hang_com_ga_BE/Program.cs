@@ -1,5 +1,3 @@
-
-
 using Microsoft.OpenApi.Models;
 using repo_nha_hang_com_ga_BE.Models.Common.Services;
 
@@ -34,7 +32,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || true)
 {
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MongoWebApi v1"));
@@ -42,10 +40,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(myAllowSpecificOrigins);
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+app.Run("http://0.0.0.0:80");
