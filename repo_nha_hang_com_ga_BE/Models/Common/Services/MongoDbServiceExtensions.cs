@@ -20,6 +20,9 @@ namespace repo_nha_hang_com_ga_BE.Models.Common.Services
             services.AddSingleton<ICongThucRepository, CongThucRepository>();
             services.AddSingleton<IKhuyenMaiRepository, KhuyenMaiRepository>();
             services.AddSingleton<ILoaiKhuyenMaiRepository, LoaiKhuyenMaiRepository>();
+            services.AddSingleton<IMonAnRepository, MonAnRepository>();
+            services.AddSingleton<IBanRepository, BanRepository>();
+            services.AddSingleton<IComboRepository, ComboRepository>();
 
             return services;
         }
