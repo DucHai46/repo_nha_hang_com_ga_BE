@@ -13,10 +13,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: myAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("http://example.com",
-                    "http://www.contoso.com")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
         });
 });
 
@@ -40,10 +39,10 @@ if (app.Environment.IsDevelopment() || true)
 
 app.UseCors(myAllowSpecificOrigins);
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run("http://0.0.0.0:80");
+app.Run();
