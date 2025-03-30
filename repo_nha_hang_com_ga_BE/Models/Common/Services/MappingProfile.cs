@@ -8,11 +8,13 @@ using repo_nha_hang_com_ga_BE.Models.Requests.DanhMucMonAn;
 using repo_nha_hang_com_ga_BE.Models.Requests.DanhMucNguyenLieu;
 using repo_nha_hang_com_ga_BE.Models.Requests.DonViTinh;
 using repo_nha_hang_com_ga_BE.Models.Requests.KhuyenMai;
+using repo_nha_hang_com_ga_BE.Models.Requests.LoaiBan;
 using repo_nha_hang_com_ga_BE.Models.Requests.LoaiKhuyenMai;
 using repo_nha_hang_com_ga_BE.Models.Requests.LoaiMonAn;
 using repo_nha_hang_com_ga_BE.Models.Requests.LoaiNguyenLieu;
 using repo_nha_hang_com_ga_BE.Models.Requests.MonAn;
 using repo_nha_hang_com_ga_BE.Models.Requests.NguyenLieu;
+using repo_nha_hang_com_ga_BE.Models.Requests.ThucDon;
 using repo_nha_hang_com_ga_BE.Models.Responds.Ban;
 using repo_nha_hang_com_ga_BE.Models.Responds.Combo;
 using repo_nha_hang_com_ga_BE.Models.Responds.Common;
@@ -21,11 +23,13 @@ using repo_nha_hang_com_ga_BE.Models.Responds.DanhMucMonAn;
 using repo_nha_hang_com_ga_BE.Models.Responds.DanhMucNguyenLieu;
 using repo_nha_hang_com_ga_BE.Models.Responds.DonViTinh;
 using repo_nha_hang_com_ga_BE.Models.Responds.KhuyenMai;
+using repo_nha_hang_com_ga_BE.Models.Responds.LoaiBan;
 using repo_nha_hang_com_ga_BE.Models.Responds.LoaiKhuyenMai;
 using repo_nha_hang_com_ga_BE.Models.Responds.LoaiMonAn;
 using repo_nha_hang_com_ga_BE.Models.Responds.LoaiNguyenLieu;
 using repo_nha_hang_com_ga_BE.Models.Responds.MonAn;
 using repo_nha_hang_com_ga_BE.Models.Responds.NguyenLieu;
+using repo_nha_hang_com_ga_BE.Models.Responds.ThucDon;
 
 namespace repo_nha_hang_com_ga_BE.Models.Common.Services;
 
@@ -96,5 +100,15 @@ public class MappingProfile : Profile
         CreateMap(typeof(Combo), typeof(ComboRespond));
         CreateMap(typeof(RequestAddCombo), typeof(Combo));
         CreateMap(typeof(RequestUpdateCombo), typeof(Combo));
+
+        //Loại bàn
+        CreateMap(typeof(LoaiBan), typeof(LoaiBanRespond));
+        CreateMap(typeof(RequestAddLoaiBan), typeof(LoaiBan));
+        CreateMap(typeof(RequestUpdateLoaiBan), typeof(LoaiBan));
+
+        //Thực đơn
+        CreateMap(typeof(ThucDon), typeof(ThucDonRespond));
+        CreateMap(typeof(RequestAddThucDon), typeof(ThucDon));
+        CreateMap(typeof(RequestUpdateThucDon), typeof(ThucDon));
     }
 }

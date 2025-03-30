@@ -3,17 +3,15 @@ using MongoDB.Bson.Serialization.Attributes;
 using repo_nha_hang_com_ga_BE.Models.Common;
 using repo_nha_hang_com_ga_BE.Models.Common.Models;
 
-namespace repo_nha_hang_com_ga_BE.Models.Responds.Ban;
+namespace repo_nha_hang_com_ga_BE.Models.Responds.LoaiBan;
 
-public class BanRespond
+public class LoaiBanRespond
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string? id { get; set; }
 
-    public string? tenBan { get; set; }
+    public string? tenLoai { get; set; }
 
-    public IdName? loaiBan { get; set; }
-
-    public TrangThaiBan? trangThai { get; set; }
+    public string? moTa { get; set; }
 }

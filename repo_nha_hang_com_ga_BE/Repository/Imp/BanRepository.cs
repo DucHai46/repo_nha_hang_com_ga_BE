@@ -40,9 +40,9 @@ public class BanRepository : IBanRepository
                 filter &= Builders<Ban>.Filter.Regex(x => x.tenBan, new BsonRegularExpression($".*{request.tenBan}.*"));
             }
 
-            if (!string.IsNullOrEmpty(request.loaiBan))
+            if (!string.IsNullOrEmpty(request.idLoaiBan))
             {
-                filter &= Builders<Ban>.Filter.Regex(x => x.loaiBan, new BsonRegularExpression($".*{request.loaiBan}.*"));
+                filter &= Builders<Ban>.Filter.Eq(x => x.loaiBan.Id, request.idLoaiBan);
             }
 
             if (request.trangThai != null)
@@ -53,7 +53,8 @@ public class BanRepository : IBanRepository
             var projection = Builders<Ban>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenBan)
-                .Include(x => x.loaiBan)
+                .Include(x => x.loaiBan.Id)
+                .Include(x => x.loaiBan.Name)
                 .Include(x => x.trangThai);
 
             var findOptions = new FindOptions<Ban, BanRespond>

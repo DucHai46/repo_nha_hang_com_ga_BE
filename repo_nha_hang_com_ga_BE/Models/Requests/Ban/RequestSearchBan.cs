@@ -6,7 +6,7 @@ public class RequestSearchBan : PagingParameterModel
 {
     public string? tenBan { get; set; }
 
-    public string? loaiBan { get; set; }
+    public string? idLoaiBan { get; set; }
 
     public TrangThaiBan? trangThai { get; set; }
 }
