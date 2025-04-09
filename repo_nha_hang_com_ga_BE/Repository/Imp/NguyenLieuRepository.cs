@@ -55,6 +55,11 @@ public class NguyenLieuRepository : INguyenLieuRepository
                 filter &= Builders<NguyenLieu>.Filter.Gte(x => x.hanSuDung, request.hanSuDung);
             }
 
+            if (!string.IsNullOrEmpty(request.tuDoId))
+            {
+                filter &= Builders<NguyenLieu>.Filter.Eq(x => x.tuDo.Id, request.tuDoId);
+            }
+
             var projection = Builders<NguyenLieu>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenNguyenLieu)
@@ -63,7 +68,9 @@ public class NguyenLieuRepository : INguyenLieuRepository
                 .Include(x => x.loaiNguyenLieu.Id)
                 .Include(x => x.loaiNguyenLieu.Name)
                 .Include(x => x.donViTinh.Id)
-                .Include(x => x.donViTinh.Name);
+                .Include(x => x.donViTinh.Name)
+                .Include(x => x.tuDo.Id)
+                .Include(x => x.tuDo.Name);
 
             var findOptions = new FindOptions<NguyenLieu, NguyenLieuRespond>
             {

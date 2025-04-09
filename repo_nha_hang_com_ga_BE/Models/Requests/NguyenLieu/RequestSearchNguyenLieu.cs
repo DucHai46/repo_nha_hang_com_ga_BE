@@ -12,4 +12,6 @@ public class RequestSearchNguyenLieu : PagingParameterModel
     public string? loaiNguyenLieuId { get; set; }
 
     public string? donViTinhId { get; set; }
+
+    public string? tuDoId { get; set; }
 }

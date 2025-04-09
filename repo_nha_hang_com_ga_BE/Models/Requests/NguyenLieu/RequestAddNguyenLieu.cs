@@ -13,4 +13,6 @@ public class RequestAddNguyenLieu
     public IdName? loaiNguyenLieu { get; set; }
 
     public IdName? donViTinh { get; set; }
+
+    public IdName? tuDo { get; set; }
 }
