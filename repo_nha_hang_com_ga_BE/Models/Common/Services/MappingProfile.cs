@@ -12,9 +12,11 @@ using repo_nha_hang_com_ga_BE.Models.Requests.LoaiBan;
 using repo_nha_hang_com_ga_BE.Models.Requests.LoaiKhuyenMai;
 using repo_nha_hang_com_ga_BE.Models.Requests.LoaiMonAn;
 using repo_nha_hang_com_ga_BE.Models.Requests.LoaiNguyenLieu;
+using repo_nha_hang_com_ga_BE.Models.Requests.LoaiTuDo;
 using repo_nha_hang_com_ga_BE.Models.Requests.MonAn;
 using repo_nha_hang_com_ga_BE.Models.Requests.NguyenLieu;
 using repo_nha_hang_com_ga_BE.Models.Requests.ThucDon;
+using repo_nha_hang_com_ga_BE.Models.Requests.TuDo;
 using repo_nha_hang_com_ga_BE.Models.Responds.Ban;
 using repo_nha_hang_com_ga_BE.Models.Responds.Combo;
 using repo_nha_hang_com_ga_BE.Models.Responds.Common;
@@ -27,9 +29,11 @@ using repo_nha_hang_com_ga_BE.Models.Responds.LoaiBan;
 using repo_nha_hang_com_ga_BE.Models.Responds.LoaiKhuyenMai;
 using repo_nha_hang_com_ga_BE.Models.Responds.LoaiMonAn;
 using repo_nha_hang_com_ga_BE.Models.Responds.LoaiNguyenLieu;
+using repo_nha_hang_com_ga_BE.Models.Responds.LoaiTuDo;
 using repo_nha_hang_com_ga_BE.Models.Responds.MonAn;
 using repo_nha_hang_com_ga_BE.Models.Responds.NguyenLieu;
 using repo_nha_hang_com_ga_BE.Models.Responds.ThucDon;
+using repo_nha_hang_com_ga_BE.Models.Responds.TuDo;
 
 namespace repo_nha_hang_com_ga_BE.Models.Common.Services;
 
@@ -110,5 +114,15 @@ public class MappingProfile : Profile
         CreateMap(typeof(ThucDon), typeof(ThucDonRespond));
         CreateMap(typeof(RequestAddThucDon), typeof(ThucDon));
         CreateMap(typeof(RequestUpdateThucDon), typeof(ThucDon));
+
+        //Loại tủ đồ
+        CreateMap(typeof(LoaiTuDo), typeof(LoaiTuDoRespond));
+        CreateMap(typeof(RequestAddLoaiTuDo), typeof(LoaiTuDo));
+        CreateMap(typeof(RequestUpdateLoaiTuDo), typeof(LoaiTuDo));
+
+        //Tủ đồ
+        CreateMap(typeof(TuDo), typeof(TuDoRespond));
+        CreateMap(typeof(RequestAddTuDo), typeof(TuDo));
+        CreateMap(typeof(RequestUpdateTuDo), typeof(TuDo));
     }
 }
