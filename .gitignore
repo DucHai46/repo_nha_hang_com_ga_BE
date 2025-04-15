@@ -1,4 +1,5 @@
 ﻿/.idea
 /repo_nha_hang_com_ga_BE/bin
 /repo_nha_hang_com_ga_BE/obj
-
+/auth.service/bin
+/auth.service/obj
