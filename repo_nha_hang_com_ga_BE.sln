@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "repo_nha_hang_com_ga_BE", "repo_nha_hang_com_ga_BE\repo_nha_hang_com_ga_BE.csproj", "{AE26C4FF-412B-426F-AC8D-DECD141109D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "auth.service", "auth.service\auth.service.csproj", "{2D8B9D16-7A7A-4B21-A285-1D7A5FC30817}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{AE26C4FF-412B-426F-AC8D-DECD141109D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE26C4FF-412B-426F-AC8D-DECD141109D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE26C4FF-412B-426F-AC8D-DECD141109D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D8B9D16-7A7A-4B21-A285-1D7A5FC30817}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D8B9D16-7A7A-4B21-A285-1D7A5FC30817}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D8B9D16-7A7A-4B21-A285-1D7A5FC30817}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D8B9D16-7A7A-4B21-A285-1D7A5FC30817}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using repo_nha_hang_com_ga_BE.Models.Common.Respond;
 using repo_nha_hang_com_ga_BE.Models.Requests.Ban;
 using repo_nha_hang_com_ga_BE.Models.Responds.Ban;
@@ -6,6 +7,7 @@ using repo_nha_hang_com_ga_BE.Repository;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/ban")]
 public class BanController : ControllerBase
