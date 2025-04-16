@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="AspNetCore.Identity.MongoDbCore" Version="5.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.36" />
+        <PackageReference Include="Microsoft.Bcl.TimeProvider" Version="9.0.4" />
         <PackageReference Include="Microsoft.IdentityModel" Version="7.0.0" />
         <PackageReference Include="MongoDB.Driver" Version="3.3.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
