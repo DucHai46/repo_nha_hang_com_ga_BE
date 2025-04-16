@@ -5,7 +5,7 @@ namespace repo_nha_hang_com_ga_BE.Models.Requests.KhuyenMai;
 public class RequestSearchKhuyenMai : PagingParameterModel
 {
     public string? tenKhuyenMai { get; set; }
-    public string? loaiKhuyenMaiId { get; set; }
+    // public string? loaiKhuyenMaiId { get; set; }
     public DateTimeOffset? ngayBatDau { get; set; }
     public DateTimeOffset? ngayKetThuc { get; set; }
     public double? giaTri { get; set; }

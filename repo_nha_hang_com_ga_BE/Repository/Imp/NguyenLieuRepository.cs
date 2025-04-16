@@ -50,21 +50,27 @@ public class NguyenLieuRepository : INguyenLieuRepository
                 filter &= Builders<NguyenLieu>.Filter.Regex(x => x.tenNguyenLieu, new BsonRegularExpression($".*{request.tenNguyenLieu}.*"));
             }
 
-            if (request.hanSuDung != null)
-            {
-                filter &= Builders<NguyenLieu>.Filter.Gte(x => x.hanSuDung, request.hanSuDung);
-            }
+            // if (request.hanSuDung != null)
+            // {
+            //     filter &= Builders<NguyenLieu>.Filter.Gte(x => x.hanSuDung, request.hanSuDung);
+            // }
 
             if (!string.IsNullOrEmpty(request.tuDoId))
             {
                 filter &= Builders<NguyenLieu>.Filter.Eq(x => x.tuDo.Id, request.tuDoId);
             }
 
+            if(request.trangThai != null){
+                filter &= Builders<NguyenLieu>.Filter.Eq(x => x.trangThai, request.trangThai);
+            }
+
             var projection = Builders<NguyenLieu>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenNguyenLieu)
                 .Include(x => x.moTa)
-                .Include(x => x.hanSuDung)
+                .Include(x => x.soLuong)
+                .Include(x => x.trangThai)
+                // .Include(x => x.hanSuDung)
                 .Include(x => x.loaiNguyenLieu.Id)
                 .Include(x => x.loaiNguyenLieu.Name)
                 .Include(x => x.donViTinh.Id)

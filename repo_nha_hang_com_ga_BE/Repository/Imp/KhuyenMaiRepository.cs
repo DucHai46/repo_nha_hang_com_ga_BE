@@ -40,10 +40,10 @@ public class KhuyenMaiRepository : IKhuyenMaiRepository
                 filter &= Builders<KhuyenMai>.Filter.Regex(x => x.tenKhuyenMai, new BsonRegularExpression($".*{request.tenKhuyenMai}.*"));
             }
 
-            if (!string.IsNullOrEmpty(request.loaiKhuyenMaiId))
-            {
-                filter &= Builders<KhuyenMai>.Filter.Eq(x => x.loaiKhuyenMai.Id, request.loaiKhuyenMaiId);
-            }
+            // if (!string.IsNullOrEmpty(request.loaiKhuyenMaiId))
+            // {
+            //     filter &= Builders<KhuyenMai>.Filter.Eq(x => x.loaiKhuyenMai.Id, request.loaiKhuyenMaiId);
+            // }
 
             if (request.ngayBatDau != null)
             {
@@ -63,8 +63,8 @@ public class KhuyenMaiRepository : IKhuyenMaiRepository
             var projection = Builders<KhuyenMai>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenKhuyenMai)
-                .Include(x => x.loaiKhuyenMai.Id)
-                .Include(x => x.loaiKhuyenMai.Name)
+                // .Include(x => x.loaiKhuyenMai.Id)
+                // .Include(x => x.loaiKhuyenMai.Name)
                 .Include(x => x.ngayBatDau)
                 .Include(x => x.ngayKetThuc)
                 .Include(x => x.giaTri);
