@@ -18,7 +18,7 @@ services:
   # Service 2: Auth Service
   auth-service:
     build:
-      context: ./auth-service
+      context: ./auth.service
       dockerfile: Dockerfile
     container_name: auth-service-container
     ports:
@@ -32,7 +32,7 @@ services:
   # Service 3: File Service
   file-service:
     build:
-      context: ./file-service
+      context: ./file.service
       dockerfile: Dockerfile
     container_name: file-service-container
     ports:

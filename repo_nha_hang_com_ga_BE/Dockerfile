@@ -1,7 +1,7 @@
 # repo_nha_hang_com_ga_BE/Dockerfile
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /app
-COPY ./repo_nha_hang_com_ga_BE .
+COPY . .
 RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
