@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace file.service.Controllers;
 
 [ApiController]
-[Route("file/api/files")]
+[Route("api/files")]
 public class FilesController : ControllerBase
 {
     private readonly IFileService _fileService;
