@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # Service 1: repo_nha_hang_com_ga_BE
+  repo-service:
+    build:
+      context: ./repo_nha_hang_com_ga_BE
+      dockerfile: Dockerfile
+    container_name: repo-nha-hang-com-ga-be-container
+    ports:
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__MongoDb=mongodb://admin:admin123@52.64.190.146:27017  # Kết nối đến MongoDB trên host
+    networks:
+      - mynetwork
+
+  # Service 2: Auth Service
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service-container
+    ports:
+      - "8081:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__MongoDb=mongodb://admin:admin123@52.64.190.146:27017
+    networks:
+      - mynetwork
+
+  # Service 3: File Service
+  file-service:
+    build:
+      context: ./file-service
+      dockerfile: Dockerfile
+    container_name: file-service-container
+    ports:
+      - "8082:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__MongoDb=mongodb://admin:admin123@52.64.190.146:27017
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
