@@ -7,6 +7,8 @@ using file.service.Services.Impl;
 using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
+var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 
 // Add services to the container.
 // Program.cs
@@ -19,6 +21,17 @@ builder.Services.Configure<FormOptions>(options =>
 {
     options.MultipartBodyLengthLimit = 1073741824; // 1GB
 });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: myAllowSpecificOrigins,
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -27,12 +40,13 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment() || true)
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MongoWebApi v1"));
 }
+app.UseCors(myAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
 
