@@ -44,7 +44,8 @@ public class CongThucRepository : ICongThucRepository
                 .Include(x => x.Id)
                 .Include(x => x.tenCongThuc)
                 .Include(x => x.nguyenLieus)
-                .Include(x => x.moTa);
+                .Include(x => x.moTa)
+                .Include(x => x.hinhAnh);
 
             var findOptions = new FindOptions<CongThuc, CongThucRespond>
             {

@@ -7,6 +7,7 @@ using repo_nha_hang_com_ga_BE.Models.Requests.CongThuc;
 using repo_nha_hang_com_ga_BE.Models.Requests.DanhMucMonAn;
 using repo_nha_hang_com_ga_BE.Models.Requests.DanhMucNguyenLieu;
 using repo_nha_hang_com_ga_BE.Models.Requests.DonViTinh;
+using repo_nha_hang_com_ga_BE.Models.Requests.KhachHang;
 using repo_nha_hang_com_ga_BE.Models.Requests.KhuyenMai;
 using repo_nha_hang_com_ga_BE.Models.Requests.LoaiBan;
 using repo_nha_hang_com_ga_BE.Models.Requests.LoaiKhuyenMai;
@@ -24,6 +25,7 @@ using repo_nha_hang_com_ga_BE.Models.Responds.CongThuc;
 using repo_nha_hang_com_ga_BE.Models.Responds.DanhMucMonAn;
 using repo_nha_hang_com_ga_BE.Models.Responds.DanhMucNguyenLieu;
 using repo_nha_hang_com_ga_BE.Models.Responds.DonViTinh;
+using repo_nha_hang_com_ga_BE.Models.Responds.KhachHang;
 using repo_nha_hang_com_ga_BE.Models.Responds.KhuyenMai;
 using repo_nha_hang_com_ga_BE.Models.Responds.LoaiBan;
 using repo_nha_hang_com_ga_BE.Models.Responds.LoaiKhuyenMai;
@@ -124,5 +126,10 @@ public class MappingProfile : Profile
         CreateMap(typeof(TuDo), typeof(TuDoRespond));
         CreateMap(typeof(RequestAddTuDo), typeof(TuDo));
         CreateMap(typeof(RequestUpdateTuDo), typeof(TuDo));
+
+        //Khách Hàng
+        CreateMap(typeof(KhachHang), typeof(KhachHangRespond));
+        CreateMap(typeof(RequestAddKhachHang), typeof(KhachHang));
+        CreateMap(typeof(RequestUpdateKhachHang), typeof(KhachHang));
     }
 }

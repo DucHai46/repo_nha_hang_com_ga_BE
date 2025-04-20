@@ -27,7 +27,8 @@ namespace repo_nha_hang_com_ga_BE.Models.Common.Services
             services.AddSingleton<IThucDonRepository, ThucDonRepository>();
             services.AddSingleton<ILoaiTuDoRepository, LoaiTuDoRepository>();
             services.AddSingleton<ITuDoRepository, TuDoRepository>();
-            
+            services.AddSingleton<IKhachHangRepository, KhachHangRepository>();
+
             return services;
         }
     }

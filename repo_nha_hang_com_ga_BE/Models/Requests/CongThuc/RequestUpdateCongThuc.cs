@@ -9,4 +9,6 @@ public class RequestUpdateCongThuc
     public List<NguyenLieuCongThuc>? nguyenLieus { get; set; }
 
     public string? moTa { get; set; }
+
+    public string? hinhAnh { get; set; }
 }

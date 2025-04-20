@@ -16,4 +16,6 @@ public class CongThucRespond
     public List<NguyenLieuCongThucRespond>? nguyenLieus { get; set; }
 
     public string? moTa { get; set; }
+
+    public string? hinhAnh { get; set; }
 }
