@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens; // Added for SymmetricSecurityKey and Secu
 
 namespace auth.service.Controllers;
 
-[Route("api/auth")]
+[Route("auth/api/auth")]
 [ApiController]
 public class AuthController : Controller
 {
