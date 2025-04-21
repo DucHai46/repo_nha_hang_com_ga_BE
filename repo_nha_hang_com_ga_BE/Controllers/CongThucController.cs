@@ -3,9 +3,11 @@ using repo_nha_hang_com_ga_BE.Models.Common.Respond;
 using repo_nha_hang_com_ga_BE.Models.Requests.CongThuc;
 using repo_nha_hang_com_ga_BE.Models.Responds.CongThuc;
 using repo_nha_hang_com_ga_BE.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/cong-thuc")]
 public class CongThucController : ControllerBase

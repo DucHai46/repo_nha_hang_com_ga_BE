@@ -1,8 +1,10 @@
 ﻿using file.service.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace file.service.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("file/api/files")]
 public class FilesController : ControllerBase

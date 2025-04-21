@@ -3,9 +3,11 @@ using repo_nha_hang_com_ga_BE.Models.Common.Respond;
 using repo_nha_hang_com_ga_BE.Models.Requests.DanhMucMonAn;
 using repo_nha_hang_com_ga_BE.Models.Responds.DanhMucMonAn;
 using repo_nha_hang_com_ga_BE.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/danh-muc-mon-an")]
 public class DanhMucMonAnController : ControllerBase

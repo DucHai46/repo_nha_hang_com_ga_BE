@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using repo_nha_hang_com_ga_BE.Models.Requests.KhachHang;
 using repo_nha_hang_com_ga_BE.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
-// [authorize]
+
+[Authorize]
 [ApiController]
 [Route("api/khachhang")]
 

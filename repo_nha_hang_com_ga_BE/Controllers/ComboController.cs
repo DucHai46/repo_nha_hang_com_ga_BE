@@ -3,9 +3,11 @@ using repo_nha_hang_com_ga_BE.Models.Common.Respond;
 using repo_nha_hang_com_ga_BE.Models.Requests.Combo;
 using repo_nha_hang_com_ga_BE.Models.Responds.Combo;
 using repo_nha_hang_com_ga_BE.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/combo")]
 public class ComboController : ControllerBase
