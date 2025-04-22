@@ -58,13 +58,10 @@ jobs:
           script: |
             cd /home/ubuntu/repo_nha_hang_com_ga_BE
 
-            # Xóa image cũ (nếu tồn tại)
             docker-compose down
             docker images | grep haibui040623 | awk '{print $3}' | xargs -r docker rmi -f
             docker system prune -f
 
-            # Pull image mới
             docker-compose pull
 
-            # Khởi động lại containers
             docker-compose up -d
