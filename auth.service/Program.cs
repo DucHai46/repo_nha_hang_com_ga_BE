@@ -19,7 +19,7 @@ var mongoDbConfig = new MongoDbIdentityConfiguration
 {
     MongoDbSettings = new MongoDbSettings
     {
-        ConnectionString = "mongodb://admin:admin123@52.64.190.146:27017",
+        ConnectionString = "mongodb://admin:admin123@3.24.10.252:27017",
         DatabaseName = "Users"
     },
     IdentityOptionsAction = options =>
