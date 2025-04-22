@@ -15,7 +15,7 @@ services:
 
   # Service 2: Auth Service
   auth-service:
-    image: haibui040623/repo-nha-hang-com-ga-be:latest
+    image: haibui040623/auth-service:latest
     container_name: auth-service-container
     ports:
       - "8081:80"
@@ -27,7 +27,7 @@ services:
 
   # Service 3: File Service
   file-service:
-    image: haibui040623/repo-nha-hang-com-ga-be:latest
+    image: haibui040623/file-service:latest
     container_name: file-service-container
     ports:
       - "8082:80"
