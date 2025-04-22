@@ -4,8 +4,7 @@ services:
   # Service 1: repo_nha_hang_com_ga_BE
   repo-service:
     build:
-      context: ./repo_nha_hang_com_ga_BE
-      dockerfile: Dockerfile
+    image: haibui040623/repo-nha-hang-com-ga-be:latest
     container_name: repo-nha-hang-com-ga-be-container
     ports:
       - "8080:80"
@@ -17,9 +16,7 @@ services:
 
   # Service 2: Auth Service
   auth-service:
-    build:
-      context: ./auth.service
-      dockerfile: Dockerfile
+    image: haibui040623/repo-nha-hang-com-ga-be:latest
     container_name: auth-service-container
     ports:
       - "8081:80"
@@ -31,9 +28,7 @@ services:
 
   # Service 3: File Service
   file-service:
-    build:
-      context: ./file.service
-      dockerfile: Dockerfile
+    image: haibui040623/repo-nha-hang-com-ga-be:latest
     container_name: file-service-container
     ports:
       - "8082:80"
