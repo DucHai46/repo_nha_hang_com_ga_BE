@@ -56,7 +56,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /repo_nha_hang_com_ga_BE
+            cd /home/ubuntu/repo_nha_hang_com_ga_BE
 
             # Xóa image cũ (nếu tồn tại)
             docker-compose down
