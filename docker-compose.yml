@@ -3,14 +3,13 @@ version: '3.8'
 services:
   # Service 1: repo_nha_hang_com_ga_BE
   repo-service:
-    build:
     image: haibui040623/repo-nha-hang-com-ga-be:latest
     container_name: repo-nha-hang-com-ga-be-container
     ports:
       - "8080:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__MongoDb=mongodb://admin:admin123@52.64.190.146:27017  # Kết nối đến MongoDB trên host
+      - ConnectionStrings__MongoDb=mongodb://admin:admin123@52.64.190.146:27017
     networks:
       - mynetwork
 
