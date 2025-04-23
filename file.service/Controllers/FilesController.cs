@@ -6,7 +6,7 @@ namespace file.service.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("file/api/files")]
+[Route("api/files")]
 public class FilesController : ControllerBase
 {
     private readonly IFileService _fileService;
