@@ -58,6 +58,8 @@ jobs:
           script: |
             cd /home/ubuntu/repo_nha_hang_com_ga_BE
 
+            git pull origin main
+
             docker-compose down
             docker images | grep haibui040623 | awk '{print $3}' | xargs -r docker rmi -f
             docker system prune -f
