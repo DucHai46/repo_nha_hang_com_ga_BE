@@ -9,7 +9,6 @@ services:
       - "8080:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__MongoDb= ${{ secrets.MONGODB_CONNECTIONSTRING }}
     networks:
       - mynetwork
 
@@ -21,7 +20,6 @@ services:
       - "8081:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__MongoDb= ${{ secrets.MONGODB_CONNECTIONSTRING }}
     networks:
       - mynetwork
 
@@ -33,7 +31,6 @@ services:
       - "8082:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__MongoDb= ${{ secrets.MONGODB_CONNECTIONSTRING }}
     networks:
       - mynetwork
 
