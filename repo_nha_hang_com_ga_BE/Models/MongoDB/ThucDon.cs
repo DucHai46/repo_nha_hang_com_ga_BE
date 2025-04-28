@@ -10,12 +10,6 @@ public class ThucDon : BaseMongoDb
     public List<ComboMenu>? combos { get; set; }
 }
 
-public class LoaiMonAnMenu : IdName
-{
-    public List<MonAnMenu>? monAns { get; set; }
-    public string? moTa { get; set; }
-}
-
 public class ComboMenu : IdName
 {
     public List<LoaiMonAnMenu>? loaiMonAns { get; set; }
