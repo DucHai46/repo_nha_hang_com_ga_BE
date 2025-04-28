@@ -48,7 +48,7 @@ public class ComboRepository : IComboRepository
             var projection = Builders<Combo>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenCombo)
-                .Include(x => x.monAns)
+                .Include(x => x.loaiMonAns)
                 .Include(x => x.hinhAnh)
                 .Include(x => x.giaTien)
                 .Include(x => x.moTa);

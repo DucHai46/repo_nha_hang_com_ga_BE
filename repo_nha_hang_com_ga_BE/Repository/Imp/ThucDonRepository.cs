@@ -42,12 +42,12 @@ public class ThucDonRepository : IThucDonRepository
 
             if (!string.IsNullOrEmpty(request.loaiMonAnId))
             {
-                filter &= Builders<ThucDon>.Filter.ElemMatch(x => x.loaiMonAns, Builders<LoaiMonAnMenu>.Filter.Eq(y => y.id, request.loaiMonAnId));
+                filter &= Builders<ThucDon>.Filter.AnyEq("loaiMonAns.Id", request.loaiMonAnId);
             }
 
             if (!string.IsNullOrEmpty(request.comboId))
             {
-                filter &= Builders<ThucDon>.Filter.ElemMatch(x => x.combos, Builders<ComboMenu>.Filter.Eq(y => y.id, request.comboId));
+                filter &= Builders<ThucDon>.Filter.ElemMatch(x => x.combos, Builders<ComboMenu>.Filter.Eq(y => y.Id, request.comboId));
             }
 
             var projection = Builders<ThucDon>.Projection
