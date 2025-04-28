@@ -9,7 +9,7 @@ namespace repo_nha_hang_com_ga_BE.Controllers;
 
 // [Authorize]
 [ApiController]
-[Route("api/menuDynamic")]
+[Route("api/menu-dynamic")]
 public class MenuDynamicController : ControllerBase
 {
     private readonly IMenuDynamicRepository _repository;
