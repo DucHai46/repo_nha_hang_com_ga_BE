@@ -67,7 +67,9 @@ public class GiamGiaRepository : IGiamGiaRepository
                 // .Include(x => x.loaiGiamGia.Name)
                 .Include(x => x.ngayBatDau)
                 .Include(x => x.ngayKetThuc)
-                .Include(x => x.giaTri);
+                .Include(x => x.giaTri)
+                .Include(x => x.moTa);
+
 
             var findOptions = new FindOptions<GiamGia, GiamGiaRespond>
             {
