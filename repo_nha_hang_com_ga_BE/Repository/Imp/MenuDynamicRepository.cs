@@ -56,7 +56,8 @@ public class MenuDynamicRepository : IMenuDynamicRepository
                 .Include(x => x.Label)
                 .Include(x => x.Parent)
                 .Include(x => x.IsOpen)
-                .Include(x => x.Position);
+                .Include(x => x.Position)
+                .Include(x => x.IsActive);
                 // .Include(x => x.Children);
 
 

@@ -11,4 +11,5 @@ public class MenuDynamic : BaseMongoDb
         public bool? IsOpen { get; set; } = false;
         public int? Position { get; set; }
         // public List<MenuDynamic>? Children { get; set; }
+        public bool? IsActive { get; set; } = true;
 }
