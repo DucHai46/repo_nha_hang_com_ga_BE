@@ -53,10 +53,9 @@ public class MonAnRepository : IMonAnRepository
             var projection = Builders<MonAn>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenMonAn)
-                .Include(x => x.loaiMonAn.Id)
-                .Include(x => x.loaiMonAn.Name)
-                .Include(x => x.congThuc.Id)
-                .Include(x => x.congThuc.Name)
+                .Include(x => x.loaiMonAn)
+                .Include(x => x.congThuc)
+                .Include(x => x.giamGia)
                 .Include(x => x.moTa)
                 .Include(x => x.hinhAnh)
                 .Include(x => x.giaTien);

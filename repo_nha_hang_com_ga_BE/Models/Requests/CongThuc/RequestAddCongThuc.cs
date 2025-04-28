@@ -6,7 +6,7 @@ public class RequestAddCongThuc
 {
     public string? tenCongThuc { get; set; }
 
-    public List<NguyenLieuCongThuc>? nguyenLieus { get; set; }
+    public List<LoaiNguyenLieuCongThuc>? loaiNguyenLieus { get; set; }
 
     public string? moTa { get; set; }
 

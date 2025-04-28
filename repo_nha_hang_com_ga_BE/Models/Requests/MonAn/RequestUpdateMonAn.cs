@@ -10,6 +10,8 @@ public class RequestUpdateMonAn
 
     public IdName? congThuc { get; set; }
 
+    public GiamGiaMonAn? giamGia { get; set; }
+
     public string? moTa { get; set; }
 
     public string? hinhAnh { get; set; }

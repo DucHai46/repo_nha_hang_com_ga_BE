@@ -13,7 +13,7 @@ public class CongThucRespond
 
     public string? tenCongThuc { get; set; }
 
-    public List<NguyenLieuCongThucRespond>? nguyenLieus { get; set; }
+    public List<LoaiNguyenLieuCongThucRespond>? loaiNguyenLieus { get; set; }
 
     public string? moTa { get; set; }
 

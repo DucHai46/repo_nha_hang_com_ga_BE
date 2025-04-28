@@ -43,7 +43,7 @@ public class CongThucRepository : ICongThucRepository
             var projection = Builders<CongThuc>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenCongThuc)
-                .Include(x => x.nguyenLieus)
+                .Include(x => x.loaiNguyenLieus)
                 .Include(x => x.moTa)
                 .Include(x => x.hinhAnh);
 
