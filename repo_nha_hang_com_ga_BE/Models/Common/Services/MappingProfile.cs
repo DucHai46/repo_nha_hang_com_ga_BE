@@ -18,6 +18,7 @@ using repo_nha_hang_com_ga_BE.Models.Requests.MonAn;
 using repo_nha_hang_com_ga_BE.Models.Requests.NguyenLieu;
 using repo_nha_hang_com_ga_BE.Models.Requests.ThucDon;
 using repo_nha_hang_com_ga_BE.Models.Requests.TuDo;
+using repo_nha_hang_com_ga_BE.Models.Requests.MenuDynamic;
 using repo_nha_hang_com_ga_BE.Models.Responds.Ban;
 using repo_nha_hang_com_ga_BE.Models.Responds.Combo;
 using repo_nha_hang_com_ga_BE.Models.Responds.Common;
@@ -36,6 +37,7 @@ using repo_nha_hang_com_ga_BE.Models.Responds.MonAn;
 using repo_nha_hang_com_ga_BE.Models.Responds.NguyenLieu;
 using repo_nha_hang_com_ga_BE.Models.Responds.ThucDon;
 using repo_nha_hang_com_ga_BE.Models.Responds.TuDo;
+using repo_nha_hang_com_ga_BE.Models.Responds.MenuDynamic;
 
 namespace repo_nha_hang_com_ga_BE.Models.Common.Services;
 
@@ -131,5 +133,11 @@ public class MappingProfile : Profile
         CreateMap(typeof(KhachHang), typeof(KhachHangRespond));
         CreateMap(typeof(RequestAddKhachHang), typeof(KhachHang));
         CreateMap(typeof(RequestUpdateKhachHang), typeof(KhachHang));
+
+        //Menu Dynamic
+        CreateMap(typeof(MenuDynamic), typeof(MenuDynamicRespond));
+        CreateMap(typeof(RequestAddMenuDynamic), typeof(MenuDynamic));
+        CreateMap(typeof(RequestUpdateMenuDynamic), typeof(MenuDynamic));
+        // CreateMap(typeof(List<MenuDynamic>), typeof(List<MenuDynamicRespond>));
     }
 }
