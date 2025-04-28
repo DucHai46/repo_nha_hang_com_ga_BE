@@ -37,7 +37,7 @@ public class LoaiNguyenLieuRepository : ILoaiNguyenLieuRepository
 
             if (!string.IsNullOrEmpty(request.danhMucNguyenLieuId))
             {
-                filter &= Builders<LoaiNguyenLieu>.Filter.Eq(x => x.danhMucNguyenLieu.Id, request.danhMucNguyenLieuId);
+                filter &= Builders<LoaiNguyenLieu>.Filter.Eq(x => x.danhMucNguyenLieu!.Id, request.danhMucNguyenLieuId);
             }
 
             if (!string.IsNullOrEmpty(request.tenLoai))
@@ -48,8 +48,7 @@ public class LoaiNguyenLieuRepository : ILoaiNguyenLieuRepository
             var projection = Builders<LoaiNguyenLieu>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenLoai)
-                .Include(x => x.danhMucNguyenLieu.Id)
-                .Include(x => x.danhMucNguyenLieu.Name)
+                .Include(x => x.danhMucNguyenLieu)
                 .Include(x => x.moTa);
 
             var findOptions = new FindOptions<LoaiNguyenLieu, LoaiNguyenLieuRespond>

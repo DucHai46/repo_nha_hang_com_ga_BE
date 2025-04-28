@@ -37,7 +37,7 @@ public class LoaiMonAnRepository : ILoaiMonAnRepository
 
             if (!string.IsNullOrEmpty(request.danhMucMonAnId))
             {
-                filter &= Builders<LoaiMonAn>.Filter.Eq(x => x.danhMucMonAn.Id, request.danhMucMonAnId);
+                filter &= Builders<LoaiMonAn>.Filter.Eq(x => x.danhMucMonAn!.Id, request.danhMucMonAnId);
             }
 
             if (!string.IsNullOrEmpty(request.tenLoai))
@@ -48,8 +48,7 @@ public class LoaiMonAnRepository : ILoaiMonAnRepository
             var projection = Builders<LoaiMonAn>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenLoai)
-                .Include(x => x.danhMucMonAn.Id)
-                .Include(x => x.danhMucMonAn.Name)
+                .Include(x => x.danhMucMonAn)
                 .Include(x => x.moTa);
 
             var findOptions = new FindOptions<LoaiMonAn, LoaiMonAnRespond>

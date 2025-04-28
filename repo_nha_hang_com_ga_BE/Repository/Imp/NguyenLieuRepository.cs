@@ -37,12 +37,12 @@ public class NguyenLieuRepository : INguyenLieuRepository
 
             if (!string.IsNullOrEmpty(request.loaiNguyenLieuId))
             {
-                filter &= Builders<NguyenLieu>.Filter.Eq(x => x.loaiNguyenLieu.Id, request.loaiNguyenLieuId);
+                filter &= Builders<NguyenLieu>.Filter.Eq(x => x.loaiNguyenLieu!.Id, request.loaiNguyenLieuId);
             }
 
             if (!string.IsNullOrEmpty(request.donViTinhId))
             {
-                filter &= Builders<NguyenLieu>.Filter.Eq(x => x.donViTinh.Id, request.donViTinhId);
+                filter &= Builders<NguyenLieu>.Filter.Eq(x => x.donViTinh!.Id, request.donViTinhId);
             }
 
             if (!string.IsNullOrEmpty(request.tenNguyenLieu))
@@ -57,7 +57,7 @@ public class NguyenLieuRepository : INguyenLieuRepository
 
             if (!string.IsNullOrEmpty(request.tuDoId))
             {
-                filter &= Builders<NguyenLieu>.Filter.Eq(x => x.tuDo.Id, request.tuDoId);
+                filter &= Builders<NguyenLieu>.Filter.Eq(x => x.tuDo!.Id, request.tuDoId);
             }
 
             if(request.trangThai != null){
@@ -71,12 +71,9 @@ public class NguyenLieuRepository : INguyenLieuRepository
                 .Include(x => x.soLuong)
                 .Include(x => x.trangThai)
                 // .Include(x => x.hanSuDung)
-                .Include(x => x.loaiNguyenLieu.Id)
-                .Include(x => x.loaiNguyenLieu.Name)
-                .Include(x => x.donViTinh.Id)
-                .Include(x => x.donViTinh.Name)
-                .Include(x => x.tuDo.Id)
-                .Include(x => x.tuDo.Name);
+                .Include(x => x.loaiNguyenLieu)
+                .Include(x => x.donViTinh)
+                .Include(x => x.tuDo);
 
             var findOptions = new FindOptions<NguyenLieu, NguyenLieuRespond>
             {

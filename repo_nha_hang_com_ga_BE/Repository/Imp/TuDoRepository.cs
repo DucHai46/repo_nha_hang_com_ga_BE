@@ -43,15 +43,14 @@ public class TuDoRepository : ITuDoRepository
 
             if (!string.IsNullOrEmpty(request.loaiTuDoId))
             {
-                filter &= Builders<TuDo>.Filter.Eq(x => x.loaiTuDo.Id, request.loaiTuDoId);
+                filter &= Builders<TuDo>.Filter.Eq(x => x.loaiTuDo!.Id, request.loaiTuDoId);
             }
 
             var projection = Builders<TuDo>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenTuDo)
                 .Include(x => x.moTa)
-                .Include(x => x.loaiTuDo.Id)
-                .Include(x => x.loaiTuDo.Name);
+                .Include(x => x.loaiTuDo);
 
             var findOptions = new FindOptions<TuDo, TuDoRespond>
             {

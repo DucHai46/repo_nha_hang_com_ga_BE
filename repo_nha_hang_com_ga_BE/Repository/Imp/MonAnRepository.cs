@@ -42,12 +42,12 @@ public class MonAnRepository : IMonAnRepository
 
             if (!string.IsNullOrEmpty(request.tenLoaiMonAn))
             {
-                filter &= Builders<MonAn>.Filter.Regex(x => x.loaiMonAn.Name, new BsonRegularExpression($".*{request.tenLoaiMonAn}.*"));
+                filter &= Builders<MonAn>.Filter.Regex(x => x.loaiMonAn!.Name, new BsonRegularExpression($".*{request.tenLoaiMonAn}.*"));
             }
 
             if (!string.IsNullOrEmpty(request.tenCongThuc))
             {
-                filter &= Builders<MonAn>.Filter.Regex(x => x.congThuc.Name, new BsonRegularExpression($".*{request.tenCongThuc}.*"));
+                filter &= Builders<MonAn>.Filter.Regex(x => x.congThuc!.Name, new BsonRegularExpression($".*{request.tenCongThuc}.*"));
             }
 
             var projection = Builders<MonAn>.Projection
