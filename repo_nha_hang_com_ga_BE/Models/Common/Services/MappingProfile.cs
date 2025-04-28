@@ -19,6 +19,7 @@ using repo_nha_hang_com_ga_BE.Models.Requests.NguyenLieu;
 using repo_nha_hang_com_ga_BE.Models.Requests.ThucDon;
 using repo_nha_hang_com_ga_BE.Models.Requests.TuDo;
 using repo_nha_hang_com_ga_BE.Models.Requests.MenuDynamic;
+using repo_nha_hang_com_ga_BE.Models.Requests.GiamGia;
 using repo_nha_hang_com_ga_BE.Models.Responds.Ban;
 using repo_nha_hang_com_ga_BE.Models.Responds.Combo;
 using repo_nha_hang_com_ga_BE.Models.Responds.Common;
@@ -38,6 +39,7 @@ using repo_nha_hang_com_ga_BE.Models.Responds.NguyenLieu;
 using repo_nha_hang_com_ga_BE.Models.Responds.ThucDon;
 using repo_nha_hang_com_ga_BE.Models.Responds.TuDo;
 using repo_nha_hang_com_ga_BE.Models.Responds.MenuDynamic;
+using repo_nha_hang_com_ga_BE.Models.Responds.GiamGia;
 
 namespace repo_nha_hang_com_ga_BE.Models.Common.Services;
 
@@ -139,5 +141,10 @@ public class MappingProfile : Profile
         CreateMap(typeof(RequestAddMenuDynamic), typeof(MenuDynamic));
         CreateMap(typeof(RequestUpdateMenuDynamic), typeof(MenuDynamic));
         // CreateMap(typeof(List<MenuDynamic>), typeof(List<MenuDynamicRespond>));
+
+        //Giảm giá
+        CreateMap(typeof(GiamGia), typeof(GiamGiaRespond));
+        CreateMap(typeof(RequestAddGiamGia), typeof(GiamGia));
+        CreateMap(typeof(RequestUpdateGiamGia), typeof(GiamGia));
     }
 }
