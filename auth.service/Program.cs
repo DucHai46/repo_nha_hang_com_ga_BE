@@ -7,6 +7,9 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using Microsoft.AspNetCore.Identity; // Added for UserManager
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +44,29 @@ builder.Services.ConfigureMongoDbIdentity<MongoUser, MongoIdentityRole<Guid>, Gu
     mongoDbContext
 ).AddRoles<MongoIdentityRole<Guid>>() // Thêm dòng này
   .AddRoleManager<RoleManager<MongoIdentityRole<Guid>>>(); // Và dòng này
+
+// Add this authentication configuration
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+        )
+    };
+});
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
@@ -141,6 +167,9 @@ if (app.Environment.IsDevelopment() || true)
 app.UseCors(myAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
+
+// Add this line before UseAuthorization
+app.UseAuthentication();
 
 app.UseAuthorization();
 

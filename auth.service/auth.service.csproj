@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="AspNetCore.Identity.MongoDbCore" Version="5.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.27" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.36" />
         <PackageReference Include="Microsoft.Bcl.TimeProvider" Version="9.0.4" />
         <PackageReference Include="Microsoft.IdentityModel" Version="7.0.0" />
