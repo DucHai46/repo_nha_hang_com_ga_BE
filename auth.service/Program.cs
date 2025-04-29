@@ -2,12 +2,12 @@ using AspNetCore.Identity.MongoDbCore.Extensions;
 using AspNetCore.Identity.MongoDbCore.Infrastructure;
 using AspNetCore.Identity.MongoDbCore.Models;
 using auth.service.Context;
-using MongoDB.Driver;
 using MongoDbGenericRepository.Attributes;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.Serializers;
+using Microsoft.AspNetCore.Identity; // Added for UserManager
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -39,12 +39,39 @@ var mongoDbContext = new CustomMongoDbContext(
 builder.Services.ConfigureMongoDbIdentity<MongoUser, MongoIdentityRole<Guid>, Guid>(
     mongoDbConfig,
     mongoDbContext
-);
+).AddRoles<MongoIdentityRole<Guid>>() // Thêm dòng này
+  .AddRoleManager<RoleManager<MongoIdentityRole<Guid>>>(); // Và dòng này
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Auth Service API", Version = "v1" });
+
+    // Cấu hình JWT Bearer Token
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    // Thêm yêu cầu bắt buộc phải có token
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -61,6 +88,48 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+// Tạo vai trò mặc định
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<MongoIdentityRole<Guid>>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<MongoUser>>();
+    
+    // Tạo vai trò Admin nếu chưa tồn tại
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(new MongoIdentityRole<Guid>("Admin"));
+    }
+    
+    // Tạo vai trò User nếu chưa tồn tại
+    if (!await roleManager.RoleExistsAsync("User"))
+    {
+        await roleManager.CreateAsync(new MongoIdentityRole<Guid>("User"));
+    }
+    
+    // Tạo vai trò Manager nếu chưa tồn tại
+    if (!await roleManager.RoleExistsAsync("Manager"))
+    {
+        await roleManager.CreateAsync(new MongoIdentityRole<Guid>("Manager"));
+    }
+    
+    // Tạo tài khoản Admin mặc định nếu chưa có
+    var adminUser = await userManager.FindByNameAsync("admin");
+    if (adminUser == null)
+    {
+        adminUser = new MongoUser
+        {
+            UserName = "admin",
+            Email = "admin@example.com",
+            FullName = "Administrator"
+        };
+        
+        var result = await userManager.CreateAsync(adminUser, "Admin@123");
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
+}
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment() || true)
