@@ -85,6 +85,8 @@ public class MappingProfile : Profile
 
         //NguyenLieuCongThuc
         CreateMap(typeof(NguyenLieuCongThuc), typeof(NguyenLieuCongThucRespond));
+        CreateMap(typeof(LoaiNguyenLieuCongThuc), typeof(LoaiNguyenLieuCongThucRespond));
+
 
         //Khuyến mãi
         CreateMap(typeof(KhuyenMai), typeof(KhuyenMaiRespond));
