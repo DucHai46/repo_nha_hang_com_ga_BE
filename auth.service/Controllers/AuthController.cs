@@ -114,7 +114,7 @@ public class AuthController : Controller
         if (!result.Succeeded)
             return BadRequest(result.Errors);
 
-        return Ok(new { model.Code, model.Name });
+        return Ok(new { Name = model.Name });
     }
 
     [HttpPost("user/{userId}/roles")]
@@ -173,6 +173,5 @@ public class LoginModel
 
 public class RoleModel
 {
-    public string Code { get; set; }
     public string Name { get; set; }
 }
