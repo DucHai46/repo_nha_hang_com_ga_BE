@@ -8,4 +8,5 @@ public class RequestSearchThucDon : PagingParameterModel
     public string? tenThucDon { get; set; }
     public string? loaiMonAnId { get; set; }
     public string? comboId { get; set; }
+    public Boolean? trangThai { get; set; }
 }

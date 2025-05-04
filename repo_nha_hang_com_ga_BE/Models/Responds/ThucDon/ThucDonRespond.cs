@@ -14,4 +14,5 @@ public class ThucDonRespond
     public string? tenThucDon { get; set; }
     public List<LoaiMonAnMenu>? loaiMonAns { get; set; }
     public List<ComboMenu>? combos { get; set; }
+    public Boolean? trangThai { get; set; }
 }
