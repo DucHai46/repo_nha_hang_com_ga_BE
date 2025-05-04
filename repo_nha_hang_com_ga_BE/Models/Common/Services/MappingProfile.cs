@@ -40,6 +40,11 @@ using repo_nha_hang_com_ga_BE.Models.Responds.ThucDon;
 using repo_nha_hang_com_ga_BE.Models.Responds.TuDo;
 using repo_nha_hang_com_ga_BE.Models.Responds.MenuDynamic;
 using repo_nha_hang_com_ga_BE.Models.Responds.GiamGia;
+using repo_nha_hang_com_ga_BE.Models.Requests.DonDatBan;
+using repo_nha_hang_com_ga_BE.Models.Responds.DonDatBan;
+using repo_nha_hang_com_ga_BE.Models.Requests.DonOrder;
+using repo_nha_hang_com_ga_BE.Models.Responds.DonOrder;
+
 
 namespace repo_nha_hang_com_ga_BE.Models.Common.Services;
 
@@ -148,5 +153,15 @@ public class MappingProfile : Profile
         CreateMap(typeof(GiamGia), typeof(GiamGiaRespond));
         CreateMap(typeof(RequestAddGiamGia), typeof(GiamGia));
         CreateMap(typeof(RequestUpdateGiamGia), typeof(GiamGia));
+
+        //Đơn đặt bàn
+        CreateMap(typeof(DonDatBan), typeof(DonDatBanRespond));
+        CreateMap(typeof(RequestAddDonDatBan), typeof(DonDatBan));
+        CreateMap(typeof(RequestUpdateDonDatBan), typeof(DonDatBan));
+
+        //Đơn Order
+        CreateMap(typeof(DonOrder), typeof(DonOrderRespond));
+        CreateMap(typeof(RequestAddDonOrder), typeof(DonOrder));
+        CreateMap(typeof(RequestUpdateDonOrder), typeof(DonOrder));
     }
 }
