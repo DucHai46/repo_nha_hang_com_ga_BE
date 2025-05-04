@@ -50,11 +50,17 @@ public class ThucDonRepository : IThucDonRepository
                 filter &= Builders<ThucDon>.Filter.ElemMatch(x => x.combos, Builders<ComboMenu>.Filter.Eq(y => y.Id, request.comboId));
             }
 
+            if (request.trangThai.HasValue)
+            {
+                filter &= Builders<ThucDon>.Filter.Eq(x => x.trangThai, request.trangThai);
+            }
+
             var projection = Builders<ThucDon>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenThucDon)
                 .Include(x => x.loaiMonAns)
-                .Include(x => x.combos);
+                .Include(x => x.combos)
+                .Include(x => x.trangThai);
 
             var findOptions = new FindOptions<ThucDon, ThucDonRespond>
             {
