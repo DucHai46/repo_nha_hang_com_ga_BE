@@ -7,7 +7,6 @@ using repo_nha_hang_com_ga_BE.Repository;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/nha-hang")]
 public class NhaHangController : ControllerBase
@@ -31,18 +30,21 @@ public class NhaHangController : ControllerBase
         return Ok(await _repository.GetNhaHangById(id));
     }
 
+    [Authorize]
     [HttpPost("")]
     public async Task<IActionResult> CreateNhaHang(RequestAddNhaHang request)
     {
         return Ok(await _repository.CreateNhaHang(request));
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateNhaHang(string id, RequestUpdateNhaHang request)
     {
         return Ok(await _repository.UpdateNhaHang(id, request));
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteNhaHang(string id)
     {

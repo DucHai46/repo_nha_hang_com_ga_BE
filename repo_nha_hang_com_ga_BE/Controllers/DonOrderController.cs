@@ -5,7 +5,6 @@ using repo_nha_hang_com_ga_BE.Repository;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/don-order")]
 
@@ -42,6 +41,7 @@ public class DonOrderController : ControllerBase
         return Ok(await _repository.UpdateDonOrder(id, request));
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDonOrder(string id)
     {

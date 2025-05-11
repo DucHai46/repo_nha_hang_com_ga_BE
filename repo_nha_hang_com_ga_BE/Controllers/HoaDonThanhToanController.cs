@@ -7,7 +7,6 @@ using repo_nha_hang_com_ga_BE.Repository;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/hoa-don-thanh-toan")]
 public class HoaDonThanhToanController : ControllerBase
@@ -43,6 +42,7 @@ public class HoaDonThanhToanController : ControllerBase
         return Ok(await _repository.UpdateHoaDonThanhToan(id, request));
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteHoaDonThanhToan(string id)
     {
