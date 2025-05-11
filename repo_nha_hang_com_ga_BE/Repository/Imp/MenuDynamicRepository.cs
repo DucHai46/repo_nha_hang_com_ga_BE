@@ -113,7 +113,8 @@ public class MenuDynamicRepository : IMenuDynamicRepository
                         Name = menuDynamic.parent != null && parentDict.ContainsKey(menuDynamic.parent) ? parentDict[menuDynamic.parent] : null
                     },
                     position = menuDynamic.position,
-                    isActive = menuDynamic.isActive
+                    isActive = menuDynamic.isActive,
+                    isOpen = menuDynamic.isOpen
                 }).ToList();
 
                 var pagingDetail = new PagingDetail(currentPage, request.PageSize, totalRecords);
@@ -161,7 +162,8 @@ public class MenuDynamicRepository : IMenuDynamicRepository
                         Name = menuDynamic.parent != null && parentDict.ContainsKey(menuDynamic.parent) ? parentDict[menuDynamic.parent] : null
                     },
                     position = menuDynamic.position,
-                    isActive = menuDynamic.isActive
+                    isActive = menuDynamic.isActive,
+                    isOpen = menuDynamic.isOpen
                 }).ToList();
 
                 return new RespondAPIPaging<List<MenuDynamicRespond>>(
@@ -210,7 +212,8 @@ public class MenuDynamicRepository : IMenuDynamicRepository
                     Name = parent != null ? parent.label : null
                 },
                 position = menuDynamic.position,
-                isActive = menuDynamic.isActive
+                isActive = menuDynamic.isActive,
+                isOpen = menuDynamic.isOpen
             };
 
             return new RespondAPI<MenuDynamicRespond>(
@@ -256,7 +259,8 @@ public class MenuDynamicRepository : IMenuDynamicRepository
                     Name = parent != null ? parent.label : null
                 },
                 position = newMenuDynamic.position,
-                isActive = newMenuDynamic.isActive
+                isActive = newMenuDynamic.isActive,
+                isOpen = newMenuDynamic.isOpen
             };
             return new RespondAPI<MenuDynamicRespond>(
                 ResultRespond.Succeeded,
@@ -319,7 +323,8 @@ public class MenuDynamicRepository : IMenuDynamicRepository
                     Name = parent != null ? parent.label : null
                 },
                 position = menuDynamic.position,
-                isActive = menuDynamic.isActive
+                isActive = menuDynamic.isActive,
+                isOpen = menuDynamic.isOpen
             };
 
             return new RespondAPI<MenuDynamicRespond>(
