@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/loai-mon-an")]
 public class LoaiMonAnController : ControllerBase
@@ -31,18 +30,21 @@ public class LoaiMonAnController : ControllerBase
         return Ok(await _repository.GetLoaiMonAnById(id));
     }
 
+    [Authorize]
     [HttpPost("")]
     public async Task<IActionResult> CreateLoaiMonAn(RequestAddLoaiMonAn request)
     {
         return Ok(await _repository.CreateLoaiMonAn(request));
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateLoaiMonAn(string id, RequestUpdateLoaiMonAn request)
     {
         return Ok(await _repository.UpdateLoaiMonAn(id, request));
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteLoaiMonAn(string id)
     {

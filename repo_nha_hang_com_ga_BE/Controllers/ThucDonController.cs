@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/thuc-don")]
 public class ThucDonController : ControllerBase
@@ -31,18 +30,21 @@ public class ThucDonController : ControllerBase
         return Ok(await _repository.GetThucDonById(id));
     }
 
+    [Authorize]
     [HttpPost("")]
     public async Task<IActionResult> CreateThucDon(RequestAddThucDon request)
     {
         return Ok(await _repository.CreateThucDon(request));
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateThucDon(string id, RequestUpdateThucDon request)
     {
         return Ok(await _repository.UpdateThucDon(id, request));
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteThucDon(string id)
     {

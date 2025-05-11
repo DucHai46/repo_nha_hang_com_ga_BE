@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/combo")]
 public class ComboController : ControllerBase
@@ -31,18 +30,21 @@ public class ComboController : ControllerBase
         return Ok(await _repository.GetComboById(id));
     }
 
+    [Authorize]
     [HttpPost("")]
     public async Task<IActionResult> CreateCombo(RequestAddCombo request)
     {
         return Ok(await _repository.CreateCombo(request));
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCombo(string id, RequestUpdateCombo request)
     {
         return Ok(await _repository.UpdateCombo(id, request));
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCombo(string id)
     {

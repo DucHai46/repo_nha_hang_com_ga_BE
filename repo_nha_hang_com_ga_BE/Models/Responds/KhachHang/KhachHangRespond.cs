@@ -16,5 +16,6 @@ public class KhachHangRespond
     public string? diaChi { get; set; }
 
     public string? email { get; set; }
+    public string? soDienThoai { get; set; }
 
 }

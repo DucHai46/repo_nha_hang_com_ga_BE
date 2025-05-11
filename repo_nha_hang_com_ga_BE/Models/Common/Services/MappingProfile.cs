@@ -46,6 +46,17 @@ using repo_nha_hang_com_ga_BE.Models.Requests.DonOrder;
 using repo_nha_hang_com_ga_BE.Models.Responds.DonOrder;
 using repo_nha_hang_com_ga_BE.Models.Requests.LoaiDon;
 using repo_nha_hang_com_ga_BE.Models.Responds.LoaiDon;
+using repo_nha_hang_com_ga_BE.Models.Requests;
+using repo_nha_hang_com_ga_BE.Models.Responds.PhuongThucThanhToan;
+using repo_nha_hang_com_ga_BE.Models.Requests.NhaHang;
+using repo_nha_hang_com_ga_BE.Models.Responds.NhaHang;
+using repo_nha_hang_com_ga_BE.Models.Requests.ChucVu;
+using repo_nha_hang_com_ga_BE.Models.Responds.ChucVu;
+using repo_nha_hang_com_ga_BE.Models.Requests.NhanVien;
+using repo_nha_hang_com_ga_BE.Models.Responds.NhanVien;
+using repo_nha_hang_com_ga_BE.Models.Responds.PhuPhi;
+using repo_nha_hang_com_ga_BE.Models.Responds.HoaDonThanhToan;
+using repo_nha_hang_com_ga_BE.Models.Requests.HoaDonThanhToan;
 
 
 namespace repo_nha_hang_com_ga_BE.Models.Common.Services;
@@ -149,7 +160,7 @@ public class MappingProfile : Profile
         CreateMap(typeof(RequestUpdateKhachHang), typeof(KhachHang));
 
         //Menu Dynamic
-        CreateMap(typeof(MenuDynamic), typeof(MenuDynamicRespond));
+        // CreateMap(typeof(MenuDynamic), typeof(MenuDynamicRespond));
         CreateMap(typeof(RequestAddMenuDynamic), typeof(MenuDynamic));
         CreateMap(typeof(RequestUpdateMenuDynamic), typeof(MenuDynamic));
         // CreateMap(typeof(List<MenuDynamic>), typeof(List<MenuDynamicRespond>));
@@ -166,12 +177,47 @@ public class MappingProfile : Profile
 
         //Đơn Order
         // CreateMap(typeof(DonOrder), typeof(DonOrderRespond));
-        // CreateMap(typeof(RequestAddDonOrder), typeof(DonOrder));
-        // CreateMap(typeof(RequestUpdateDonOrder), typeof(DonOrder));
+        CreateMap<DonOrder, DonOrderRespond>()
+            .ForMember(dest => dest.ban, opt => opt.Ignore())
+           .ForMember(dest => dest.loaiDon, opt => opt.Ignore());
+        CreateMap(typeof(RequestAddDonOrder), typeof(DonOrder));
+        CreateMap(typeof(RequestUpdateDonOrder), typeof(DonOrder));
 
         //Loại đơn order
-        // CreateMap(typeof(LoaiDon), typeof(LoaiDonRespond));
-        // CreateMap(typeof(RequestAddLoaiDon), typeof(LoaiDon));
-        // CreateMap(typeof(RequestUpdateLoaiDon), typeof(LoaiDon));
+        CreateMap(typeof(LoaiDon), typeof(LoaiDonRespond));
+        CreateMap(typeof(RequestAddLoaiDon), typeof(LoaiDon));
+        CreateMap(typeof(RequestUpdateLoaiDon), typeof(LoaiDon));
+
+        //Phương thức thanh toán
+        CreateMap(typeof(PhuongThucThanhToan), typeof(PhuongThucThanhToanRespond));
+        CreateMap(typeof(RequestAddPhuongThucThanhToan), typeof(PhuongThucThanhToan));
+        CreateMap(typeof(RequestUpdatePhuongThucThanhToan), typeof(PhuongThucThanhToan));
+
+
+        //Nhà hàng
+        CreateMap(typeof(NhaHang), typeof(NhaHangRespond));
+        CreateMap(typeof(RequestAddNhaHang), typeof(NhaHang));
+        CreateMap(typeof(RequestUpdateNhaHang), typeof(NhaHang));
+
+        //Chức vụ
+        CreateMap(typeof(ChucVu), typeof(ChucVuRespond));
+        CreateMap(typeof(RequestAddChucVu), typeof(ChucVu));
+        CreateMap(typeof(RequestUpdateChucVu), typeof(ChucVu));
+
+        //Nhân viên
+        // CreateMap(typeof(NhanVien), typeof(NhanVienRespond))
+        //     .ForMember(dest => dest.chucVu, opt => opt.Ignore());
+        CreateMap(typeof(RequestAddNhanVien), typeof(NhanVien));
+        CreateMap(typeof(RequestUpdateNhanVien), typeof(NhanVien));
+
+        // Phụ Phí
+        CreateMap(typeof(PhuPhi), typeof(PhuPhiRespond));
+        CreateMap(typeof(RequestAddPhuPhi), typeof(PhuPhi));
+        CreateMap(typeof(RequestUpdatePhuPhi), typeof(PhuPhi));
+
+        // Hóa đơn thanh toán
+        // CreateMap(typeof(HoaDonThanhToan), typeof(HoaDonThanhToanRespond));
+        CreateMap(typeof(RequestAddHoaDonThanhToan), typeof(HoaDonThanhToan));
+        CreateMap(typeof(RequestUpdateHoaDonThanhToan), typeof(HoaDonThanhToan));
     }
 }
