@@ -8,7 +8,7 @@ public class RequestUpdateMenuDynamic
     public string? routeLink { get; set; }
     public string? icon { get; set; }
     public string? label { get; set; }
-    public bool? isOpen { get; set; } = false;
+    public bool? isOpen { get; set; }
     public string? parent { get; set; }
     public string? position { get; set; }
     public bool? isActive { get; set; }
