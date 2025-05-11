@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace file.service.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/files")]
 public class FilesController : ControllerBase
@@ -13,6 +12,7 @@ public class FilesController : ControllerBase
 
     public FilesController(IFileService fileService) => _fileService = fileService;
 
+    [Authorize]
     [HttpPost("upload")]
     public async Task<IActionResult> Upload(IFormFile file)
     {
@@ -27,6 +27,7 @@ public class FilesController : ControllerBase
         return File(fileBytes, contentType, fileName);
     }
 
+    [Authorize]
     [HttpDelete("delete/{fileId}")]
     public async Task<IActionResult> Delete(string fileId)
     {
