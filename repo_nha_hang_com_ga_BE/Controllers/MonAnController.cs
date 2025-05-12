@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/mon-an")]
 public class MonAnController : ControllerBase
@@ -31,18 +30,21 @@ public class MonAnController : ControllerBase
         return Ok(await _repository.GetMonAnById(id));
     }
 
+    [Authorize]
     [HttpPost("")]
     public async Task<IActionResult> CreateMonAn(RequestAddMonAn request)
     {
         return Ok(await _repository.CreateMonAn(request));
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateMonAn(string id, RequestUpdateMonAn request)
     {
         return Ok(await _repository.UpdateMonAn(id, request));
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteMonAn(string id)
     {
