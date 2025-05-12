@@ -57,6 +57,8 @@ using repo_nha_hang_com_ga_BE.Models.Responds.NhanVien;
 using repo_nha_hang_com_ga_BE.Models.Responds.PhuPhi;
 using repo_nha_hang_com_ga_BE.Models.Responds.HoaDonThanhToan;
 using repo_nha_hang_com_ga_BE.Models.Requests.HoaDonThanhToan;
+using repo_nha_hang_com_ga_BE.Models.Responds.BangGia;
+using repo_nha_hang_com_ga_BE.Models.Requests.BangGia;
 
 
 namespace repo_nha_hang_com_ga_BE.Models.Common.Services;
@@ -219,5 +221,10 @@ public class MappingProfile : Profile
         // CreateMap(typeof(HoaDonThanhToan), typeof(HoaDonThanhToanRespond));
         CreateMap(typeof(RequestAddHoaDonThanhToan), typeof(HoaDonThanhToan));
         CreateMap(typeof(RequestUpdateHoaDonThanhToan), typeof(HoaDonThanhToan));
+        // Bảng giá
+        // CreateMap(typeof(BangGia), typeof(BangGiaRespond));
+        CreateMap(typeof(RequestAddBangGia), typeof(BangGia));
+        CreateMap(typeof(RequestUpdateBangGia), typeof(BangGia));
+
     }
 }
