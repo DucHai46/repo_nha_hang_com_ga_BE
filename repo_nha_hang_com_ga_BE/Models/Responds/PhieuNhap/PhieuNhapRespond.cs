@@ -26,6 +26,7 @@ public class PhieuNhapRespond
 
 public class nguyenLieuMenuRespond
 {
+    public string? id { get; set; }
     public string? tenNguyenLieu { get; set; }
     public string? moTa { get; set; }
 

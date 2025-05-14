@@ -161,6 +161,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     },
                     nguyenLieus = x.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                     {
+                        id = y.id,
                         tenNguyenLieu = y.tenNguyenLieu,
                         moTa = y.moTa,
                         soLuong = y.soLuong,
@@ -278,6 +279,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     },
                     nguyenLieus = x.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                     {
+                        id = y.id,
                         tenNguyenLieu = y.tenNguyenLieu,
                         moTa = y.moTa,
                         soLuong = y.soLuong,
@@ -357,6 +359,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 },
                 nguyenLieus = phieuNhap.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                 {
+                    id = y.id,
                     tenNguyenLieu = y.tenNguyenLieu,
                     moTa = y.moTa,
                     soLuong = y.soLuong,
@@ -403,10 +406,6 @@ public class PhieuNhapRepository : IPhieuNhapRepository
     {
         try
         {
-            PhieuNhap newPhieuNhap = _mapper.Map<PhieuNhap>(request);
-            newPhieuNhap.createdDate = DateTimeOffset.UtcNow;
-            newPhieuNhap.updatedDate = DateTimeOffset.UtcNow;
-            newPhieuNhap.isDelete = false;
 
             // 1. Mapping từ request → entity và set mặc định
             var nguyenLieuEntities = request.nguyenLieus.Select(nl =>
@@ -428,6 +427,43 @@ public class PhieuNhapRepository : IPhieuNhapRepository
 
             // 2. Insert tất cả vào MongoDB
             await _collectionNguyenLieu.InsertManyAsync(nguyenLieuEntities);
+
+            var nguyenLieuIds = nguyenLieuEntities.Select(x => x.Id).ToList();
+
+            var phieuNhap = new PhieuNhap();
+            phieuNhap.tenPhieu = request.tenPhieu;
+            phieuNhap.tenNguoiGiao = request.tenNguoiGiao;
+            phieuNhap.nhaCungCap = request.nhaCungCap;
+            phieuNhap.dienGiai = request.dienGiai;
+            phieuNhap.diaDiem = request.diaDiem;
+            phieuNhap.tongTien = request.tongTien;
+            phieuNhap.nguyenLieus = nguyenLieuEntities.Select(x => new nguyenLieuMenu
+            {
+                id = x.Id,
+                tenNguyenLieu = x.tenNguyenLieu,
+                hanSuDung = request.nguyenLieus.Where(y => y.tenNguyenLieu == x.tenNguyenLieu).FirstOrDefault()?.hanSuDung,
+                moTa = x.moTa,
+                soLuong = x.soLuong,
+                loaiNguyenLieu = x.loaiNguyenLieu,
+                donViTinh = x.donViTinh,
+                tuDo = x.tuDo,
+                trangThai = x.trangThai,
+                thanhTien = request.nguyenLieus.Where(y => y.tenNguyenLieu == x.tenNguyenLieu).FirstOrDefault()?.thanhTien,
+                donGia = request.nguyenLieus.Where(y => y.tenNguyenLieu == x.tenNguyenLieu).FirstOrDefault()?.donGia
+            }).ToList();
+            phieuNhap.nhanVien = request.nhanVien;
+            phieuNhap.ghiChu = request.ghiChu;
+            phieuNhap.createdDate = DateTimeOffset.UtcNow;
+            phieuNhap.updatedDate = DateTimeOffset.UtcNow;
+            phieuNhap.isDelete = false;
+
+
+            PhieuNhap newPhieuNhap = _mapper.Map<PhieuNhap>(phieuNhap);
+            newPhieuNhap.createdDate = DateTimeOffset.UtcNow;
+            newPhieuNhap.updatedDate = DateTimeOffset.UtcNow;
+            newPhieuNhap.isDelete = false;
+
+
 
 
             await _collection.InsertOneAsync(newPhieuNhap);
@@ -499,6 +535,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 },
                 nguyenLieus = newPhieuNhap.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                 {
+                    id = y.id,
                     tenNguyenLieu = y.tenNguyenLieu,
                     moTa = y.moTa,
                     soLuong = y.soLuong,

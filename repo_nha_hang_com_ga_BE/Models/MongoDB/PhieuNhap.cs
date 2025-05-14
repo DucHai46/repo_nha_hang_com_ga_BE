@@ -22,6 +22,7 @@ public class PhieuNhap : BaseMongoDb
 
 public class nguyenLieuMenu : RequestAddNguyenLieu
 {
+    public string? id { get; set; }
     public int? donGia { get; set; }
     public int? thanhTien { get; set; }
 }
