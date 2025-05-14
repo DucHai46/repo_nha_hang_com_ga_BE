@@ -1,5 +1,6 @@
 using repo_nha_hang_com_ga_BE.Models.Common;
 using repo_nha_hang_com_ga_BE.Models.Common.Models;
+using repo_nha_hang_com_ga_BE.Models.Requests.NguyenLieu;
 
 namespace repo_nha_hang_com_ga_BE.Models.MongoDB;
 public class PhieuNhap : BaseMongoDb
@@ -15,13 +16,12 @@ public class PhieuNhap : BaseMongoDb
     public int? tongTien { get; set; }
     public string? ghiChu { get; set; }
     public string? nhanVien { get; set; }
-    public List<nguyenLieuMenu>? nguyenLieus { get; set; }   
+    public List<nguyenLieuMenu>? nguyenLieus { get; set; }
 }
 
 
-public class nguyenLieuMenu
+public class nguyenLieuMenu : RequestAddNguyenLieu
 {
-    public string? id { get; set; }
     public int? donGia { get; set; }
     public int? thanhTien { get; set; }
 }

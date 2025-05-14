@@ -35,7 +35,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
         _collectionTuDo = database.GetCollection<TuDo>("TuDo");
         _collectionNhaCungCap = database.GetCollection<NhaCungCap>("NhaCungCap");
         _collectionNhanVien = database.GetCollection<NhanVien>("NhanVien");
-        
+
         _mapper = mapper;
     }
 
@@ -88,32 +88,13 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 var nhaCungCapDict = new Dictionary<string, string>();
                 var nhanVienDict = new Dictionary<string, string>();
                 var loaiNguyenLieuDict = new Dictionary<string, string>();
-                var nguyenLieuDict = new Dictionary<string, string>();
                 var donViTinhDict = new Dictionary<string, string>();
                 var tuDoDict = new Dictionary<string, string>();
 
 
-                var nguyenLieuIds=PhieuNhaps.SelectMany(x => x.nguyenLieus.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var nguyenLieuFilter=Builders<NguyenLieu>.Filter.In(x => x.Id, nguyenLieuIds);
-                var nguyenLieuProjection=Builders<NguyenLieu>.Projection
-                    .Include(x => x.Id)
-                    .Include(x => x.tenNguyenLieu)
-                    .Include(x => x.moTa)
-                    .Include(x => x.soLuong)
-                    .Include(x => x.hanSuDung)
-                    .Include(x => x.loaiNguyenLieu)
-                    .Include(x => x.donViTinh)
-                    .Include(x => x.tuDo)
-                    .Include(x => x.trangThai);
-
-                var nguyenLieus=await _collectionNguyenLieu.Find(nguyenLieuFilter)
-                    .Project<NguyenLieu>(nguyenLieuProjection)
-                    .ToListAsync();
-                nguyenLieuDict=nguyenLieus.ToDictionary(x => x.Id, x => x.tenNguyenLieu);
-                
-                var tuDoIds = nguyenLieus.Select(x => x.tuDo).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var loaiNguyenLieuIds = nguyenLieus.Select(x => x.loaiNguyenLieu).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var donViTinhIds = nguyenLieus.Select(x => x.donViTinh).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                var tuDoIds = PhieuNhaps.SelectMany(x => x.nguyenLieus.Select(y => y.tuDo)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                var loaiNguyenLieuIds = PhieuNhaps.SelectMany(x => x.nguyenLieus.Select(y => y.loaiNguyenLieu)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                var donViTinhIds = PhieuNhaps.SelectMany(x => x.nguyenLieus.Select(y => y.donViTinh)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                 var nhaCungCapIds = PhieuNhaps.Select(x => x.nhaCungCap).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                 var nhanVienIds = PhieuNhaps.Select(x => x.nhanVien).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                 var loaiNguyenLieuFilter = Builders<LoaiNguyenLieu>.Filter.In(x => x.Id, loaiNguyenLieuIds);
@@ -158,9 +139,10 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     .Project<NhanVien>(nhanVienProjection)
                     .ToListAsync();
                 nhanVienDict = nhanViens.ToDictionary(x => x.Id, x => x.tenNhanVien);
-                
+
                 var phieuNhapResponds = PhieuNhaps.Select(x => new PhieuNhapRespond
                 {
+                    id = x.Id,
                     tenPhieu = x.tenPhieu,
                     tenNguoiGiao = x.tenNguoiGiao,
                     nhaCungCap = new IdName
@@ -179,29 +161,28 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     },
                     nguyenLieus = x.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                     {
-                        Id = y.id,
-                        Name = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieuDict[y.id] : null,
-                        moTa = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.moTa : null,
-                        soLuong = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.soLuong : null,
+                        tenNguyenLieu = y.tenNguyenLieu,
+                        moTa = y.moTa,
+                        soLuong = y.soLuong,
+                        hanSuDung = y.hanSuDung,
                         donGia = y.donGia != null ? y.donGia : null,
-                        hanSuDung= nguyenLieuDict.ContainsKey(y.id) ? nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.hanSuDung : null,
                         thanhTien = y.thanhTien != null ? y.thanhTien : null,
                         loaiNguyenLieu = new IdName
                         {
-                            Id =  nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.loaiNguyenLieu ?? "",
-                            Name = loaiNguyenLieuDict.ContainsKey(nguyenLieus.FirstOrDefault(m => m.Id == y.id).loaiNguyenLieu) ? loaiNguyenLieuDict[nguyenLieus.FirstOrDefault(m => m.Id == y.id).loaiNguyenLieu] : null
+                            Id = y.loaiNguyenLieu,
+                            Name = loaiNguyenLieuDict.ContainsKey(y.loaiNguyenLieu) ? loaiNguyenLieuDict[y.loaiNguyenLieu] : null
                         },
                         donViTinh = new IdName
                         {
-                            Id = nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.donViTinh ?? "",
-                            Name = donViTinhDict.GetValueOrDefault(nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.donViTinh ?? "")
+                            Id = y.donViTinh,
+                            Name = donViTinhDict.GetValueOrDefault(y.donViTinh)
                         },
                         tuDo = new IdName
                         {
-                            Id = nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.tuDo ?? "",
-                            Name = tuDoDict.GetValueOrDefault(nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.tuDo ?? "")
+                            Id = y.tuDo,
+                            Name = tuDoDict.GetValueOrDefault(y.tuDo)
                         },
-                        trangThai = nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.trangThai
+                        trangThai = y.trangThai
                     }).ToList()
                 }).ToList();
 
@@ -224,31 +205,13 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 var nhaCungCapDict = new Dictionary<string, string>();
                 var nhanVienDict = new Dictionary<string, string>();
                 var loaiNguyenLieuDict = new Dictionary<string, string>();
-                var nguyenLieuDict = new Dictionary<string, string>();
                 var donViTinhDict = new Dictionary<string, string>();
                 var tuDoDict = new Dictionary<string, string>();
 
 
-                var nguyenLieuIds=PhieuNhaps.SelectMany(x => x.nguyenLieus.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var nguyenLieuFilter=Builders<NguyenLieu>.Filter.In(x => x.Id, nguyenLieuIds);
-                var nguyenLieuProjection=Builders<NguyenLieu>.Projection
-                    .Include(x => x.Id)
-                    .Include(x => x.tenNguyenLieu)
-                    .Include(x => x.moTa)
-                    .Include(x => x.soLuong)
-                    .Include(x => x.loaiNguyenLieu)
-                    .Include(x => x.donViTinh)
-                    .Include(x => x.tuDo)
-                    .Include(x => x.trangThai);
-
-                var nguyenLieus=await _collectionNguyenLieu.Find(nguyenLieuFilter)
-                    .Project<NguyenLieu>(nguyenLieuProjection)
-                    .ToListAsync();
-                nguyenLieuDict=nguyenLieus.ToDictionary(x => x.Id, x => x.tenNguyenLieu);
-                
-                var tuDoIds = nguyenLieus.Select(x => x.tuDo).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var loaiNguyenLieuIds = nguyenLieus.Select(x => x.loaiNguyenLieu).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var donViTinhIds = nguyenLieus.Select(x => x.donViTinh).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                var tuDoIds = PhieuNhaps.SelectMany(x => x.nguyenLieus.Select(y => y.tuDo)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                var loaiNguyenLieuIds = PhieuNhaps.SelectMany(x => x.nguyenLieus.Select(y => y.loaiNguyenLieu)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                var donViTinhIds = PhieuNhaps.SelectMany(x => x.nguyenLieus.Select(y => y.donViTinh)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                 var nhaCungCapIds = PhieuNhaps.Select(x => x.nhaCungCap).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                 var nhanVienIds = PhieuNhaps.Select(x => x.nhanVien).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                 var loaiNguyenLieuFilter = Builders<LoaiNguyenLieu>.Filter.In(x => x.Id, loaiNguyenLieuIds);
@@ -293,9 +256,10 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     .Project<NhanVien>(nhanVienProjection)
                     .ToListAsync();
                 nhanVienDict = nhanViens.ToDictionary(x => x.Id, x => x.tenNhanVien);
-                
+
                 var phieuNhapResponds = PhieuNhaps.Select(x => new PhieuNhapRespond
                 {
+                    id = x.Id,
                     tenPhieu = x.tenPhieu,
                     tenNguoiGiao = x.tenNguoiGiao,
                     nhaCungCap = new IdName
@@ -314,29 +278,28 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     },
                     nguyenLieus = x.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                     {
-                        Id = y.id,
-                        Name = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieuDict[y.id] : null,
-                        moTa = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.moTa : null,
-                        soLuong = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.soLuong : null,
-                        hanSuDung = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.hanSuDung : null,
+                        tenNguyenLieu = y.tenNguyenLieu,
+                        moTa = y.moTa,
+                        soLuong = y.soLuong,
+                        hanSuDung = y.hanSuDung,
                         donGia = y.donGia != null ? y.donGia : null,
                         thanhTien = y.thanhTien != null ? y.thanhTien : null,
                         loaiNguyenLieu = new IdName
                         {
-                            Id =  nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.loaiNguyenLieu ?? "",
-                            Name = loaiNguyenLieuDict.ContainsKey(nguyenLieus.FirstOrDefault(m => m.Id == y.id).loaiNguyenLieu) ? loaiNguyenLieuDict[nguyenLieus.FirstOrDefault(m => m.Id == y.id).loaiNguyenLieu] : null
+                            Id = y.loaiNguyenLieu,
+                            Name = loaiNguyenLieuDict.ContainsKey(y.loaiNguyenLieu) ? loaiNguyenLieuDict[y.loaiNguyenLieu] : null
                         },
                         donViTinh = new IdName
                         {
-                            Id = nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.donViTinh ?? "",
-                            Name = donViTinhDict.GetValueOrDefault(nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.donViTinh ?? "")
+                            Id = y.donViTinh,
+                            Name = donViTinhDict.GetValueOrDefault(y.donViTinh)
                         },
                         tuDo = new IdName
                         {
-                            Id = nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.tuDo ?? "",
-                            Name = tuDoDict.GetValueOrDefault(nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.tuDo ?? "")
+                            Id = y.tuDo,
+                            Name = tuDoDict.GetValueOrDefault(y.tuDo)
                         },
-                        trangThai = nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.trangThai
+                        trangThai = y.trangThai
                     }).ToList()
                 }).ToList();
 
@@ -361,7 +324,8 @@ public class PhieuNhapRepository : IPhieuNhapRepository
 
     public async Task<RespondAPI<PhieuNhapRespond>> GetPhieuNhapById(string id)
     {
-        try{
+        try
+        {
 
             var phieuNhap = await _collection.Find(x => x.Id == id && x.isDelete == false).FirstOrDefaultAsync();
             if (phieuNhap == null)
@@ -371,124 +335,62 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     "Không tìm thấy phieu nhập với ID đã cung cấp."
                 );
             }
-                var nhaCungCapDict = new Dictionary<string, string>();
-                var nhanVienDict = new Dictionary<string, string>();
-                var loaiNguyenLieuDict = new Dictionary<string, string>();
-                var nguyenLieuDict = new Dictionary<string, string>();
-                var donViTinhDict = new Dictionary<string, string>();
-                var tuDoDict = new Dictionary<string, string>();
 
-
-                var nguyenLieuIds=phieuNhap.nguyenLieus.Select(x => x.id).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var nguyenLieuFilter=Builders<NguyenLieu>.Filter.In(x => x.Id, nguyenLieuIds);
-                var nguyenLieuProjection=Builders<NguyenLieu>.Projection
-                    .Include(x => x.Id)
-                    .Include(x => x.tenNguyenLieu)
-                    .Include(x => x.moTa)
-                    .Include(x => x.soLuong)
-                    .Include(x => x.loaiNguyenLieu)
-                    .Include(x => x.donViTinh)
-                    .Include(x => x.tuDo)
-                    .Include(x => x.trangThai);
-
-                var nguyenLieus=await _collectionNguyenLieu.Find(nguyenLieuFilter)
-                    .Project<NguyenLieu>(nguyenLieuProjection)
-                    .ToListAsync();
-                nguyenLieuDict=nguyenLieus.ToDictionary(x => x.Id, x => x.tenNguyenLieu);
-                
-                var tuDoIds = nguyenLieus.Select(x => x.tuDo).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var loaiNguyenLieuIds = nguyenLieus.Select(x => x.loaiNguyenLieu).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var donViTinhIds = nguyenLieus.Select(x => x.donViTinh).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var nhaCungCapIds = phieuNhap.nhaCungCap;
-                var nhanVienIds = phieuNhap.nhanVien;
-                var loaiNguyenLieuFilter = Builders<LoaiNguyenLieu>.Filter.In(x => x.Id, loaiNguyenLieuIds);
-                var donViTinhFilter = Builders<DonViTinh>.Filter.In(x => x.Id, donViTinhIds);
-                var tuDoFilter = Builders<TuDo>.Filter.In(x => x.Id, tuDoIds);
-                var loaiNguyenLieuProjection = Builders<LoaiNguyenLieu>.Projection
-                    .Include(x => x.Id)
-                    .Include(x => x.tenLoai);
-                var donViTinhProjection = Builders<DonViTinh>.Projection
-                    .Include(x => x.Id)
-                    .Include(x => x.tenDonViTinh);
-                var tuDoProjection = Builders<TuDo>.Projection
-                    .Include(x => x.Id)
-                    .Include(x => x.tenTuDo);
-                var nhaCungCapProjection = Builders<NhaCungCap>.Projection
-                    .Include(x => x.Id)
-                    .Include(x => x.tenNhaCungCap);
-                var nhanVienProjection = Builders<NhanVien>.Projection
-                    .Include(x => x.Id)
-                    .Include(x => x.tenNhanVien);
-
-                var loaiNguyenLieus = await _collectionLoaiNguyenLieu.Find(loaiNguyenLieuFilter)
-                    .Project<LoaiNguyenLieu>(loaiNguyenLieuProjection)
-                    .ToListAsync();
-                loaiNguyenLieuDict = loaiNguyenLieus.ToDictionary(x => x.Id, x => x.tenLoai);
-
-                var donViTinhs = await _collectionDonViTinh.Find(donViTinhFilter)
-                    .Project<DonViTinh>(donViTinhProjection)
-                    .ToListAsync();
-                donViTinhDict = donViTinhs.ToDictionary(x => x.Id, x => x.tenDonViTinh);
-                var tuDos = await _collectionTuDo.Find(tuDoFilter)
-                    .Project<TuDo>(tuDoProjection)
-                    .ToListAsync();
-                tuDoDict = tuDos.ToDictionary(x => x.Id, x => x.tenTuDo);
-                
-                
-                var phieuNhapResponds = new PhieuNhapRespond
+            var phieuNhapResponds = new PhieuNhapRespond
+            {
+                id = phieuNhap.Id,
+                tenPhieu = phieuNhap.tenPhieu,
+                tenNguoiGiao = phieuNhap.tenNguoiGiao,
+                nhaCungCap = new IdName
                 {
-                    tenPhieu = phieuNhap.tenPhieu,
-                    tenNguoiGiao = phieuNhap.tenNguoiGiao,
-                    nhaCungCap = new IdName
+                    Id = phieuNhap.nhaCungCap,
+                    Name = _collectionNhaCungCap.Find(x => x.Id == phieuNhap.nhaCungCap).FirstOrDefault()?.tenNhaCungCap,
+                },
+                dienGiai = phieuNhap.dienGiai,
+                diaDiem = phieuNhap.diaDiem,
+                tongTien = phieuNhap.tongTien,
+                ghiChu = phieuNhap.ghiChu,
+                nhanVien = new IdName
+                {
+                    Id = phieuNhap.nhanVien,
+                    Name = _collectionNhanVien.Find(x => x.Id == phieuNhap.nhanVien).FirstOrDefault()?.tenNhanVien,
+                },
+                nguyenLieus = phieuNhap.nguyenLieus.Select(y => new nguyenLieuMenuRespond
+                {
+                    tenNguyenLieu = y.tenNguyenLieu,
+                    moTa = y.moTa,
+                    soLuong = y.soLuong,
+                    hanSuDung = y.hanSuDung,
+                    donGia = y.donGia != null ? y.donGia : null,
+                    thanhTien = y.thanhTien != null ? y.thanhTien : null,
+                    loaiNguyenLieu = new IdName
                     {
-                        Id = phieuNhap.nhaCungCap,
-                        Name = _collectionNhaCungCap.Find(x => x.Id == phieuNhap.nhaCungCap).FirstOrDefault()?.tenNhaCungCap,
+                        Id = y.loaiNguyenLieu,
+                        Name = _collectionLoaiNguyenLieu.Find(x => x.Id == y.loaiNguyenLieu).FirstOrDefault()?.tenLoai
                     },
-                    dienGiai = phieuNhap.dienGiai,
-                    diaDiem = phieuNhap.diaDiem,
-                    tongTien = phieuNhap.tongTien,
-                    ghiChu = phieuNhap.ghiChu,
-                    nhanVien = new IdName
+                    donViTinh = new IdName
                     {
-                        Id = phieuNhap.nhanVien,
-                        Name = _collectionNhanVien.Find(x => x.Id == phieuNhap.nhanVien).FirstOrDefault()?.tenNhanVien,
+                        Id = y.donViTinh,
+                        Name = _collectionDonViTinh.Find(x => x.Id == y.donViTinh).FirstOrDefault()?.tenDonViTinh
                     },
-                    nguyenLieus = phieuNhap.nguyenLieus.Select(y => new nguyenLieuMenuRespond
+                    tuDo = new IdName
                     {
-                        Id = y.id,
-                        Name = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieuDict[y.id] : null,
-                        moTa = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.moTa : null,
-                        soLuong = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.soLuong : null,
-                        hanSuDung = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.hanSuDung : null,
-                        donGia = y.donGia != null ? y.donGia : null,
-                        thanhTien = y.thanhTien != null ? y.thanhTien : null,
-                        loaiNguyenLieu = new IdName
-                        {
-                            Id =  nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.loaiNguyenLieu ?? "",
-                            Name = loaiNguyenLieuDict.ContainsKey(nguyenLieus.FirstOrDefault(m => m.Id == y.id).loaiNguyenLieu) ? loaiNguyenLieuDict[nguyenLieus.FirstOrDefault(m => m.Id == y.id).loaiNguyenLieu] : null
-                        },
-                        donViTinh = new IdName
-                        {
-                            Id = nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.donViTinh ?? "",
-                            Name = donViTinhDict.GetValueOrDefault(nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.donViTinh ?? "")
-                        },
-                        tuDo = new IdName
-                        {
-                            Id = nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.tuDo ?? "",
-                            Name = tuDoDict.GetValueOrDefault(nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.tuDo ?? "")
-                        },
-                        trangThai = nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.trangThai
-                    }).ToList()
-                };
+                        Id = y.tuDo,
+                        Name = _collectionTuDo.Find(x => x.Id == y.tuDo).FirstOrDefault()?.tenTuDo
+                    },
+                    trangThai = y.trangThai
+                }).ToList()
+            };
 
-                return new RespondAPI<PhieuNhapRespond>(
-                ResultRespond.Succeeded,
-                "Lấy phiếu nhập thành công.",
-                phieuNhapResponds  
-            );
-            
+            return new RespondAPI<PhieuNhapRespond>(
+            ResultRespond.Succeeded,
+            "Lấy phiếu nhập thành công.",
+            phieuNhapResponds
+        );
 
-        }catch(Exception ex)
+
+        }
+        catch (Exception ex)
         {
             return new RespondAPI<PhieuNhapRespond>(
                 ResultRespond.Error,
@@ -506,117 +408,121 @@ public class PhieuNhapRepository : IPhieuNhapRepository
             newPhieuNhap.updatedDate = DateTimeOffset.UtcNow;
             newPhieuNhap.isDelete = false;
 
+            // 1. Mapping từ request → entity và set mặc định
+            var nguyenLieuEntities = request.nguyenLieus.Select(nl =>
+            {
+                var entity = new NguyenLieu();
+                entity.tenNguyenLieu = nl.tenNguyenLieu;
+                entity.moTa = nl.moTa;
+                entity.hanSuDung = nl.hanSuDung;
+                entity.soLuong = nl.soLuong;
+                entity.loaiNguyenLieu = nl.loaiNguyenLieu;
+                entity.donViTinh = nl.donViTinh;
+                entity.tuDo = nl.tuDo;
+                entity.trangThai = nl.trangThai;
+                entity.createdDate = DateTimeOffset.UtcNow;
+                entity.updatedDate = DateTimeOffset.UtcNow;
+                entity.isDelete = false;
+                return entity;
+            }).ToList();
+
+            // 2. Insert tất cả vào MongoDB
+            await _collectionNguyenLieu.InsertManyAsync(nguyenLieuEntities);
+
 
             await _collection.InsertOneAsync(newPhieuNhap);
 
             var nhaCungCapDict = new Dictionary<string, string>();
-                var nhanVienDict = new Dictionary<string, string>();
-                var loaiNguyenLieuDict = new Dictionary<string, string>();
-                var nguyenLieuDict = new Dictionary<string, string>();
-                var donViTinhDict = new Dictionary<string, string>();
-                var tuDoDict = new Dictionary<string, string>();
+            var nhanVienDict = new Dictionary<string, string>();
+            var loaiNguyenLieuDict = new Dictionary<string, string>();
+            var nguyenLieuDict = new Dictionary<string, string>();
+            var donViTinhDict = new Dictionary<string, string>();
+            var tuDoDict = new Dictionary<string, string>();
 
 
-                var nguyenLieuIds=newPhieuNhap.nguyenLieus.Select(x => x.id).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var nguyenLieuFilter=Builders<NguyenLieu>.Filter.In(x => x.Id, nguyenLieuIds);
-                var nguyenLieuProjection=Builders<NguyenLieu>.Projection
-                    .Include(x => x.Id)
-                    .Include(x => x.tenNguyenLieu)
-                    .Include(x => x.moTa)
-                    .Include(x => x.soLuong)
-                    .Include(x => x.loaiNguyenLieu)
-                    .Include(x => x.donViTinh)
-                    .Include(x => x.tuDo)
-                    .Include(x => x.trangThai);
+            var tuDoIds = nguyenLieuEntities.Select(x => x.tuDo).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+            var loaiNguyenLieuIds = nguyenLieuEntities.Select(x => x.loaiNguyenLieu).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+            var donViTinhIds = nguyenLieuEntities.Select(x => x.donViTinh).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+            var nhaCungCapIds = newPhieuNhap.nhaCungCap;
+            var nhanVienIds = newPhieuNhap.nhanVien;
+            var loaiNguyenLieuFilter = Builders<LoaiNguyenLieu>.Filter.In(x => x.Id, loaiNguyenLieuIds);
+            var donViTinhFilter = Builders<DonViTinh>.Filter.In(x => x.Id, donViTinhIds);
+            var tuDoFilter = Builders<TuDo>.Filter.In(x => x.Id, tuDoIds);
+            var loaiNguyenLieuProjection = Builders<LoaiNguyenLieu>.Projection
+                .Include(x => x.Id)
+                .Include(x => x.tenLoai);
+            var donViTinhProjection = Builders<DonViTinh>.Projection
+                .Include(x => x.Id)
+                .Include(x => x.tenDonViTinh);
+            var tuDoProjection = Builders<TuDo>.Projection
+                .Include(x => x.Id)
+                .Include(x => x.tenTuDo);
+            var nhaCungCapProjection = Builders<NhaCungCap>.Projection
+                .Include(x => x.Id)
+                .Include(x => x.tenNhaCungCap);
+            var nhanVienProjection = Builders<NhanVien>.Projection
+                .Include(x => x.Id)
+                .Include(x => x.tenNhanVien);
 
-                var nguyenLieus=await _collectionNguyenLieu.Find(nguyenLieuFilter)
-                    .Project<NguyenLieu>(nguyenLieuProjection)
-                    .ToListAsync();                 
-                nguyenLieuDict=nguyenLieus.ToDictionary(x => x.Id, x => x.tenNguyenLieu);
-                
-                var tuDoIds = nguyenLieus.Select(x => x.tuDo).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var loaiNguyenLieuIds = nguyenLieus.Select(x => x.loaiNguyenLieu).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var donViTinhIds = nguyenLieus.Select(x => x.donViTinh).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var nhaCungCapIds = newPhieuNhap.nhaCungCap;
-                var nhanVienIds = newPhieuNhap.nhanVien;
-                var loaiNguyenLieuFilter = Builders<LoaiNguyenLieu>.Filter.In(x => x.Id, loaiNguyenLieuIds);
-                var donViTinhFilter = Builders<DonViTinh>.Filter.In(x => x.Id, donViTinhIds);
-                var tuDoFilter = Builders<TuDo>.Filter.In(x => x.Id, tuDoIds);
-                var loaiNguyenLieuProjection = Builders<LoaiNguyenLieu>.Projection
-                    .Include(x => x.Id)
-                    .Include(x => x.tenLoai);
-                var donViTinhProjection = Builders<DonViTinh>.Projection
-                    .Include(x => x.Id)
-                    .Include(x => x.tenDonViTinh);
-                var tuDoProjection = Builders<TuDo>.Projection
-                    .Include(x => x.Id)
-                    .Include(x => x.tenTuDo);
-                var nhaCungCapProjection = Builders<NhaCungCap>.Projection
-                    .Include(x => x.Id)
-                    .Include(x => x.tenNhaCungCap);
-                var nhanVienProjection = Builders<NhanVien>.Projection
-                    .Include(x => x.Id)
-                    .Include(x => x.tenNhanVien);
+            var loaiNguyenLieus = await _collectionLoaiNguyenLieu.Find(loaiNguyenLieuFilter)
+                .Project<LoaiNguyenLieu>(loaiNguyenLieuProjection)
+                .ToListAsync();
+            loaiNguyenLieuDict = loaiNguyenLieus.ToDictionary(x => x.Id, x => x.tenLoai);
 
-                var loaiNguyenLieus = await _collectionLoaiNguyenLieu.Find(loaiNguyenLieuFilter)
-                    .Project<LoaiNguyenLieu>(loaiNguyenLieuProjection)
-                    .ToListAsync();
-                loaiNguyenLieuDict = loaiNguyenLieus.ToDictionary(x => x.Id, x => x.tenLoai);
+            var donViTinhs = await _collectionDonViTinh.Find(donViTinhFilter)
+                .Project<DonViTinh>(donViTinhProjection)
+                .ToListAsync();
+            donViTinhDict = donViTinhs.ToDictionary(x => x.Id, x => x.tenDonViTinh);
+            var tuDos = await _collectionTuDo.Find(tuDoFilter)
+                .Project<TuDo>(tuDoProjection)
+                .ToListAsync();
+            tuDoDict = tuDos.ToDictionary(x => x.Id, x => x.tenTuDo);
 
-                var donViTinhs = await _collectionDonViTinh.Find(donViTinhFilter)
-                    .Project<DonViTinh>(donViTinhProjection)
-                    .ToListAsync();
-                donViTinhDict = donViTinhs.ToDictionary(x => x.Id, x => x.tenDonViTinh);
-                var tuDos = await _collectionTuDo.Find(tuDoFilter)
-                    .Project<TuDo>(tuDoProjection)
-                    .ToListAsync();
-                tuDoDict = tuDos.ToDictionary(x => x.Id, x => x.tenTuDo);
-                
-                var phieuNhapResponds = new PhieuNhapRespond
+            var phieuNhapResponds = new PhieuNhapRespond
+            {
+                id = newPhieuNhap.Id,
+                tenPhieu = newPhieuNhap.tenPhieu,
+                tenNguoiGiao = newPhieuNhap.tenNguoiGiao,
+                nhaCungCap = new IdName
                 {
-                    tenPhieu = newPhieuNhap.tenPhieu,
-                    tenNguoiGiao = newPhieuNhap.tenNguoiGiao,
-                    nhaCungCap = new IdName
+                    Id = newPhieuNhap.nhaCungCap,
+                    Name = _collectionNhaCungCap.Find(x => x.Id == newPhieuNhap.nhaCungCap).FirstOrDefault()?.tenNhaCungCap,
+                },
+                dienGiai = newPhieuNhap.dienGiai,
+                diaDiem = newPhieuNhap.diaDiem,
+                tongTien = newPhieuNhap.tongTien,
+                ghiChu = newPhieuNhap.ghiChu,
+                nhanVien = new IdName
+                {
+                    Id = newPhieuNhap.nhanVien,
+                    Name = _collectionNhanVien.Find(x => x.Id == newPhieuNhap.nhanVien).FirstOrDefault()?.tenNhanVien,
+                },
+                nguyenLieus = newPhieuNhap.nguyenLieus.Select(y => new nguyenLieuMenuRespond
+                {
+                    tenNguyenLieu = y.tenNguyenLieu,
+                    moTa = y.moTa,
+                    soLuong = y.soLuong,
+                    hanSuDung = y.hanSuDung,
+                    donGia = y.donGia != null ? y.donGia : null,
+                    thanhTien = y.thanhTien != null ? y.thanhTien : null,
+                    loaiNguyenLieu = new IdName
                     {
-                        Id = newPhieuNhap.nhaCungCap,
-                        Name = _collectionNhaCungCap.Find(x => x.Id == newPhieuNhap.nhaCungCap).FirstOrDefault()?.tenNhaCungCap,
+                        Id = y.loaiNguyenLieu,
+                        Name = loaiNguyenLieuDict.ContainsKey(y.loaiNguyenLieu) ? loaiNguyenLieuDict[y.loaiNguyenLieu] : null
                     },
-                    dienGiai = newPhieuNhap.dienGiai,
-                    diaDiem = newPhieuNhap.diaDiem,
-                    tongTien = newPhieuNhap.tongTien,
-                    ghiChu = newPhieuNhap.ghiChu,
-                    nhanVien = new IdName
+                    donViTinh = new IdName
                     {
-                        Id = newPhieuNhap.nhanVien,
-                        Name = _collectionNhanVien.Find(x => x.Id == newPhieuNhap.nhanVien).FirstOrDefault()?.tenNhanVien,
+                        Id = y.donViTinh,
+                        Name = donViTinhDict.GetValueOrDefault(y.donViTinh) ?? ""
                     },
-                    nguyenLieus = newPhieuNhap.nguyenLieus.Select(y => new nguyenLieuMenuRespond
+                    tuDo = new IdName
                     {
-                        Id = y.id,
-                        Name = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieuDict[y.id] : null,
-                        moTa = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.moTa : null,
-                        soLuong = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.soLuong : null,
-                        hanSuDung = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.hanSuDung : null,
-                        donGia = y.donGia != null ? y.donGia : null,
-                        thanhTien = y.thanhTien != null ? y.thanhTien : null,
-                        loaiNguyenLieu = new IdName
-                        {
-                            Id =  nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.loaiNguyenLieu ?? "",
-                            Name = loaiNguyenLieuDict.ContainsKey(nguyenLieus.FirstOrDefault(m => m.Id == y.id).loaiNguyenLieu) ? loaiNguyenLieuDict[nguyenLieus.FirstOrDefault(m => m.Id == y.id).loaiNguyenLieu] : null
-                        },
-                        donViTinh = new IdName
-                        {
-                            Id = nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.donViTinh ?? "",
-                            Name = donViTinhDict.GetValueOrDefault(nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.donViTinh ?? "")
-                        },
-                        tuDo = new IdName
-                        {
-                            Id = nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.tuDo ?? "",
-                            Name = tuDoDict.GetValueOrDefault(nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.tuDo ?? "")
-                        },
-                        trangThai = nguyenLieus.FirstOrDefault(nl => nl.Id == y.id)?.trangThai
-                    }).ToList()
-                };
+                        Id = y.tuDo,
+                        Name = tuDoDict.GetValueOrDefault(y.tuDo) ?? ""
+                    },
+                    trangThai = y.trangThai
+                }).ToList()
+            };
 
             return new RespondAPI<PhieuNhapRespond>(
                 ResultRespond.Succeeded,
@@ -631,7 +537,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 $"Đã xảy ra lỗi khi tạo phiếu nhập: {ex.Message}"
             );
         }
-       
+
     }
 
     // public async Task<RespondAPI<PhieuNhapRespond>> UpdatePhieuNhap(string id, RequestUpdatePhieuNhap request)

@@ -19,5 +19,4 @@ public class RequestAddNguyenLieu
     public string? tuDo { get; set; }
 
     public TrangThaiNguyenLieu? trangThai { get; set; }
-
 }

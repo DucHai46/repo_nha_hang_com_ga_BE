@@ -14,5 +14,5 @@ public class RequestAddPhieuNhap
     public int? tongTien { get; set; }
     public string? ghiChu { get; set; }
     public string? nhanVien { get; set; }
-    public List<nguyenLieuMenu>? nguyenLieus { get; set; }  
+    public List<nguyenLieuMenu>? nguyenLieus { get; set; }
 }

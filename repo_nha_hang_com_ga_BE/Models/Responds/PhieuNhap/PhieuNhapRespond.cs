@@ -21,17 +21,16 @@ public class PhieuNhapRespond
     public int? tongTien { get; set; }
     public string? ghiChu { get; set; }
     public IdName? nhanVien { get; set; }
-    public List<nguyenLieuMenuRespond>? nguyenLieus { get; set; } 
+    public List<nguyenLieuMenuRespond>? nguyenLieus { get; set; }
 }
 
-public class nguyenLieuMenuRespond : IdName
+public class nguyenLieuMenuRespond
 {
+    public string? tenNguyenLieu { get; set; }
     public string? moTa { get; set; }
 
-    // public DateTimeOffset? hanSuDung { get; set; }
     public int? soLuong { get; set; }
-    public int? donGia { get; set; }
-    public int? thanhTien { get; set; }
+
     public DateTimeOffset? hanSuDung { get; set; }
 
     public IdName? loaiNguyenLieu { get; set; }
@@ -41,6 +40,9 @@ public class nguyenLieuMenuRespond : IdName
     public IdName? tuDo { get; set; }
 
     public TrangThaiNguyenLieu? trangThai { get; set; }
+
+    public int? donGia { get; set; }
+    public int? thanhTien { get; set; }
 }
 
 

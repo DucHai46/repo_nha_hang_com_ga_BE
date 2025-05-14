@@ -540,14 +540,14 @@ public class NguyenLieuRepository : INguyenLieuRepository
                 soLuong = x.soLuong,
                 trangThai = x.trangThai,
                 hanSuDung = x.hanSuDung,
-                loaiNguyenLieu = loaiDict.ContainsKey(x.loaiNguyenLieu) 
-                    ? new IdName { Id = x.loaiNguyenLieu, Name = loaiDict[x.loaiNguyenLieu] } 
+                loaiNguyenLieu = loaiDict.ContainsKey(x.loaiNguyenLieu)
+                    ? new IdName { Id = x.loaiNguyenLieu, Name = loaiDict[x.loaiNguyenLieu] }
                     : null,
-                donViTinh = donViDict.ContainsKey(x.donViTinh) 
-                    ? new IdName { Id = x.donViTinh, Name = donViDict[x.donViTinh] } 
+                donViTinh = donViDict.ContainsKey(x.donViTinh)
+                    ? new IdName { Id = x.donViTinh, Name = donViDict[x.donViTinh] }
                     : null,
-                tuDo = tuDoDict.ContainsKey(x.tuDo) 
-                    ? new IdName { Id = x.tuDo, Name = tuDoDict[x.tuDo] } 
+                tuDo = tuDoDict.ContainsKey(x.tuDo)
+                    ? new IdName { Id = x.tuDo, Name = tuDoDict[x.tuDo] }
                     : null
             }).ToList();
 
@@ -565,4 +565,4 @@ public class NguyenLieuRepository : INguyenLieuRepository
             );
         }
     }
-    }
+}
