@@ -16,7 +16,7 @@ public class NguyenLieuRespond
 
     public string? moTa { get; set; }
 
-    // public DateTimeOffset? hanSuDung { get; set; }
+    public DateTimeOffset? hanSuDung { get; set; }
     public int? soLuong { get; set; }
 
     public IdName? loaiNguyenLieu { get; set; }

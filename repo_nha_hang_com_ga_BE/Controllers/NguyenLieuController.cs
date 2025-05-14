@@ -48,4 +48,9 @@ public class NguyenLieuController : ControllerBase
     {
         return Ok(await _repository.DeleteNguyenLieu(id));
     }
+    [HttpPost("/add-list")]
+    public async Task<IActionResult> CreateNguyenLieuList(RequestAddListNguyenLieu requests)
+    {
+        return Ok(await _repository.CreateListNguyenLieu(requests));
+    }
 }

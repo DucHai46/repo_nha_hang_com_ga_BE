@@ -78,7 +78,7 @@ public class NguyenLieuRepository : INguyenLieuRepository
                 .Include(x => x.moTa)
                 .Include(x => x.soLuong)
                 .Include(x => x.trangThai)
-                // .Include(x => x.hanSuDung)
+                .Include(x => x.hanSuDung)
                 .Include(x => x.loaiNguyenLieu)
                 .Include(x => x.donViTinh)
                 .Include(x => x.tuDo);
@@ -150,6 +150,7 @@ public class NguyenLieuRepository : INguyenLieuRepository
                     moTa = nguyenLieu.moTa,
                     soLuong = nguyenLieu.soLuong,
                     trangThai = nguyenLieu.trangThai,
+                    hanSuDung = nguyenLieu.hanSuDung,
                     loaiNguyenLieu = new IdName
                     {
                         Id = nguyenLieu.loaiNguyenLieu,
@@ -231,6 +232,7 @@ public class NguyenLieuRepository : INguyenLieuRepository
                     moTa = nguyenLieu.moTa,
                     soLuong = nguyenLieu.soLuong,
                     trangThai = nguyenLieu.trangThai,
+                    hanSuDung = nguyenLieu.hanSuDung,
                     loaiNguyenLieu = new IdName
                     {
                         Id = nguyenLieu.loaiNguyenLieu,
@@ -292,6 +294,7 @@ public class NguyenLieuRepository : INguyenLieuRepository
                 moTa = nguyenLieu.moTa,
                 soLuong = nguyenLieu.soLuong,
                 trangThai = nguyenLieu.trangThai,
+                hanSuDung = nguyenLieu.hanSuDung,
                 loaiNguyenLieu = new IdName
                 {
                     Id = loaiNguyenLieu.Id,
@@ -350,6 +353,7 @@ public class NguyenLieuRepository : INguyenLieuRepository
                 moTa = newNguyenLieu.moTa,
                 soLuong = newNguyenLieu.soLuong,
                 trangThai = newNguyenLieu.trangThai,
+                hanSuDung = newNguyenLieu.hanSuDung,
                 loaiNguyenLieu = new IdName
                 {
                     Id = loaiNguyenLieu.Id,
@@ -426,6 +430,7 @@ public class NguyenLieuRepository : INguyenLieuRepository
                 moTa = nguyenLieu.moTa,
                 soLuong = nguyenLieu.soLuong,
                 trangThai = nguyenLieu.trangThai,
+                hanSuDung = nguyenLieu.hanSuDung,
                 loaiNguyenLieu = new IdName
                 {
                     Id = loaiNguyenLieu.Id,
@@ -494,4 +499,70 @@ public class NguyenLieuRepository : INguyenLieuRepository
             );
         }
     }
-}
+    public async Task<RespondAPI<List<NguyenLieuRespond>>> CreateListNguyenLieu(RequestAddListNguyenLieu request)
+    {
+        try
+        {
+            // 1. Mapping từ request → entity và set mặc định
+            var nguyenLieuEntities = request.nguyenLieus.Select(nl =>
+            {
+                var entity = _mapper.Map<NguyenLieu>(nl);
+                entity.createdDate = DateTimeOffset.UtcNow;
+                entity.updatedDate = DateTimeOffset.UtcNow;
+                entity.isDelete = false;
+                return entity;
+            }).ToList();
+
+            // 2. Insert tất cả vào MongoDB
+            await _collection.InsertManyAsync(nguyenLieuEntities);
+
+            // 3. Trích các ID cần truy vấn thêm
+            var loaiNguyenLieuIds = nguyenLieuEntities.Select(x => x.loaiNguyenLieu).Distinct().ToList();
+            var donViTinhIds = nguyenLieuEntities.Select(x => x.donViTinh).Distinct().ToList();
+            var tuDoIds = nguyenLieuEntities.Select(x => x.tuDo).Distinct().ToList();
+
+            // 4. Truy vấn các bảng liên quan
+            var loaiNguyenLieus = await _collectionLoaiNguyenLieu.Find(x => loaiNguyenLieuIds.Contains(x.Id)).ToListAsync();
+            var donViTinhs = await _collectionDonViTinh.Find(x => donViTinhIds.Contains(x.Id)).ToListAsync();
+            var tuDos = await _collectionTuDo.Find(x => tuDoIds.Contains(x.Id)).ToListAsync();
+
+            // 5. Tạo dictionary để tra tên nhanh
+            var loaiDict = loaiNguyenLieus.ToDictionary(x => x.Id, x => x.tenLoai);
+            var donViDict = donViTinhs.ToDictionary(x => x.Id, x => x.tenDonViTinh);
+            var tuDoDict = tuDos.ToDictionary(x => x.Id, x => x.tenTuDo);
+
+            // 6. Tạo danh sách phản hồi
+            var responseList = nguyenLieuEntities.Select(x => new NguyenLieuRespond
+            {
+                id = x.Id,
+                tenNguyenLieu = x.tenNguyenLieu,
+                moTa = x.moTa,
+                soLuong = x.soLuong,
+                trangThai = x.trangThai,
+                hanSuDung = x.hanSuDung,
+                loaiNguyenLieu = loaiDict.ContainsKey(x.loaiNguyenLieu) 
+                    ? new IdName { Id = x.loaiNguyenLieu, Name = loaiDict[x.loaiNguyenLieu] } 
+                    : null,
+                donViTinh = donViDict.ContainsKey(x.donViTinh) 
+                    ? new IdName { Id = x.donViTinh, Name = donViDict[x.donViTinh] } 
+                    : null,
+                tuDo = tuDoDict.ContainsKey(x.tuDo) 
+                    ? new IdName { Id = x.tuDo, Name = tuDoDict[x.tuDo] } 
+                    : null
+            }).ToList();
+
+            return new RespondAPI<List<NguyenLieuRespond>>(
+                ResultRespond.Succeeded,
+                "Thêm danh sách nguyên liệu thành công.",
+                responseList
+            );
+        }
+        catch (Exception ex)
+        {
+            return new RespondAPI<List<NguyenLieuRespond>>(
+                ResultRespond.Error,
+                $"Đã xảy ra lỗi khi tạo nguyên liệu: {ex.Message}"
+            );
+        }
+    }
+    }

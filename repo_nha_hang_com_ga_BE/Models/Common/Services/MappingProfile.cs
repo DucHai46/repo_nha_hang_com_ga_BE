@@ -60,6 +60,7 @@ using repo_nha_hang_com_ga_BE.Models.Requests.HoaDonThanhToan;
 using repo_nha_hang_com_ga_BE.Models.Responds.BangGia;
 using repo_nha_hang_com_ga_BE.Models.Requests.BangGia;
 using repo_nha_hang_com_ga_BE.Models.Responds.NhaCungCap;
+using repo_nha_hang_com_ga_BE.Models.Requests.PhieuNhap;
 
 
 namespace repo_nha_hang_com_ga_BE.Models.Common.Services;
@@ -226,9 +227,14 @@ public class MappingProfile : Profile
         // CreateMap(typeof(BangGia), typeof(BangGiaRespond));
         CreateMap(typeof(RequestAddBangGia), typeof(BangGia));
         CreateMap(typeof(RequestUpdateBangGia), typeof(BangGia));
-
+        //Nha cung cap
         CreateMap(typeof(NhaCungCap), typeof(NhaCungCapRespond));
         CreateMap(typeof(RequestAddNhaCungCap), typeof(NhaCungCap));
         CreateMap(typeof(RequestUpdateNhaCungCap), typeof(NhaCungCap));
+
+        //PhieuNhap
+        // CreateMap(typeof(PhieuNhap), typeof(PhieuNhapRespond));
+        CreateMap(typeof(RequestAddPhieuNhap), typeof(PhieuNhap));
+        CreateMap(typeof(RequestUpdatePhieuNhap), typeof(PhieuNhap));
     }
 }

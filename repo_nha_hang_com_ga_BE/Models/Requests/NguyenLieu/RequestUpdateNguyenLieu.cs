@@ -9,7 +9,7 @@ public class RequestUpdateNguyenLieu
 
     public string? moTa { get; set; }
 
-    // public DateTimeOffset? hanSuDung { get; set; }
+    public DateTimeOffset? hanSuDung { get; set; }
     public int? soLuong { get; set; }
 
     public string? loaiNguyenLieu { get; set; }

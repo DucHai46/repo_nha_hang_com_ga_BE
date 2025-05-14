@@ -13,5 +13,6 @@ public interface INguyenLieuRepository
     Task<RespondAPI<NguyenLieuRespond>> CreateNguyenLieu(RequestAddNguyenLieu product);
     Task<RespondAPI<NguyenLieuRespond>> UpdateNguyenLieu(string id, RequestUpdateNguyenLieu product);
     Task<RespondAPI<string>> DeleteNguyenLieu(string id);
+    Task<RespondAPI<List<NguyenLieuRespond>>> CreateListNguyenLieu(RequestAddListNguyenLieu request);
 }
 

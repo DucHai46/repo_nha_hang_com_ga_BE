@@ -8,7 +8,7 @@ public class RequestSearchNguyenLieu : PagingParameterModel
 {
     public string? tenNguyenLieu { get; set; }
 
-    // public DateTimeOffset? hanSuDung { get; set; }
+    public DateTimeOffset? hanSuDung { get; set; }
 
     // public int? soLuong { get; set; }
 
