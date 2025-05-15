@@ -7,7 +7,7 @@ namespace repo_nha_hang_com_ga_BE.Controllers;
 
 
 [ApiController]
-[Route("api/khachhang")]
+[Route("api/khach-hang")]
 
 
 public class KhachHangController : ControllerBase
@@ -18,6 +18,7 @@ public class KhachHangController : ControllerBase
     {
         _khachHangRepository = khachHangRepository;
     }
+
 
     [HttpGet("")]
     public async Task<IActionResult> GetAllKhachHangs([FromQuery] RequestSearchKhachHang request)
