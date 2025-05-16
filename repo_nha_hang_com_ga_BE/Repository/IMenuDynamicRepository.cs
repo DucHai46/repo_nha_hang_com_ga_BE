@@ -12,4 +12,6 @@ public interface IMenuDynamicRepository
     Task<RespondAPI<MenuDynamicRespond>> CreateMenuDynamic(RequestAddMenuDynamic product);
     Task<RespondAPI<MenuDynamicRespond>> UpdateMenuDynamic(string id, RequestUpdateMenuDynamic product);
     Task<RespondAPI<string>> DeleteMenuDynamic(string id);
+
+    Task<RespondAPIPaging<List<MenuDynamicRespond>>> GetAllMenuDynamicsByPhanQuyen(List<string> danhSachPhanQuyen);
 }

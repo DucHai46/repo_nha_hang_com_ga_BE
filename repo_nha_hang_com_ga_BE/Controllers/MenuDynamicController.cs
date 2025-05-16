@@ -51,4 +51,10 @@ public class MenuDynamicController : ControllerBase
     {
         return Ok(await _repository.DeleteMenuDynamic(id));
     }
+
+    [HttpPost("phan-quyen")]
+    public async Task<IActionResult> GetAllMenuDynamicsByPhanQuyen([FromBody] List<string> danhSachPhanQuyen)
+    {
+        return Ok(await _repository.GetAllMenuDynamicsByPhanQuyen(danhSachPhanQuyen));
+    }
 }

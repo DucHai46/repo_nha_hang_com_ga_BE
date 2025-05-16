@@ -380,4 +380,81 @@ public class MenuDynamicRepository : IMenuDynamicRepository
         }
     }
 
+    public async Task<RespondAPIPaging<List<MenuDynamicRespond>>> GetAllMenuDynamicsByPhanQuyen(List<string> danhSachPhanQuyen)
+    {
+        try
+        {
+            var filter = Builders<MenuDynamic>.Filter.In(x => x.Id, danhSachPhanQuyen);
+            filter &= Builders<MenuDynamic>.Filter.Eq(x => x.isActive, true);
+            filter &= Builders<MenuDynamic>.Filter.Eq(x => x.isDelete, false);
+            filter |= Builders<MenuDynamic>.Filter.In(x => x.parent, danhSachPhanQuyen);
+
+            var projection = Builders<MenuDynamic>.Projection
+                .Include(x => x.Id)
+                .Include(x => x.label)
+                .Include(x => x.routeLink)
+                .Include(x => x.icon)
+                .Include(x => x.parent)
+                .Include(x => x.position)
+                .Include(x => x.isActive)
+                .Include(x => x.isOpen);
+
+            var findOptions = new FindOptions<MenuDynamic, MenuDynamic>
+            {
+                Projection = projection
+            };
+
+            var cursor = await _collection.FindAsync(filter, findOptions);
+            var menuDynamics = await cursor.ToListAsync();
+
+            // Lấy danh sách ID loại bàn
+            var parentIds = menuDynamics.Select(x => x.parent).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
+            // Query bảng loại bàn
+            var parentFilter = Builders<MenuDynamic>.Filter.In(x => x.Id, parentIds);
+            var parentProjection = Builders<MenuDynamic>.Projection
+                .Include(x => x.Id)
+                .Include(x => x.label);
+            var parents = await _collection.Find(parentFilter)
+                .Project<MenuDynamic>(parentProjection)
+                .ToListAsync();
+
+            // Tạo dictionary để map nhanh
+            var parentDict = parents.ToDictionary(x => x.Id, x => x.label);
+
+            // Map dữ liệu
+            var menuDynamicResponds = menuDynamics.Select(menuDynamic => new MenuDynamicRespond
+            {
+                id = menuDynamic.Id,
+                label = menuDynamic.label,
+                routeLink = menuDynamic.routeLink,
+                icon = menuDynamic.icon,
+                parent = new IdName
+                {
+                    Id = menuDynamic.parent,
+                    Name = menuDynamic.parent != null && parentDict.ContainsKey(menuDynamic.parent) ? parentDict[menuDynamic.parent] : null
+                },
+                position = menuDynamic.position,
+                isActive = menuDynamic.isActive,
+                isOpen = menuDynamic.isOpen
+            }).ToList();
+
+
+            return new RespondAPIPaging<List<MenuDynamicRespond>>(
+                     ResultRespond.Succeeded,
+                     data: new PagingResponse<List<MenuDynamicRespond>>
+                     {
+                         Data = menuDynamicResponds,
+                         Paging = new PagingDetail(1, menuDynamicResponds.Count, menuDynamicResponds.Count)
+                     }
+             );
+        }
+        catch (Exception ex)
+        {
+            return new RespondAPIPaging<List<MenuDynamicRespond>>(
+                ResultRespond.Error,
+                message: ex.Message
+            );
+        }
+    }
 }
