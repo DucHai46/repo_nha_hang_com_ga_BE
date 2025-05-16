@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using repo_nha_hang_com_ga_BE.Models.Requests.DonOrder;
+using repo_nha_hang_com_ga_BE.Models.SignalR;
 using repo_nha_hang_com_ga_BE.Repository;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
@@ -11,10 +13,12 @@ namespace repo_nha_hang_com_ga_BE.Controllers;
 public class DonOrderController : ControllerBase
 {
     private readonly IDonOrderRepository _repository;
+    private readonly IHubContext<OrderHub> _hubContext;
 
-    public DonOrderController(IDonOrderRepository repository)
+    public DonOrderController(IDonOrderRepository repository, IHubContext<OrderHub> hubContext)
     {
         _repository = repository;
+        _hubContext = hubContext;
     }
 
     [HttpGet("")]
@@ -32,12 +36,15 @@ public class DonOrderController : ControllerBase
     [HttpPost("")]
     public async Task<IActionResult> CreateDonOrder(RequestAddDonOrder request)
     {
+        await _hubContext.Clients.All.SendAsync("ReceiveOrder", $"{request.tenDon}");
+
         return Ok(await _repository.CreateDonOrder(request));
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateDonOrder(string id, RequestUpdateDonOrder request)
     {
+        await _hubContext.Clients.All.SendAsync("ReceiveOrder", $"{request.tenDon}");
         return Ok(await _repository.UpdateDonOrder(id, request));
     }
 
