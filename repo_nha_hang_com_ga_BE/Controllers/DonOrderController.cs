@@ -17,8 +17,14 @@ public class DonOrderController : ControllerBase
         _repository = repository;
     }
 
-    [HttpGet("")]
-    public async Task<IActionResult> GetAllDonOrder([FromQuery] RequestSearchDonOrder request)
+    // [HttpGet("")]
+    // public async Task<IActionResult> GetAllDonOrder([FromQuery] RequestSearchDonOrder request)
+    // {
+    //     return Ok(await _repository.GetAllDonOrder(request));
+    // }
+
+    [HttpPost("get-All")]
+    public async Task<IActionResult> GetAllDonOrder([FromBody] RequestSearchDonOrder request)
     {
         return Ok(await _repository.GetAllDonOrder(request));
     }
