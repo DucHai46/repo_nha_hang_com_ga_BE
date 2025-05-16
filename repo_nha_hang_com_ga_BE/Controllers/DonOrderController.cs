@@ -60,4 +60,11 @@ public class DonOrderController : ControllerBase
     {
         return Ok(await _repository.DeleteDonOrder(id));
     }
+
+    [HttpPut("update-status/{id}")]
+    public async Task<IActionResult> UpdateStatusDonOrder(string id, RequestUpdateDonOrder request)
+    {
+        await _hubContext.Clients.All.SendAsync("ChangeStatusOrder", $"{request.tenDon}");
+        return Ok(await _repository.UpdateDonOrder(id, request));
+    }
 }
