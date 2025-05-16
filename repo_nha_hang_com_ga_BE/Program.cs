@@ -105,3 +105,4 @@ app.MapControllers();
 app.MapHub<OrderHub>("/orderHub");
 
 app.Run();
+
