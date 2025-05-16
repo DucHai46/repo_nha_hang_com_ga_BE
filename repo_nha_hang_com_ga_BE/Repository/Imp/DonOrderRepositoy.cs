@@ -65,9 +65,12 @@ public class DonOrderRepository : IDonOrderRepository
             {
                 filter &= Builders<DonOrder>.Filter.Eq(x => x.ban, request.ban);
             }
-            if (!string.IsNullOrEmpty(request.khachHang))
+            if (request.khachHang != null && request.khachHang.Any())
             {
-                filter &= Builders<DonOrder>.Filter.Eq(x => x.khachHang, request.khachHang);
+                // Tạo một bộ lọc OR để tìm các đơn order có khachHang khớp với bất kỳ ID nào trong danh sách
+                var khachHangFilters = request.khachHang.Select(kh =>
+                    Builders<DonOrder>.Filter.Eq(x => x.khachHang, kh));
+                filter &= Builders<DonOrder>.Filter.Or(khachHangFilters);
             }
 
             if (request.trangThai.HasValue) // Kiểm tra nếu trangThai có giá trị: True hoặc False
@@ -1013,4 +1016,6 @@ public class DonOrderRepository : IDonOrderRepository
             );
         }
     }
+
+    
 }
