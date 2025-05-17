@@ -595,7 +595,15 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     "Không tìm thấy phiếu nhập để xóa."
                 );
             }
+            var nguyenLieuIds = existingPhieuNhap.nguyenLieus.Select(nl => nl.id).Where(nlid => !string.IsNullOrEmpty(nlid)).Distinct().ToList();
 
+            if (nguyenLieuIds.Any())
+            {
+
+                var deleteNguyenLieuFilter =
+                    Builders<NguyenLieu>.Filter.In(x => x.Id, nguyenLieuIds);
+                await _collectionNguyenLieu.DeleteManyAsync(deleteNguyenLieuFilter);
+            }
             var deleteResult = await _collection.DeleteOneAsync(x => x.Id == id);
 
             if (deleteResult.DeletedCount == 0)
