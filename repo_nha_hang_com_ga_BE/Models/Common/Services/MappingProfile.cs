@@ -64,6 +64,7 @@ using repo_nha_hang_com_ga_BE.Models.Requests.PhieuNhap;
 using repo_nha_hang_com_ga_BE.Models.Responds.PhanQuyen;
 using repo_nha_hang_com_ga_BE.Models.Requests.PhieuKiemKe;
 using repo_nha_hang_com_ga_BE.Models.Responds.PhieuKiemKe;
+using repo_nha_hang_com_ga_BE.Models.Requests.PhieuXuat;
 
 namespace repo_nha_hang_com_ga_BE.Models.Common.Services;
 
@@ -242,6 +243,10 @@ public class MappingProfile : Profile
         // CreateMap(typeof(PhieuNhap), typeof(PhieuNhapRespond));
         CreateMap(typeof(RequestAddPhieuKiemKe), typeof(PhieuKiemKe));
         CreateMap(typeof(RequestUpdatePhieuKiemKe), typeof(PhieuKiemKe));
+        //PhieuXuat
+        // CreateMap(typeof(PhieuNhap), typeof(PhieuNhapRespond));
+        CreateMap(typeof(RequestAddPhieuXuat), typeof(PhieuXuat));
+        CreateMap(typeof(RequestUpdatePhieuXuat), typeof(PhieuXuat));
 
         //PhanQuyen
         CreateMap(typeof(PhanQuyen), typeof(PhanQuyenRespond));
