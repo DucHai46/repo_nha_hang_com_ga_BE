@@ -371,6 +371,7 @@ public class PhieuXuatRepository : IPhieuXuatRepository
             var nguyenLieuProjection = Builders<NguyenLieu>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenNguyenLieu)
+                .Include(x => x.soLuong)
                 .Include(x => x.donViTinh);
             nguyenLieus = await _collectionNguyenLieu.Find(nguyenLieuFilter)
                 .Project<NguyenLieu>(nguyenLieuProjection)
@@ -465,6 +466,7 @@ public class PhieuXuatRepository : IPhieuXuatRepository
             var nguyenLieuProjection = Builders<NguyenLieu>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenNguyenLieu)
+                .Include(x => x.soLuong)
                 .Include(x => x.donViTinh);
             nguyenLieus = await _collectionNguyenLieu.Find(nguyenLieuFilter)
                 .Project<NguyenLieu>(nguyenLieuProjection)
