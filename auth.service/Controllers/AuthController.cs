@@ -2,10 +2,12 @@
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt; 
-using Microsoft.IdentityModel.Tokens; 
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
-using AspNetCore.Identity.MongoDbCore.Models; 
+using AspNetCore.Identity.MongoDbCore.Models;
+using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 
 namespace auth.service.Controllers;
 
@@ -14,12 +16,12 @@ namespace auth.service.Controllers;
 public class AuthController : Controller
 {
     private readonly UserManager<MongoUser> _userManager;
-    private readonly RoleManager<MongoIdentityRole<Guid>> _roleManager;
+    private readonly RoleManager<MongoIdentityRole<ObjectId>> _roleManager;
     private readonly IConfiguration _configuration;
 
     public AuthController(
-        UserManager<MongoUser> userManager, 
-        RoleManager<MongoIdentityRole<Guid>> roleManager,
+        UserManager<MongoUser> userManager,
+        RoleManager<MongoIdentityRole<ObjectId>> roleManager,
         IConfiguration configuration)
     {
         _userManager = userManager;
@@ -34,25 +36,19 @@ public class AuthController : Controller
         {
             UserName = model.Username,
             Email = model.Email,
-            FullName = model.Username // hoặc nhận từ client nếu cần
+            FullName = model.FullName,
+            PhoneNumber = model.PhoneNumber,
+            Address = model.Address,
+            Avatar = model.Avatar,
+            Gender = model.Gender,
+            DateOfBirth = model.DateOfBirth
         };
         var result = await _userManager.CreateAsync(user, model.Password);
 
         if (!result.Succeeded)
             return BadRequest(result.Errors);
 
-        // Gán vai trò mặc định cho người dùng mới (nếu có)
-        if (!string.IsNullOrEmpty(model.Role))
-        {
-            await _userManager.AddToRoleAsync(user, model.Role);
-        }
-        else
-        {
-            // Gán vai trò "User" mặc định nếu không có vai trò được chỉ định
-            await _userManager.AddToRoleAsync(user, "User");
-        }
-
-        return Ok(new { UserId = user.Id });
+        return Ok(new { UserId = user.Id.ToString() });
     }
 
     [HttpPost("token")]
@@ -62,8 +58,6 @@ public class AuthController : Controller
         if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
             return Unauthorized();
 
-        var userRoles = await _userManager.GetRolesAsync(user);
-
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
@@ -71,13 +65,7 @@ public class AuthController : Controller
             new Claim(ClaimTypes.Name, user.UserName)
         };
 
-        // Thêm vai trò vào claims
-        foreach (var role in userRoles)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, role));
-        }
-
-        if (!string.IsNullOrEmpty(user.Email)) // Added null check for user.Email
+        if (!string.IsNullOrEmpty(user.Email))
         {
             claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
         }
@@ -96,73 +84,119 @@ public class AuthController : Controller
         return Ok(new { Token = new JwtSecurityTokenHandler().WriteToken(token) });
     }
 
-    [HttpPost("roles")]
-    [Authorize(Roles = "Admin")] // Chỉ Admin mới có thể tạo vai trò mới
-    public async Task<IActionResult> CreateRole([FromBody] RoleModel model)
+    [Authorize]
+    [HttpGet("get-user-info")]
+    public async Task<IActionResult> GetUserInfo(string id)
     {
-        if (string.IsNullOrEmpty(model.Name))
-            return BadRequest("Tên vai trò không được để trống");
+        if (!ObjectId.TryParse(id, out ObjectId userId))
+        {
+            return BadRequest("Invalid user ID format. Expected a valid ObjectId.");
+        }
 
-        // Kiểm tra xem vai trò đã tồn tại chưa
-        if (await _roleManager.RoleExistsAsync(model.Name))
-            return BadRequest($"Vai trò '{model.Name}' đã tồn tại");
-
-        // Tạo vai trò mới
-        var role = new MongoIdentityRole<Guid>(model.Name);
-        var result = await _roleManager.CreateAsync(role);
-
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
-
-        return Ok(new { Name = model.Name });
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+            return NotFound();
+        var userInfo = new
+        {
+            id,
+            user.FullName,
+            user.Email,
+            user.PhoneNumber,
+            user.Address,
+            user.Avatar,
+            user.Gender,
+            user.DateOfBirth
+        };
+        return Ok(userInfo);
     }
 
-    [HttpPost("user/{userId}/roles")]
-    [Authorize(Roles = "Admin")] // Chỉ Admin mới có thể gán vai trò
-    public async Task<IActionResult> AddUserToRole(string userId, [FromBody] RoleModel model)
+    [Authorize]
+    [HttpPut("update-user-info")]
+    public async Task<IActionResult> UpdateUserInfo(string id, [FromBody] UpdateUserInfoModel model)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(id);
         if (user == null)
-            return NotFound($"Không tìm thấy người dùng với ID: {userId}");
-
-        if (!await _roleManager.RoleExistsAsync(model.Name))
-            return BadRequest($"Vai trò '{model.Name}' không tồn tại");
-
-        var result = await _userManager.AddToRoleAsync(user, model.Name);
-
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
-
-        return Ok(new { UserId = userId, Role = model.Name });
+            return NotFound();
+        user.FullName = model.FullName;
+        user.Email = model.Email;
+        user.PhoneNumber = model.PhoneNumber;
+        user.Address = model.Address;
+        user.Avatar = model.Avatar;
+        user.Gender = model.Gender;
+        user.DateOfBirth = model.DateOfBirth;
+        await _userManager.UpdateAsync(user);
+        return Ok(new { Message = "Cập nhật thông tin người dùng thành công" });
     }
 
-    [HttpGet("user/{userId}/roles")]
-    [Authorize] // Người dùng đã đăng nhập có thể xem vai trò
-    public async Task<IActionResult> GetUserRoles(string userId)
+    [Authorize]
+    [HttpGet("get-all-users")]
+    public async Task<IActionResult> GetAllUsers()
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var users = _userManager.Users.ToList();
+        var userList = users.Select(user => new
+        {
+            id = user.Id.ToString(),
+            user.FullName,
+            user.Email,
+            user.PhoneNumber,
+            user.Address,
+            user.Avatar,
+            user.Gender,
+            user.DateOfBirth,
+            user.IsActive
+        }).ToList();
+        return Ok(userList);
+    }
+
+    [Authorize]
+    [HttpPut("update-user-role")]
+    public async Task<IActionResult> UpdateUserRole(string id, [FromBody] UpdateUserRoleModel model)
+    {
+        var user = await _userManager.FindByIdAsync(id);
         if (user == null)
-            return NotFound($"Không tìm thấy người dùng với ID: {userId}");
+            return NotFound();
+        user.PhanQuyen = model.PhanQuyen;
+        await _userManager.UpdateAsync(user);
+        return Ok(new { Message = "Cập nhật vai trò người dùng thành công" });
+    }
 
-        // Kiểm tra quyền: chỉ Admin hoặc chính người dùng đó mới có thể xem vai trò
-        var currentUser = await _userManager.GetUserAsync(User);
-        if (currentUser == null)
-            return Unauthorized();
+    [Authorize]
+    [HttpPut("update-user-password")]
+    public async Task<IActionResult> UpdateUserPassword(string id, [FromBody] UpdateUserPasswordModel model)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+            return NotFound();
+        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
+        await _userManager.UpdateAsync(user);
+        return Ok(new { Message = "Cập nhật mật khẩu người dùng thành công" });
+    }
 
-        if (currentUser.Id.ToString() != userId && !await _userManager.IsInRoleAsync(currentUser, "Admin"))
-            return Forbid();
-
-        var roles = await _userManager.GetRolesAsync(user);
-        return Ok(new { UserId = userId, Roles = roles });
+    [Authorize]
+    [HttpPut("lock-user")]
+    public async Task<IActionResult> LockUser(string id, bool isActive)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+            return NotFound();
+        user.IsActive = isActive;
+        await _userManager.UpdateAsync(user);
+        return Ok(new { Message = isActive ? "Mở khóa người dùng thành công" : "Khóa người dùng thành công" });
     }
 }
 
 public class RegisterModel
 {
+    public string FullName { get; set; }
     public string Username { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
-    public string? Role { get; set; } // Thêm trường Role (tùy chọn)
+    // public string? PhanQuyen { get; set; } // Thêm trường Role (tùy chọn)
+    public string? PhoneNumber { get; set; }
+    public string? Address { get; set; }
+    public string? Avatar { get; set; }
+    public bool? Gender { get; set; }
+    public DateTime? DateOfBirth { get; set; }
 }
 
 public class LoginModel
@@ -174,4 +208,25 @@ public class LoginModel
 public class RoleModel
 {
     public string Name { get; set; }
+}
+
+public class UpdateUserInfoModel
+{
+    public string FullName { get; set; }
+    public string Email { get; set; }
+    public string PhoneNumber { get; set; }
+    public string Address { get; set; }
+    public string Avatar { get; set; }
+    public bool Gender { get; set; }
+    public DateTime DateOfBirth { get; set; }
+}
+
+public class UpdateUserRoleModel
+{
+    public string PhanQuyen { get; set; }
+}
+
+public class UpdateUserPasswordModel
+{
+    public string Password { get; set; }
 }
