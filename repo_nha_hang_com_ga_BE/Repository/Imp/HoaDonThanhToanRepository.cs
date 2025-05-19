@@ -111,7 +111,8 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
              .Include(x => x.soNguoi)
              .Include(x => x.khuyenMai)
              .Include(x => x.phuPhi)
-            .Include(x => x.trangthai);
+            .Include(x => x.trangthai)
+            .Include(x => x.createdDate);
 
             var findOptions = new FindOptions<HoaDonThanhToan, HoaDonThanhToan>
 
@@ -237,7 +238,8 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                         Id = x.phuPhi,
                         Name = x.phuPhi != null && phuPhiDict.ContainsKey(x.phuPhi) ? phuPhiDict[x.phuPhi] : null
                     },
-                    trangthai = x.trangthai
+                    trangthai = x.trangthai,
+                    createdDate = x.createdDate?.Date
                 }).ToList();
 
                 var pagingDetail = new PagingDetail(currentPage, request.PageSize, totalRecords);
@@ -357,7 +359,8 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                         Id = x.phuPhi,
                         Name = x.phuPhi != null && phuPhiDict.ContainsKey(x.phuPhi) ? phuPhiDict[x.phuPhi] : null
                     },
-                    trangthai = x.trangthai
+                    trangthai = x.trangthai,
+                    createdDate = x.createdDate?.Date
                 }).ToList();
 
                 return new RespondAPIPaging<List<HoaDonThanhToanRespond>>(
@@ -494,6 +497,7 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                     Name = hoaDonThanhToan.phuPhi != null && phuPhiDict.ContainsKey(hoaDonThanhToan.phuPhi) ? phuPhiDict[hoaDonThanhToan.phuPhi] : null
                 },
                 trangthai = hoaDonThanhToan.trangthai,
+                createdDate = hoaDonThanhToan.createdDate?.Date
             };
 
             return new RespondAPI<HoaDonThanhToanRespond>(
@@ -713,7 +717,7 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
             var donOrderDict = new Dictionary<string, string>();
             var nhaHangDict = new Dictionary<string, string>();
             var phuongThucThanhToanDict = new Dictionary<string, string>();
-            var khuyenMaiDict = new Dictionary<string, string>();
+            // var khuyenMaiDict = new Dictionary<string, string>();
             var phuPhiDict = new Dictionary<string, string>();
 
             // Lấy danh sách các Id từ danh sách hóa đơn
@@ -721,7 +725,7 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
             var donOrderIds = new List<string> { hoaDonThanhToan.donOrder }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var nhaHangIds = new List<string> { hoaDonThanhToan.nhaHang }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var phuongThucThanhToanIds = new List<string> { hoaDonThanhToan.phuongThucThanhToan }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-            var khuyenMaiIds = new List<string> { hoaDonThanhToan.khuyenMai }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+            // var khuyenMaiIds = new List<string> { hoaDonThanhToan.khuyenMai }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var phuPhiIds = new List<string> { hoaDonThanhToan.phuPhi }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
 
@@ -758,13 +762,13 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
               .Project<PhuongThucThanhToan>(phuongThucThanhToanProjection).ToListAsync();
             phuongThucThanhToanDict = phuongThucThanhToans.ToDictionary(x => x.Id, x => x.tenPhuongThuc);
 
-            var khuyenMaiFilter = Builders<KhuyenMai>.Filter.In(x => x.Id, khuyenMaiIds);
-            var khuyenMaiProjection = Builders<KhuyenMai>.Projection
-              .Include(x => x.Id)
-             .Include(x => x.tenKhuyenMai);
-            var khuyenMais = await _collectionKhuyenMai.Find(khuyenMaiFilter)
-             .Project<KhuyenMai>(khuyenMaiProjection).ToListAsync();
-            khuyenMaiDict = khuyenMais.ToDictionary(x => x.Id, x => x.tenKhuyenMai);
+            // var khuyenMaiFilter = Builders<KhuyenMai>.Filter.In(x => x.Id, khuyenMaiIds);
+            // var khuyenMaiProjection = Builders<KhuyenMai>.Projection
+            //   .Include(x => x.Id)
+            //  .Include(x => x.tenKhuyenMai);
+            // var khuyenMais = await _collectionKhuyenMai.Find(khuyenMaiFilter)
+            //  .Project<KhuyenMai>(khuyenMaiProjection).ToListAsync();
+            // khuyenMaiDict = khuyenMais.ToDictionary(x => x.Id, x => x.tenKhuyenMai);
 
             var phuPhiFilter = Builders<PhuPhi>.Filter.In(x => x.Id, phuPhiIds);
             var phuPhiProjection = Builders<PhuPhi>.Projection
@@ -803,11 +807,11 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 gioVao = hoaDonThanhToan.gioVao,
                 gioRa = hoaDonThanhToan.gioRa,
                 soNguoi = hoaDonThanhToan.soNguoi,
-                khuyenMai = new IdName
-                {
-                    Id = hoaDonThanhToan.khuyenMai,
-                    Name = khuyenMaiDict.ContainsKey(hoaDonThanhToan.khuyenMai) ? khuyenMaiDict[hoaDonThanhToan.khuyenMai] : null
-                },
+                // khuyenMai = new IdName
+                // {
+                //     Id = hoaDonThanhToan.khuyenMai,
+                //     Name = khuyenMaiDict.ContainsKey(hoaDonThanhToan.khuyenMai) ? khuyenMaiDict[hoaDonThanhToan.khuyenMai] : null
+                // },
                 phuPhi = new IdName
                 {
                     Id = hoaDonThanhToan.phuPhi,

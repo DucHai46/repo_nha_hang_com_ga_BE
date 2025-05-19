@@ -86,7 +86,8 @@ public class DonOrderRepository : IDonOrderRepository
                 .Include(x => x.khachHang)
                 .Include(x => x.trangThai)
                 .Include(x => x.chiTietDonOrder)
-                .Include(x => x.tongTien);
+                .Include(x => x.tongTien)
+                .Include(x => x.createdDate);
 
             var findOptions = new FindOptions<DonOrder, DonOrder>
             {
@@ -269,6 +270,7 @@ public class DonOrderRepository : IDonOrderRepository
                     }).ToList(),
                     trangThai = donOrder.trangThai,
                     tongTien = donOrder.tongTien,
+                    createdDate = donOrder.createdDate?.Date,
                 }).ToList();
                 var pagingDetail = new PagingDetail(currentPage, request.PageSize, totalRecords);
                 var pagingResponse = new PagingResponse<List<DonOrderRespond>>
@@ -448,6 +450,7 @@ public class DonOrderRepository : IDonOrderRepository
                     }).ToList(),
                     trangThai = donOrder.trangThai,
                     tongTien = donOrder.tongTien,
+                    createdDate = donOrder.createdDate?.Date,
                 }).ToList();
 
                 return new RespondAPIPaging<List<DonOrderRespond>>(
@@ -636,6 +639,7 @@ public class DonOrderRepository : IDonOrderRepository
                 }).ToList(),
                 trangThai = donOrder.trangThai,
                 tongTien = donOrder.tongTien,
+                createdDate = donOrder.createdDate?.Date,
             };
 
             return new RespondAPI<DonOrderRespond>(
@@ -1017,5 +1021,5 @@ public class DonOrderRepository : IDonOrderRepository
         }
     }
 
-    
+
 }

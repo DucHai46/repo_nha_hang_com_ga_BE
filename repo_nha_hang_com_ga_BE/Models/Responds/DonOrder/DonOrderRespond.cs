@@ -17,6 +17,7 @@ public class DonOrderRespond
     public TrangThaiDonOrder? trangThai { get; set; }
     public List<ChiTietDonOrderRespond>? chiTietDonOrder { get; set; }
     public int? tongTien { get; set; }
+    public DateTime? createdDate { get; set; }
 
 }
 
