@@ -168,11 +168,11 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                     ghiChu = x.ghiChu,
                     lyDoXuat = x.lyDoXuat,
                     nguoiNhan = x.nguoiNhan,
-                    nhanVien = new IdName
+                    nhanVien = x.nhanVien != null ? new IdName
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    },
+                    } : null,
                     loaiNguyenLieus = x.loaiNguyenLieus.Select(y => new loaiNguyenLieuXuatRespond
                     {
                         Id = y.id,
@@ -289,11 +289,11 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                     ghiChu = x.ghiChu,
                     lyDoXuat = x.lyDoXuat,
                     nguoiNhan = x.nguoiNhan,
-                    nhanVien = new IdName
+                    nhanVien = x.nhanVien != null ? new IdName
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    },
+                    } : null,
                     loaiNguyenLieus = x.loaiNguyenLieus.Select(y => new loaiNguyenLieuXuatRespond
                     {
                         Id = y.id,
@@ -395,11 +395,11 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                 ghiChu = phieuXuat.ghiChu,
                 lyDoXuat = phieuXuat.lyDoXuat,
                 nguoiNhan = phieuXuat.nguoiNhan,
-                nhanVien = new IdName
+                nhanVien = phieuXuat.nhanVien != null ? new IdName
                 {
                     Id = phieuXuat.nhanVien,
-                    Name = _collectionNhanVien.Find(x => x.Id == phieuXuat.nhanVien).FirstOrDefault()?.tenNhanVien,
-                },
+                    Name = _collectionNhanVien.Find(x => x.Id == phieuXuat.nhanVien).FirstOrDefault()?.tenNhanVien
+                } : null,
                 loaiNguyenLieus = phieuXuat.loaiNguyenLieus.Select(y => new loaiNguyenLieuXuatRespond
                 {
                     Id = y.id,
@@ -472,11 +472,11 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                 .Project<NguyenLieu>(nguyenLieuProjection)
                 .ToListAsync();
             nguyenLieuDict = nguyenLieus.ToDictionary(x => x.Id, x => x.tenNguyenLieu);
-            foreach(var loai in newPhieuXuat.loaiNguyenLieus)
+            foreach (var loai in newPhieuXuat.loaiNguyenLieus)
             {
-                foreach(var nguyenLieu in loai.nguyenLieus)
+                foreach (var nguyenLieu in loai.nguyenLieus)
                 {
-                    nguyenLieu.soLuongBanDau= nguyenLieus.FirstOrDefault(x => x.Id == nguyenLieu.id)?.soLuong ?? 0;
+                    nguyenLieu.soLuongBanDau = nguyenLieus.FirstOrDefault(x => x.Id == nguyenLieu.id)?.soLuong ?? 0;
                 }
             }
 
@@ -513,11 +513,11 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                 ghiChu = newPhieuXuat.ghiChu,
                 lyDoXuat = newPhieuXuat.lyDoXuat,
                 nguoiNhan = newPhieuXuat.nguoiNhan,
-                nhanVien = new IdName
+                nhanVien = newPhieuXuat.nhanVien != null ? new IdName
                 {
                     Id = newPhieuXuat.nhanVien,
-                    Name = _collectionNhanVien.Find(x => x.Id == newPhieuXuat.nhanVien).FirstOrDefault()?.tenNhanVien,
-                },
+                    Name = _collectionNhanVien.Find(x => x.Id == newPhieuXuat.nhanVien).FirstOrDefault()?.tenNhanVien
+                } : null,
                 loaiNguyenLieus = newPhieuXuat.loaiNguyenLieus.Select(y => new loaiNguyenLieuXuatRespond
                 {
                     Id = y.id,
