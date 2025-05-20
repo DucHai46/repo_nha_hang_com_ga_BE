@@ -552,7 +552,7 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                     var donOrderDict = new Dictionary<string, string>();
                     var nhaHangDict = new Dictionary<string, string>();
                     var phuongThucThanhToanDict = new Dictionary<string, string>();
-                    var khuyenMaiDict = new Dictionary<string, string>();
+                    // var khuyenMaiDict = new Dictionary<string, string>();
                     var phuPhiDict = new Dictionary<string, string>();
 
                     // Lấy danh sách các Id từ danh sách hóa đơn
@@ -560,7 +560,7 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                     var donOrderIds = new List<string> { newHoaDonThanhToan.donOrder }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                     var nhaHangIds = new List<string> { newHoaDonThanhToan.nhaHang }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                     var phuongThucThanhToanIds = new List<string> { newHoaDonThanhToan.phuongThucThanhToan }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                    var khuyenMaiIds = new List<string> { newHoaDonThanhToan.khuyenMai }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                    // var khuyenMaiIds = new List<string> { newHoaDonThanhToan.khuyenMai }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                     var phuPhiIds = new List<string> { newHoaDonThanhToan.phuPhi }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
 
@@ -597,13 +597,13 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                       .Project<PhuongThucThanhToan>(phuongThucThanhToanProjection).ToListAsync();
                     phuongThucThanhToanDict = phuongThucThanhToans.ToDictionary(x => x.Id, x => x.tenPhuongThuc);
 
-                    var khuyenMaiFilter = Builders<KhuyenMai>.Filter.In(x => x.Id, khuyenMaiIds);
-                    var khuyenMaiProjection = Builders<KhuyenMai>.Projection
-                      .Include(x => x.Id)
-                     .Include(x => x.tenKhuyenMai);
-                    var khuyenMais = await _collectionKhuyenMai.Find(khuyenMaiFilter)
-                     .Project<KhuyenMai>(khuyenMaiProjection).ToListAsync();
-                    khuyenMaiDict = khuyenMais.ToDictionary(x => x.Id, x => x.tenKhuyenMai);
+                    // var khuyenMaiFilter = Builders<KhuyenMai>.Filter.In(x => x.Id, khuyenMaiIds);
+                    // var khuyenMaiProjection = Builders<KhuyenMai>.Projection
+                    //   .Include(x => x.Id)
+                    //  .Include(x => x.tenKhuyenMai);
+                    // var khuyenMais = await _collectionKhuyenMai.Find(khuyenMaiFilter)
+                    //  .Project<KhuyenMai>(khuyenMaiProjection).ToListAsync();
+                    // khuyenMaiDict = khuyenMais.ToDictionary(x => x.Id, x => x.tenKhuyenMai);
 
                     var phuPhiFilter = Builders<PhuPhi>.Filter.In(x => x.Id, phuPhiIds);
                     var phuPhiProjection = Builders<PhuPhi>.Projection
@@ -642,11 +642,11 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                         gioVao = newHoaDonThanhToan.gioVao,
                         gioRa = newHoaDonThanhToan.gioRa,
                         soNguoi = newHoaDonThanhToan.soNguoi,
-                        khuyenMai = new IdName
-                        {
-                            Id = newHoaDonThanhToan.khuyenMai,
-                            Name = khuyenMaiDict.ContainsKey(newHoaDonThanhToan.khuyenMai) ? khuyenMaiDict[newHoaDonThanhToan.khuyenMai] : null
-                        },
+                        // khuyenMai = new IdName
+                        // {
+                        //     Id = newHoaDonThanhToan.khuyenMai,
+                        //     Name = khuyenMaiDict.ContainsKey(newHoaDonThanhToan.khuyenMai) ? khuyenMaiDict[newHoaDonThanhToan.khuyenMai] : null
+                        // },
                         phuPhi = new IdName
                         {
                             Id = newHoaDonThanhToan.phuPhi,
