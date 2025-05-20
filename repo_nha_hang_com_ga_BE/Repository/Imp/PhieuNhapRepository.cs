@@ -145,20 +145,20 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     id = x.Id,
                     tenPhieu = x.tenPhieu,
                     tenNguoiGiao = x.tenNguoiGiao,
-                    nhaCungCap = new IdName
+                    nhaCungCap = x.nhaCungCap != null ? new IdName
                     {
                         Id = x.nhaCungCap,
                         Name = nhaCungCapDict.ContainsKey(x.nhaCungCap) ? nhaCungCapDict[x.nhaCungCap] : null
-                    },
+                    } : null,
                     dienGiai = x.dienGiai,
                     diaDiem = x.diaDiem,
                     tongTien = x.tongTien,
                     ghiChu = x.ghiChu,
-                    nhanVien = new IdName
+                    nhanVien = x.nhanVien != null ? new IdName
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    },
+                    } : null,
                     nguyenLieus = x.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                     {
                         id = y.id,
@@ -168,21 +168,21 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                         hanSuDung = y.hanSuDung,
                         donGia = y.donGia != null ? y.donGia : null,
                         thanhTien = y.thanhTien != null ? y.thanhTien : null,
-                        loaiNguyenLieu = new IdName
+                        loaiNguyenLieu = y.loaiNguyenLieu != null ? new IdName
                         {
                             Id = y.loaiNguyenLieu,
                             Name = loaiNguyenLieuDict.ContainsKey(y.loaiNguyenLieu) ? loaiNguyenLieuDict[y.loaiNguyenLieu] : null
-                        },
-                        donViTinh = new IdName
+                        } : null,
+                        donViTinh = y.donViTinh != null ? new IdName
                         {
                             Id = y.donViTinh,
                             Name = donViTinhDict.GetValueOrDefault(y.donViTinh)
-                        },
-                        tuDo = new IdName
+                        } : null,
+                        tuDo = y.tuDo != null ? new IdName
                         {
                             Id = y.tuDo,
                             Name = tuDoDict.GetValueOrDefault(y.tuDo)
-                        },
+                        } : null,
                         trangThai = y.trangThai
                     }).ToList()
                 }).ToList();
@@ -263,20 +263,20 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     id = x.Id,
                     tenPhieu = x.tenPhieu,
                     tenNguoiGiao = x.tenNguoiGiao,
-                    nhaCungCap = new IdName
+                    nhaCungCap = x.nhaCungCap != null ? new IdName
                     {
                         Id = x.nhaCungCap,
                         Name = nhaCungCapDict.ContainsKey(x.nhaCungCap) ? nhaCungCapDict[x.nhaCungCap] : null
-                    },
+                    } : null,
                     dienGiai = x.dienGiai,
                     diaDiem = x.diaDiem,
                     tongTien = x.tongTien,
                     ghiChu = x.ghiChu,
-                    nhanVien = new IdName
+                    nhanVien = x.nhanVien != null ? new IdName
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    },
+                    } : null,
                     nguyenLieus = x.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                     {
                         id = y.id,
@@ -286,21 +286,21 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                         hanSuDung = y.hanSuDung,
                         donGia = y.donGia != null ? y.donGia : null,
                         thanhTien = y.thanhTien != null ? y.thanhTien : null,
-                        loaiNguyenLieu = new IdName
+                        loaiNguyenLieu = y.loaiNguyenLieu != null ? new IdName
                         {
                             Id = y.loaiNguyenLieu,
                             Name = loaiNguyenLieuDict.ContainsKey(y.loaiNguyenLieu) ? loaiNguyenLieuDict[y.loaiNguyenLieu] : null
-                        },
-                        donViTinh = new IdName
+                        } : null,
+                        donViTinh = y.donViTinh != null ? new IdName
                         {
                             Id = y.donViTinh,
                             Name = donViTinhDict.GetValueOrDefault(y.donViTinh)
-                        },
-                        tuDo = new IdName
+                        } : null,
+                        tuDo = y.tuDo != null ? new IdName
                         {
                             Id = y.tuDo,
                             Name = tuDoDict.GetValueOrDefault(y.tuDo)
-                        },
+                        } : null,
                         trangThai = y.trangThai
                     }).ToList()
                 }).ToList();
@@ -343,20 +343,20 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 id = phieuNhap.Id,
                 tenPhieu = phieuNhap.tenPhieu,
                 tenNguoiGiao = phieuNhap.tenNguoiGiao,
-                nhaCungCap = new IdName
+                nhaCungCap = phieuNhap.nhaCungCap != null ? new IdName
                 {
                     Id = phieuNhap.nhaCungCap,
                     Name = _collectionNhaCungCap.Find(x => x.Id == phieuNhap.nhaCungCap).FirstOrDefault()?.tenNhaCungCap,
-                },
+                } : null,
                 dienGiai = phieuNhap.dienGiai,
                 diaDiem = phieuNhap.diaDiem,
                 tongTien = phieuNhap.tongTien,
                 ghiChu = phieuNhap.ghiChu,
-                nhanVien = new IdName
+                nhanVien = phieuNhap.nhanVien != null ? new IdName
                 {
                     Id = phieuNhap.nhanVien,
                     Name = _collectionNhanVien.Find(x => x.Id == phieuNhap.nhanVien).FirstOrDefault()?.tenNhanVien,
-                },
+                } : null,
                 nguyenLieus = phieuNhap.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                 {
                     id = y.id,
@@ -366,21 +366,21 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     hanSuDung = y.hanSuDung,
                     donGia = y.donGia != null ? y.donGia : null,
                     thanhTien = y.thanhTien != null ? y.thanhTien : null,
-                    loaiNguyenLieu = new IdName
+                    loaiNguyenLieu = y.loaiNguyenLieu != null ? new IdName
                     {
                         Id = y.loaiNguyenLieu,
                         Name = _collectionLoaiNguyenLieu.Find(x => x.Id == y.loaiNguyenLieu).FirstOrDefault()?.tenLoai
-                    },
-                    donViTinh = new IdName
+                    } : null,
+                    donViTinh = y.donViTinh != null ? new IdName
                     {
                         Id = y.donViTinh,
                         Name = _collectionDonViTinh.Find(x => x.Id == y.donViTinh).FirstOrDefault()?.tenDonViTinh
-                    },
-                    tuDo = new IdName
+                    } : null,
+                    tuDo = y.tuDo != null ? new IdName
                     {
                         Id = y.tuDo,
                         Name = _collectionTuDo.Find(x => x.Id == y.tuDo).FirstOrDefault()?.tenTuDo
-                    },
+                    } : null,
                     trangThai = y.trangThai
                 }).ToList()
             };
@@ -519,20 +519,20 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 id = newPhieuNhap.Id,
                 tenPhieu = newPhieuNhap.tenPhieu,
                 tenNguoiGiao = newPhieuNhap.tenNguoiGiao,
-                nhaCungCap = new IdName
+                nhaCungCap = newPhieuNhap.nhaCungCap != null ? new IdName
                 {
                     Id = newPhieuNhap.nhaCungCap,
                     Name = _collectionNhaCungCap.Find(x => x.Id == newPhieuNhap.nhaCungCap).FirstOrDefault()?.tenNhaCungCap,
-                },
+                } : null,
                 dienGiai = newPhieuNhap.dienGiai,
                 diaDiem = newPhieuNhap.diaDiem,
                 tongTien = newPhieuNhap.tongTien,
                 ghiChu = newPhieuNhap.ghiChu,
-                nhanVien = new IdName
+                nhanVien = newPhieuNhap.nhanVien != null ? new IdName
                 {
                     Id = newPhieuNhap.nhanVien,
                     Name = _collectionNhanVien.Find(x => x.Id == newPhieuNhap.nhanVien).FirstOrDefault()?.tenNhanVien,
-                },
+                } : null,
                 nguyenLieus = newPhieuNhap.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                 {
                     id = y.id,
@@ -542,21 +542,21 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     hanSuDung = y.hanSuDung,
                     donGia = y.donGia != null ? y.donGia : null,
                     thanhTien = y.thanhTien != null ? y.thanhTien : null,
-                    loaiNguyenLieu = new IdName
+                    loaiNguyenLieu = y.loaiNguyenLieu != null ? new IdName
                     {
                         Id = y.loaiNguyenLieu,
                         Name = loaiNguyenLieuDict.ContainsKey(y.loaiNguyenLieu) ? loaiNguyenLieuDict[y.loaiNguyenLieu] : null
-                    },
-                    donViTinh = new IdName
+                    } : null,
+                    donViTinh = y.donViTinh != null ? new IdName
                     {
                         Id = y.donViTinh,
                         Name = donViTinhDict.GetValueOrDefault(y.donViTinh) ?? ""
-                    },
-                    tuDo = new IdName
+                    } : null,
+                    tuDo = y.tuDo != null ? new IdName
                     {
                         Id = y.tuDo,
                         Name = tuDoDict.GetValueOrDefault(y.tuDo) ?? ""
-                    },
+                    } : null,
                     trangThai = y.trangThai
                 }).ToList()
             };
