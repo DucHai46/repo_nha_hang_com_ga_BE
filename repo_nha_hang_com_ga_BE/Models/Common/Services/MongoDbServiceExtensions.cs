@@ -47,6 +47,7 @@ namespace repo_nha_hang_com_ga_BE.Models.Common.Services
             services.AddSingleton<IPhanQuyenRepository, PhanQuyenRepository>();
             services.AddSingleton<IPhieuKiemKeRepository, PhieuKiemKeRepository>();
             services.AddSingleton<IPhieuXuatRepository, PhieuXuatRepository>();
+            services.AddSingleton<IPhieuThanhLyRepository, PhieuThanhLyRepository>();
 
             return services;
         }
