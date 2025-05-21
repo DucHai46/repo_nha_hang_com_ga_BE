@@ -6,16 +6,11 @@ using file.service.Repository.Impl;
 using file.service.Services;
 using file.service.Services.Impl;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Configuration.AddUserSecrets<Program>();
-
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 
