@@ -171,7 +171,7 @@ public class PhieuThanhLyRepository : IPhieuThanhLyRepository
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    } : null,
+                    } : new IdName { Id = "", Name = "" },
                     loaiNguyenLieus = x.loaiNguyenLieus.Select(y => new loaiNguyenLieuThanhLyRespond
                     {
                         Id = y.id,
