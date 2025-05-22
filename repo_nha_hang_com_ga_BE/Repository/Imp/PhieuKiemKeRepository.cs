@@ -145,11 +145,11 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
                     ngayKiemKe = x.createdDate?.Date,
                     diaDiem = x.diaDiem,
                     ghiChu = x.ghiChu,
-                    nhanVien = new IdName
+                    nhanVien = x.nhanVien != null ? new IdName
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    },
+                    } : null,
                     loaiNguyenLieus = x.loaiNguyenLieus.Select(y => new loaiNguyenLieuKiemKeRespond
                     {
                         Id = y.id,
@@ -241,11 +241,11 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
                     ngayKiemKe = x.createdDate?.Date,
                     diaDiem = x.diaDiem,
                     ghiChu = x.ghiChu,
-                    nhanVien = new IdName
+                    nhanVien = x.nhanVien != null ? new IdName
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    },
+                    } : null,
                     loaiNguyenLieus = x.loaiNguyenLieus.Select(y => new loaiNguyenLieuKiemKeRespond
                     {
                         Id = y.id,
@@ -330,11 +330,11 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
                 ngayKiemKe = phieuKiemKe.createdDate?.Date,
                 diaDiem = phieuKiemKe.diaDiem,
                 ghiChu = phieuKiemKe.ghiChu,
-                nhanVien = new IdName
+                nhanVien = phieuKiemKe.nhanVien != null ? new IdName
                 {
                     Id = phieuKiemKe.nhanVien,
-                    Name = _collectionNhanVien.Find(x => x.Id == phieuKiemKe.nhanVien).FirstOrDefault()?.tenNhanVien,
-                },
+                    Name = _collectionNhanVien.Find(x => x.Id == phieuKiemKe.nhanVien).FirstOrDefault().tenNhanVien
+                } : null,
                 loaiNguyenLieus = phieuKiemKe.loaiNguyenLieus.Select(y => new loaiNguyenLieuKiemKeRespond
                 {
                     Id = y.id,
@@ -419,11 +419,11 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
                 ngayKiemKe = newPhieuKiemKe.createdDate?.Date,
                 diaDiem = newPhieuKiemKe.diaDiem,
                 ghiChu = newPhieuKiemKe.ghiChu,
-                nhanVien = new IdName
+                nhanVien = newPhieuKiemKe.nhanVien != null ? new IdName
                 {
                     Id = newPhieuKiemKe.nhanVien,
-                    Name = _collectionNhanVien.Find(x => x.Id == newPhieuKiemKe.nhanVien).FirstOrDefault()?.tenNhanVien,
-                },
+                    Name = _collectionNhanVien.Find(x => x.Id == newPhieuKiemKe.nhanVien).FirstOrDefault().tenNhanVien
+                } : null,
                 loaiNguyenLieus = newPhieuKiemKe.loaiNguyenLieus.Select(y => new loaiNguyenLieuKiemKeRespond
                 {
                     Id = y.id,

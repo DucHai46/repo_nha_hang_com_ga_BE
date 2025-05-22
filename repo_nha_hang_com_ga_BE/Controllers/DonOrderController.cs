@@ -62,9 +62,13 @@ public class DonOrderController : ControllerBase
     }
 
     [HttpPut("update-status/{id}")]
-    public async Task<IActionResult> UpdateStatusDonOrder(string id, RequestUpdateDonOrder request)
+    public async Task<IActionResult> UpdateStatusDonOrder(string id, RequestUpdateStatusDonOrder request)
     {
-        await _hubContext.Clients.All.SendAsync("ChangeStatusOrder", $"{request.tenDon}");
-        return Ok(await _repository.UpdateDonOrder(id, request));
+        await _hubContext.Clients.All.SendAsync("ChangeStatusOrder", new
+        {
+            Id = id,
+            Status = request.trangThai,
+        });
+        return Ok(await _repository.UpdateStatusDonOrder(id, request));
     }
 }

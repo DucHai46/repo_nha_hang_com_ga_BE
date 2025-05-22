@@ -47,6 +47,7 @@ public class PhuongThucThanhToanRepository : IPhuongThucThanhToanRepository
 
             var projection = Builders<PhuongThucThanhToan>.Projection
                 .Include(x => x.tenPhuongThuc)
+                .Include(x => x.qrCode)
                 .Include(x => x.moTa);
 
             var findOptions = new FindOptions<PhuongThucThanhToan, PhuongThucThanhToanRespond>

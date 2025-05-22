@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -9,67 +8,67 @@ using repo_nha_hang_com_ga_BE.Models.Common.Models.Respond;
 using repo_nha_hang_com_ga_BE.Models.Common.Paging;
 using repo_nha_hang_com_ga_BE.Models.Common.Respond;
 using repo_nha_hang_com_ga_BE.Models.MongoDB;
-using repo_nha_hang_com_ga_BE.Models.Requests.PhieuXuat;
-using repo_nha_hang_com_ga_BE.Models.Responds.PhieuXuat;
+using repo_nha_hang_com_ga_BE.Models.Requests.PhieuThanhLy;
+using repo_nha_hang_com_ga_BE.Models.Responds.PhieuThanhLy;
 
 namespace repo_nha_hang_com_ga_BE.Repository.Imp;
 
-public class PhieuXuatRepository : IPhieuXuatRepository
+public class PhieuThanhLyRepository : IPhieuThanhLyRepository
 {
-    private readonly IMongoCollection<PhieuXuat> _collection;
-    private readonly IMongoCollection<DonViTinh> _collectionDonViTinh;
+    private readonly IMongoCollection<PhieuThanhLy> _collection;
     private readonly IMongoCollection<LoaiNguyenLieu> _collectionLoaiNguyenLieu;
     private readonly IMongoCollection<NguyenLieu> _collectionNguyenLieu;
     private readonly IMongoCollection<NhanVien> _collectionNhanVien;
+
+    private readonly IMongoCollection<DonViTinh> _collectionDonViTinh;
     private readonly IMapper _mapper;
 
-    public PhieuXuatRepository(IOptions<MongoDbSettings> settings, IMapper mapper)
+    public PhieuThanhLyRepository(IOptions<MongoDbSettings> settings, IMapper mapper)
     {
         var mongoClientSettings = settings.Value;
         var client = new MongoClient(mongoClientSettings.Connection);
         var database = client.GetDatabase(mongoClientSettings.DatabaseName);
-        _collection = database.GetCollection<PhieuXuat>("PhieuXuat");
+        _collection = database.GetCollection<PhieuThanhLy>("PhieuThanhLy");
         _collectionLoaiNguyenLieu = database.GetCollection<LoaiNguyenLieu>("LoaiNguyenLieu");
         _collectionNguyenLieu = database.GetCollection<NguyenLieu>("NguyenLieu");
         _collectionNhanVien = database.GetCollection<NhanVien>("NhanVien");
         _collectionDonViTinh = database.GetCollection<DonViTinh>("DonViTinh");
         _mapper = mapper;
     }
-    public async Task<RespondAPIPaging<List<PhieuXuatRespond>>> GetAllPhieuXuats(RequestSearchPhieuXuat request)
+    public async Task<RespondAPIPaging<List<PhieuThanhLyRespond>>> GetAllPhieuThanhLys(RequestSearchPhieuThanhLy request)
     {
         try
         {
             var collection = _collection;
-            var filter = Builders<PhieuXuat>.Filter.Empty;
-            filter &= Builders<PhieuXuat>.Filter.Eq(x => x.isDelete, false);
+            var filter = Builders<PhieuThanhLy>.Filter.Empty;
+            filter &= Builders<PhieuThanhLy>.Filter.Eq(x => x.isDelete, false);
 
             if (!string.IsNullOrEmpty(request.tenPhieu))
             {
-                filter &= Builders<PhieuXuat>.Filter.Regex(x => x.tenPhieu, new BsonRegularExpression($".*{request.tenPhieu}.*"));
+                filter &= Builders<PhieuThanhLy>.Filter.Regex(x => x.tenPhieu, new BsonRegularExpression($".*{request.tenPhieu}.*"));
             }
 
             if (request.tuNgay != null)
             {
-                filter &= Builders<PhieuXuat>.Filter.Gte(x => x.ngayLap, request.tuNgay.Value);
+                filter &= Builders<PhieuThanhLy>.Filter.Gte(x => x.ngayLap, request.tuNgay.Value);
             }
 
 
             if (request.denNgay != null)
             {
-                filter &= Builders<PhieuXuat>.Filter.Lte(x => x.ngayLap, request.denNgay.Value);
+                filter &= Builders<PhieuThanhLy>.Filter.Lte(x => x.ngayLap, request.denNgay.Value);
             }
-            var projection = Builders<PhieuXuat>.Projection
+
+            var projection = Builders<PhieuThanhLy>.Projection
                .Include(x => x.Id)
                .Include(x => x.tenPhieu)
                .Include(x => x.ngayLap)
-               .Include(x => x.nguoiNhan)
-               .Include(x => x.lyDoXuat)
-               .Include(x => x.nhanVien)
                .Include(x => x.diaDiem)
                .Include(x => x.ghiChu)
+               .Include(x => x.nhanVien)
                .Include(x => x.loaiNguyenLieus);
 
-            var findOptions = new FindOptions<PhieuXuat, PhieuXuat>
+            var findOptions = new FindOptions<PhieuThanhLy, PhieuThanhLy>
             {
                 Projection = projection
             };
@@ -87,13 +86,15 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                 findOptions.Limit = request.PageSize;
 
                 var cursor = await collection.FindAsync(filter, findOptions);
-                var phieuXuats = await cursor.ToListAsync();
+                var phieuThanhLys = await cursor.ToListAsync();
+
                 var loaiNguyenLieuDict = new Dictionary<string, string>();
                 var nguyenLieuDict = new Dictionary<string, string>();
                 var nhanVienDict = new Dictionary<string, string>();
                 var donViTinhDict = new Dictionary<string, string>();
 
-                var loaiNguyenLieuIds = phieuXuats.SelectMany(x => x.loaiNguyenLieus.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                var loaiNguyenLieuIds = phieuThanhLys.SelectMany(x => x.loaiNguyenLieus.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
                 var loaiNguyenLieuFilter = Builders<LoaiNguyenLieu>.Filter.In(x => x.Id, loaiNguyenLieuIds);
                 var loaiNguyenLieuProjection = Builders<LoaiNguyenLieu>.Projection
                     .Include(x => x.Id)
@@ -102,7 +103,8 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                     .Project<LoaiNguyenLieu>(loaiNguyenLieuProjection)
                     .ToListAsync();
 
-                var nhanVienIds = phieuXuats.Select(x => x.nhanVien).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                var nhanVienIds = phieuThanhLys.Select(x => x.nhanVien).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
                 var nhanVienFilter = Builders<NhanVien>.Filter.In(x => x.Id, nhanVienIds);
 
                 var nhanVienProjection = Builders<NhanVien>.Projection
@@ -111,21 +113,19 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                 var nhanViens = await _collectionNhanVien.Find(nhanVienFilter)
                    .Project<NhanVien>(nhanVienProjection)
                    .ToListAsync();
-
-
                 nhanVienDict = nhanViens.ToDictionary(x => x.Id, x => x.tenNhanVien);
-
                 loaiNguyenLieuDict = loaiNguyenLieus.ToDictionary(x => x.Id, x => x.tenLoai);
                 List<NguyenLieu> nguyenLieus = new List<NguyenLieu>();
-                foreach (var phieuXuat in phieuXuats)
+                foreach (var phieuThanhLy in phieuThanhLys)
                 {
-                    var nguyenLieuIds = phieuXuat.loaiNguyenLieus.SelectMany(x => x.nguyenLieus.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                    var nguyenLieuIds = phieuThanhLy.loaiNguyenLieus.SelectMany(x => x.nguyenLieus.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
                     var nguyenLieuFilter = Builders<NguyenLieu>.Filter.In(x => x.Id, nguyenLieuIds);
                     var nguyenLieuProjection = Builders<NguyenLieu>.Projection
                         .Include(x => x.Id)
                         .Include(x => x.tenNguyenLieu)
                         .Include(x => x.soLuong)
+                        .Include(x => x.hanSuDung)
                         .Include(x => x.donViTinh);
                     var newNguyenLieus = await _collectionNguyenLieu.Find(nguyenLieuFilter)
                         .Project<NguyenLieu>(nguyenLieuProjection)
@@ -159,29 +159,29 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                         }
                     }
                 }
-                var phieuXuatResponds = phieuXuats.Select(x => new PhieuXuatRespond
+
+                var phieuThanhLyResponds = phieuThanhLys.Select(x => new PhieuThanhLyRespond
                 {
                     id = x.Id,
                     tenPhieu = x.tenPhieu,
                     ngayLap = x.createdDate?.Date,
                     diaDiem = x.diaDiem,
                     ghiChu = x.ghiChu,
-                    lyDoXuat = x.lyDoXuat,
-                    nguoiNhan = x.nguoiNhan,
                     nhanVien = x.nhanVien != null ? new IdName
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    } : null,
-                    loaiNguyenLieus = x.loaiNguyenLieus.Select(y => new loaiNguyenLieuXuatRespond
+                    } : new IdName { Id = "", Name = "" },
+                    loaiNguyenLieus = x.loaiNguyenLieus.Select(y => new loaiNguyenLieuThanhLyRespond
                     {
                         Id = y.id,
                         Name = loaiNguyenLieuDict.ContainsKey(y.id) ? loaiNguyenLieuDict[y.id] : null,
-                        nguyenLieus = y.nguyenLieus.Select(z => new nguyenLieuXuatRespond
+                        nguyenLieus = y.nguyenLieus.Select(z => new nguyenLieuThanhLyRespond
                         {
                             id = z.id,
                             tenNguyenLieu = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieuDict[z.id] : null,
                             soLuong = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.soLuong : null,
+                            hanSuDung = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.hanSuDung : null,
                             donViTinh = new IdName
                             {
                                 Id = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.donViTinh : null,
@@ -189,18 +189,19 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                                 ? donViTinhDict[nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.donViTinh : null] : null
                             },
                             soLuongBanDau = z.soLuongBanDau,
-                            soLuongXuat = z.soLuongXuat,
-                            chenhLech = z.chenhLech
+                            soLuongThanhLy = z.soLuongThanhLy,
+                            chenhLech = z.chenhLech,
+                            lyDoThanhLy = z.lyDoThanhLy
                         }).ToList()
                     }).ToList()
                 }).ToList();
                 var pagingDetail = new PagingDetail(currentPage, request.PageSize, totalRecords);
-                var pagingResponse = new PagingResponse<List<PhieuXuatRespond>>
+                var pagingResponse = new PagingResponse<List<PhieuThanhLyRespond>>
                 {
                     Paging = pagingDetail,
-                    Data = phieuXuatResponds
+                    Data = phieuThanhLyResponds
                 };
-                return new RespondAPIPaging<List<PhieuXuatRespond>>(
+                return new RespondAPIPaging<List<PhieuThanhLyRespond>>(
                     ResultRespond.Succeeded,
                     data: pagingResponse
                 );
@@ -208,13 +209,15 @@ public class PhieuXuatRepository : IPhieuXuatRepository
             else
             {
                 var cursor = await collection.FindAsync(filter, findOptions);
-                var phieuXuats = await cursor.ToListAsync();
+                var phieuThanhLys = await cursor.ToListAsync();
+
                 var loaiNguyenLieuDict = new Dictionary<string, string>();
                 var nguyenLieuDict = new Dictionary<string, string>();
                 var nhanVienDict = new Dictionary<string, string>();
                 var donViTinhDict = new Dictionary<string, string>();
 
-                var loaiNguyenLieuIds = phieuXuats.SelectMany(x => x.loaiNguyenLieus.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                var loaiNguyenLieuIds = phieuThanhLys.SelectMany(x => x.loaiNguyenLieus.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
                 var loaiNguyenLieuFilter = Builders<LoaiNguyenLieu>.Filter.In(x => x.Id, loaiNguyenLieuIds);
                 var loaiNguyenLieuProjection = Builders<LoaiNguyenLieu>.Projection
                     .Include(x => x.Id)
@@ -223,7 +226,8 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                     .Project<LoaiNguyenLieu>(loaiNguyenLieuProjection)
                     .ToListAsync();
 
-                var nhanVienIds = phieuXuats.Select(x => x.nhanVien).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                var nhanVienIds = phieuThanhLys.Select(x => x.nhanVien).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
                 var nhanVienFilter = Builders<NhanVien>.Filter.In(x => x.Id, nhanVienIds);
 
                 var nhanVienProjection = Builders<NhanVien>.Projection
@@ -232,21 +236,19 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                 var nhanViens = await _collectionNhanVien.Find(nhanVienFilter)
                    .Project<NhanVien>(nhanVienProjection)
                    .ToListAsync();
-
-
                 nhanVienDict = nhanViens.ToDictionary(x => x.Id, x => x.tenNhanVien);
-
                 loaiNguyenLieuDict = loaiNguyenLieus.ToDictionary(x => x.Id, x => x.tenLoai);
                 List<NguyenLieu> nguyenLieus = new List<NguyenLieu>();
-                foreach (var phieuXuat in phieuXuats)
+                foreach (var phieuThanhLy in phieuThanhLys)
                 {
-                    var nguyenLieuIds = phieuXuat.loaiNguyenLieus.SelectMany(x => x.nguyenLieus.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                    var nguyenLieuIds = phieuThanhLy.loaiNguyenLieus.SelectMany(x => x.nguyenLieus.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
                     var nguyenLieuFilter = Builders<NguyenLieu>.Filter.In(x => x.Id, nguyenLieuIds);
                     var nguyenLieuProjection = Builders<NguyenLieu>.Projection
                         .Include(x => x.Id)
                         .Include(x => x.tenNguyenLieu)
                         .Include(x => x.soLuong)
+                        .Include(x => x.hanSuDung)
                         .Include(x => x.donViTinh);
                     var newNguyenLieus = await _collectionNguyenLieu.Find(nguyenLieuFilter)
                         .Project<NguyenLieu>(nguyenLieuProjection)
@@ -280,29 +282,29 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                         }
                     }
                 }
-                var phieuXuatResponds = phieuXuats.Select(x => new PhieuXuatRespond
+
+                var phieuThanhLyResponds = phieuThanhLys.Select(x => new PhieuThanhLyRespond
                 {
                     id = x.Id,
                     tenPhieu = x.tenPhieu,
                     ngayLap = x.createdDate?.Date,
                     diaDiem = x.diaDiem,
                     ghiChu = x.ghiChu,
-                    lyDoXuat = x.lyDoXuat,
-                    nguoiNhan = x.nguoiNhan,
                     nhanVien = x.nhanVien != null ? new IdName
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
                     } : null,
-                    loaiNguyenLieus = x.loaiNguyenLieus.Select(y => new loaiNguyenLieuXuatRespond
+                    loaiNguyenLieus = x.loaiNguyenLieus.Select(y => new loaiNguyenLieuThanhLyRespond
                     {
                         Id = y.id,
                         Name = loaiNguyenLieuDict.ContainsKey(y.id) ? loaiNguyenLieuDict[y.id] : null,
-                        nguyenLieus = y.nguyenLieus.Select(z => new nguyenLieuXuatRespond
+                        nguyenLieus = y.nguyenLieus.Select(z => new nguyenLieuThanhLyRespond
                         {
                             id = z.id,
                             tenNguyenLieu = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieuDict[z.id] : null,
                             soLuong = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.soLuong : null,
+                            hanSuDung = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.hanSuDung : null,
                             donViTinh = new IdName
                             {
                                 Id = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.donViTinh : null,
@@ -310,51 +312,51 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                                 ? donViTinhDict[nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.donViTinh : null] : null
                             },
                             soLuongBanDau = z.soLuongBanDau,
-                            soLuongXuat = z.soLuongXuat,
-                            chenhLech = z.chenhLech
+                            soLuongThanhLy = z.soLuongThanhLy,
+                            chenhLech = z.chenhLech,
+                            lyDoThanhLy = z.lyDoThanhLy
                         }).ToList()
                     }).ToList()
                 }).ToList();
-
-                return new RespondAPIPaging<List<PhieuXuatRespond>>(
+                return new RespondAPIPaging<List<PhieuThanhLyRespond>>(
                     ResultRespond.Succeeded,
-                    data: new PagingResponse<List<PhieuXuatRespond>>
+                    data: new PagingResponse<List<PhieuThanhLyRespond>>
                     {
-                        Data = phieuXuatResponds,
-                        Paging = new PagingDetail(1, phieuXuatResponds.Count, phieuXuatResponds.Count)
+                        Data = phieuThanhLyResponds,
+                        Paging = new PagingDetail(1, phieuThanhLyResponds.Count, phieuThanhLyResponds.Count)
                     }
                 );
-
 
             }
 
         }
         catch (Exception ex)
         {
-            return new RespondAPIPaging<List<PhieuXuatRespond>>(
+            return new RespondAPIPaging<List<PhieuThanhLyRespond>>(
                 ResultRespond.Error,
                 message: ex.Message
             );
         }
+
     }
-    public async Task<RespondAPI<PhieuXuatRespond>> GetPhieuXuatById(string id)
+    public async Task<RespondAPI<PhieuThanhLyRespond>> GetPhieuThanhLyById(string id)
     {
         try
         {
 
-            var phieuXuat = await _collection.Find(x => x.Id == id && x.isDelete == false).FirstOrDefaultAsync();
-            if (phieuXuat == null)
+            var phieuThanhLy = await _collection.Find(x => x.Id == id && x.isDelete == false).FirstOrDefaultAsync();
+            if (phieuThanhLy == null)
             {
-                return new RespondAPI<PhieuXuatRespond>(
+                return new RespondAPI<PhieuThanhLyRespond>(
                     ResultRespond.NotFound,
-                    "Không tìm thấy phieu xuất với ID đã cung cấp."
+                    "Không tìm thấy phiếu thanh lý với ID đã cung cấp."
                 );
             }
             var nguyenLieuDict = new Dictionary<string, string>();
             var loaiNguyenLieuDict = new Dictionary<string, string>();
             var donViTinhDict = new Dictionary<string, string>();
 
-            var loaiNguyenLieuIds = phieuXuat.loaiNguyenLieus.Select(x => x.id).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+            var loaiNguyenLieuIds = phieuThanhLy.loaiNguyenLieus.Select(x => x.id).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
             var loaiNguyenLieuFilter = Builders<LoaiNguyenLieu>.Filter.In(x => x.Id, loaiNguyenLieuIds);
             var loaiNguyenLieuProjection = Builders<LoaiNguyenLieu>.Projection
@@ -366,7 +368,7 @@ public class PhieuXuatRepository : IPhieuXuatRepository
             loaiNguyenLieuDict = loaiNguyenLieus.ToDictionary(x => x.Id, x => x.tenLoai);
 
             List<NguyenLieu> nguyenLieus = new List<NguyenLieu>();
-            var nguyenLieuIds = phieuXuat.loaiNguyenLieus.SelectMany(x => x.nguyenLieus.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+            var nguyenLieuIds = phieuThanhLy.loaiNguyenLieus.SelectMany(x => x.nguyenLieus.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var nguyenLieuFilter = Builders<NguyenLieu>.Filter.In(x => x.Id, nguyenLieuIds);
             var nguyenLieuProjection = Builders<NguyenLieu>.Projection
                 .Include(x => x.Id)
@@ -386,29 +388,28 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                 .Project<DonViTinh>(donViTinhProjection)
                 .ToListAsync();
             donViTinhDict = donViTinhs.ToDictionary(x => x.Id, x => x.tenDonViTinh);
-            var phieuXuatResponds = new PhieuXuatRespond
+            var phieuThanhLyResponds = new PhieuThanhLyRespond
             {
-                id = phieuXuat.Id,
-                tenPhieu = phieuXuat.tenPhieu,
-                ngayLap = phieuXuat.createdDate?.Date,
-                diaDiem = phieuXuat.diaDiem,
-                ghiChu = phieuXuat.ghiChu,
-                lyDoXuat = phieuXuat.lyDoXuat,
-                nguoiNhan = phieuXuat.nguoiNhan,
-                nhanVien = phieuXuat.nhanVien != null ? new IdName
+                id = phieuThanhLy.Id,
+                tenPhieu = phieuThanhLy.tenPhieu,
+                ngayLap = phieuThanhLy.createdDate?.Date,
+                diaDiem = phieuThanhLy.diaDiem,
+                ghiChu = phieuThanhLy.ghiChu,
+                nhanVien = phieuThanhLy.nhanVien != null ? new IdName
                 {
-                    Id = phieuXuat.nhanVien,
-                    Name = _collectionNhanVien.Find(x => x.Id == phieuXuat.nhanVien).FirstOrDefault()?.tenNhanVien
+                    Id = phieuThanhLy.nhanVien,
+                    Name = _collectionNhanVien.Find(x => x.Id == phieuThanhLy.nhanVien).FirstOrDefault()?.tenNhanVien
                 } : null,
-                loaiNguyenLieus = phieuXuat.loaiNguyenLieus.Select(y => new loaiNguyenLieuXuatRespond
+                loaiNguyenLieus = phieuThanhLy.loaiNguyenLieus.Select(y => new loaiNguyenLieuThanhLyRespond
                 {
                     Id = y.id,
                     Name = loaiNguyenLieuDict.ContainsKey(y.id) ? loaiNguyenLieuDict[y.id] : null,
-                    nguyenLieus = y.nguyenLieus.Select(z => new nguyenLieuXuatRespond
+                    nguyenLieus = y.nguyenLieus.Select(z => new nguyenLieuThanhLyRespond
                     {
                         id = z.id,
                         tenNguyenLieu = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieuDict[z.id] : null,
                         soLuong = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.soLuong : null,
+                        hanSuDung = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.hanSuDung : null,
                         donViTinh = new IdName
                         {
                             Id = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.donViTinh : null,
@@ -416,40 +417,42 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                             ? donViTinhDict[nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.donViTinh : null] : null
                         },
                         soLuongBanDau = z.soLuongBanDau,
-                        soLuongXuat = z.soLuongXuat,
-                        chenhLech = z.chenhLech
+                        soLuongThanhLy = z.soLuongThanhLy,
+                        chenhLech = z.chenhLech,
+                        lyDoThanhLy = z.lyDoThanhLy
                     }).ToList()
                 }).ToList()
             };
 
-            return new RespondAPI<PhieuXuatRespond>(
+            return new RespondAPI<PhieuThanhLyRespond>(
                 ResultRespond.Succeeded,
                 "Thành công.",
-                phieuXuatResponds
+                phieuThanhLyResponds
             );
         }
         catch (Exception ex)
         {
-            return new RespondAPI<PhieuXuatRespond>(
+            return new RespondAPI<PhieuThanhLyRespond>(
                 ResultRespond.Error,
                 message: ex.Message
             );
         }
+
     }
 
-    public async Task<RespondAPI<PhieuXuatRespond>> CreatePhieuXuat(RequestAddPhieuXuat request)
+    public async Task<RespondAPI<PhieuThanhLyRespond>> CreatePhieuThanhLy(RequestAddPhieuThanhLy request)
     {
         try
         {
-            PhieuXuat newPhieuXuat = _mapper.Map<PhieuXuat>(request);
-            newPhieuXuat.createdDate = DateTimeOffset.UtcNow;
-            newPhieuXuat.updatedDate = DateTimeOffset.UtcNow;
-            newPhieuXuat.isDelete = false;
+            PhieuThanhLy newPhieuThanhLy = _mapper.Map<PhieuThanhLy>(request);
+            newPhieuThanhLy.createdDate = DateTimeOffset.UtcNow;
+            newPhieuThanhLy.updatedDate = DateTimeOffset.UtcNow;
+            newPhieuThanhLy.isDelete = false;
             var nguyenLieuDict = new Dictionary<string, string>();
             var loaiNguyenLieuDict = new Dictionary<string, string>();
             var donViTinhDict = new Dictionary<string, string>();
 
-            var loaiNguyenLieuIds = newPhieuXuat.loaiNguyenLieus.Select(x => x.id).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+            var loaiNguyenLieuIds = newPhieuThanhLy.loaiNguyenLieus.Select(x => x.id).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
             var loaiNguyenLieuFilter = Builders<LoaiNguyenLieu>.Filter.In(x => x.Id, loaiNguyenLieuIds);
             var loaiNguyenLieuProjection = Builders<LoaiNguyenLieu>.Projection
@@ -461,7 +464,7 @@ public class PhieuXuatRepository : IPhieuXuatRepository
             loaiNguyenLieuDict = loaiNguyenLieus.ToDictionary(x => x.Id, x => x.tenLoai);
 
             List<NguyenLieu> nguyenLieus = new List<NguyenLieu>();
-            var nguyenLieuIds = newPhieuXuat.loaiNguyenLieus.SelectMany(x => x.nguyenLieus.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+            var nguyenLieuIds = newPhieuThanhLy.loaiNguyenLieus.SelectMany(x => x.nguyenLieus.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var nguyenLieuFilter = Builders<NguyenLieu>.Filter.In(x => x.Id, nguyenLieuIds);
             var nguyenLieuProjection = Builders<NguyenLieu>.Projection
                 .Include(x => x.Id)
@@ -472,7 +475,7 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                 .Project<NguyenLieu>(nguyenLieuProjection)
                 .ToListAsync();
             nguyenLieuDict = nguyenLieus.ToDictionary(x => x.Id, x => x.tenNguyenLieu);
-            foreach (var loai in newPhieuXuat.loaiNguyenLieus)
+            foreach (var loai in newPhieuThanhLy.loaiNguyenLieus)
             {
                 foreach (var nguyenLieu in loai.nguyenLieus)
                 {
@@ -493,7 +496,7 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                 }
             }
 
-            await _collection.InsertOneAsync(newPhieuXuat);
+            await _collection.InsertOneAsync(newPhieuThanhLy);
 
             var donViTinhIds = nguyenLieus.Select(x => x.donViTinh).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var donViTinhFilter = Builders<DonViTinh>.Filter.In(x => x.Id, donViTinhIds);
@@ -504,29 +507,28 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                 .Project<DonViTinh>(donViTinhProjection)
                 .ToListAsync();
             donViTinhDict = donViTinhs.ToDictionary(x => x.Id, x => x.tenDonViTinh);
-            var phieuXuatResponds = new PhieuXuatRespond
+            var phieuThanhLyResponds = new PhieuThanhLyRespond
             {
-                id = newPhieuXuat.Id,
-                tenPhieu = newPhieuXuat.tenPhieu,
-                ngayLap = newPhieuXuat.createdDate?.Date,
-                diaDiem = newPhieuXuat.diaDiem,
-                ghiChu = newPhieuXuat.ghiChu,
-                lyDoXuat = newPhieuXuat.lyDoXuat,
-                nguoiNhan = newPhieuXuat.nguoiNhan,
-                nhanVien = newPhieuXuat.nhanVien != null ? new IdName
+                id = newPhieuThanhLy.Id,
+                tenPhieu = newPhieuThanhLy.tenPhieu,
+                ngayLap = newPhieuThanhLy.createdDate?.Date,
+                diaDiem = newPhieuThanhLy.diaDiem,
+                ghiChu = newPhieuThanhLy.ghiChu,
+                nhanVien = newPhieuThanhLy.nhanVien != null ? new IdName
                 {
-                    Id = newPhieuXuat.nhanVien,
-                    Name = _collectionNhanVien.Find(x => x.Id == newPhieuXuat.nhanVien).FirstOrDefault()?.tenNhanVien
+                    Id = newPhieuThanhLy.nhanVien,
+                    Name = _collectionNhanVien.Find(x => x.Id == newPhieuThanhLy.nhanVien).FirstOrDefault()?.tenNhanVien
                 } : null,
-                loaiNguyenLieus = newPhieuXuat.loaiNguyenLieus.Select(y => new loaiNguyenLieuXuatRespond
+                loaiNguyenLieus = newPhieuThanhLy.loaiNguyenLieus.Select(y => new loaiNguyenLieuThanhLyRespond
                 {
                     Id = y.id,
                     Name = loaiNguyenLieuDict.ContainsKey(y.id) ? loaiNguyenLieuDict[y.id] : null,
-                    nguyenLieus = y.nguyenLieus.Select(z => new nguyenLieuXuatRespond
+                    nguyenLieus = y.nguyenLieus.Select(z => new nguyenLieuThanhLyRespond
                     {
                         id = z.id,
                         tenNguyenLieu = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieuDict[z.id] : null,
                         soLuong = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.soLuong : null,
+                        hanSuDung = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.hanSuDung : null,
                         donViTinh = new IdName
                         {
                             Id = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.donViTinh : null,
@@ -534,46 +536,47 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                             ? donViTinhDict[nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.donViTinh : null] : null
                         },
                         soLuongBanDau = z.soLuongBanDau,
-                        soLuongXuat = z.soLuongXuat,
-                        chenhLech = z.chenhLech
+                        soLuongThanhLy = z.soLuongThanhLy,
+                        chenhLech = z.chenhLech,
+                        lyDoThanhLy = z.lyDoThanhLy
                     }).ToList()
                 }).ToList()
             };
-            return new RespondAPI<PhieuXuatRespond>(
+            return new RespondAPI<PhieuThanhLyRespond>(
                 ResultRespond.Succeeded,
-                "Tạo phiếu xuất thành công.",
-                phieuXuatResponds
+                "Tạo phiếu thanh lý thành công.",
+                phieuThanhLyResponds
             );
         }
         catch (Exception ex)
         {
-            return new RespondAPI<PhieuXuatRespond>(
+            return new RespondAPI<PhieuThanhLyRespond>(
                 ResultRespond.Error,
-                $"Đã xảy ra lỗi khi tìm kiếm phiếu xuất: {ex.Message}"
+                $"Đã xảy ra lỗi khi tìm kiếm phiếu thanh lý: {ex.Message}"
             );
         }
 
     }
 
-    public async Task<RespondAPI<string>> DeletePhieuXuat(string id)
+    public async Task<RespondAPI<string>> DeletePhieuThanhLy(string id)
     {
         try
         {
-            var existingPhieuXuat = await _collection.Find(x => x.Id == id && x.isDelete == false).FirstOrDefaultAsync();
-            if (existingPhieuXuat == null)
+            var existingPhieuThanhLy = await _collection.Find(x => x.Id == id && x.isDelete == false).FirstOrDefaultAsync();
+            if (existingPhieuThanhLy == null)
             {
                 return new RespondAPI<string>(
                     ResultRespond.NotFound,
-                    "Không tìm thấy phiếu xuất để xóa."
+                    "Không tìm thấy phiếu lý để xóa."
                 );
             }
-            foreach (var loai in existingPhieuXuat.loaiNguyenLieus)
+            foreach (var loai in existingPhieuThanhLy.loaiNguyenLieus)
             {
                 foreach (var item in loai.nguyenLieus)
                 {
                     var filter = Builders<NguyenLieu>.Filter.Eq(x => x.Id, item.id);
                     var update = Builders<NguyenLieu>.Update
-                        .Set(x => x.soLuong, item.chenhLech + item.soLuongXuat)
+                        .Set(x => x.soLuong, item.chenhLech + item.soLuongThanhLy)
                         .Set(x => x.updatedDate, DateTimeOffset.UtcNow);
 
                     await _collectionNguyenLieu.UpdateOneAsync(filter, update);
@@ -586,13 +589,13 @@ public class PhieuXuatRepository : IPhieuXuatRepository
             {
                 return new RespondAPI<string>(
                     ResultRespond.Error,
-                    "Xóa phiếu xuất thành công."
+                    "Xóa phiếu lý thành công."
                 );
             }
 
             return new RespondAPI<string>(
                 ResultRespond.Succeeded,
-                "Xóa phiếu xuất thành công.",
+                "Xóa phiếu thanh lý thành công.",
                 id
             );
         }
@@ -600,7 +603,7 @@ public class PhieuXuatRepository : IPhieuXuatRepository
         {
             return new RespondAPI<string>(
                 ResultRespond.Error,
-                $"Đã xảy ra lỗi khi xóa xuất: {ex.Message}"
+                $"Đã xảy ra lỗi khi xóa thanh lý: {ex.Message}"
             );
         }
     }

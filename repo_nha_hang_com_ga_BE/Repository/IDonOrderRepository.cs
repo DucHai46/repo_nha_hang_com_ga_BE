@@ -12,6 +12,7 @@ public interface IDonOrderRepository
     Task<RespondAPI<DonOrderRespond>> GetDonOrderById(string id);
     Task<RespondAPI<DonOrderRespond>> CreateDonOrder(RequestAddDonOrder request);
     Task<RespondAPI<DonOrderRespond>> UpdateDonOrder(string id, RequestUpdateDonOrder request);
+    Task<RespondAPI<DonOrderRespond>> UpdateStatusDonOrder(string id, RequestUpdateStatusDonOrder request);
     Task<RespondAPI<string>> DeleteDonOrder(string id);
 
 }
