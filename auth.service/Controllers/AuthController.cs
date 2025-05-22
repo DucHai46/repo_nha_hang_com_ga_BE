@@ -231,6 +231,17 @@ public class AuthController : Controller
         await _userManager.UpdateAsync(user);
         return Ok(new { Message = isActive ? "Mở khóa người dùng thành công" : "Khóa người dùng thành công" });
     }
+
+    [Authorize]
+    [HttpDelete("delete-user")]
+    public async Task<IActionResult> DeleteUser(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+            return NotFound();
+        await _userManager.DeleteAsync(user);
+        return Ok(new { Message = "Xóa người dùng thành công" });
+    }
 }
 
 public class RegisterModel
