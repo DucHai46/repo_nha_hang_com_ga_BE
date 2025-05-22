@@ -105,7 +105,9 @@ public class AuthController : Controller
             user.Address,
             user.Avatar,
             user.Gender,
-            user.DateOfBirth
+            user.DateOfBirth,
+            user.PhanQuyen,
+            user.IsActive
         };
         return Ok(userInfo);
     }
@@ -163,6 +165,7 @@ public class AuthController : Controller
                     user.Avatar,
                     user.Gender,
                     user.DateOfBirth,
+                    user.PhanQuyen,
                     user.IsActive
                 })
                 .ToList();
@@ -189,6 +192,7 @@ public class AuthController : Controller
                 user.Avatar,
                 user.Gender,
                 user.DateOfBirth,
+                user.PhanQuyen,
                 user.IsActive
             })
             .ToList();
