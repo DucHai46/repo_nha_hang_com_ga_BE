@@ -58,6 +58,11 @@ public class AuthController : Controller
         if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
             return Unauthorized();
 
+        if (user.IsActive == false)
+        {
+            return BadRequest("Tài khoản đã bị khóa");
+        }
+
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
