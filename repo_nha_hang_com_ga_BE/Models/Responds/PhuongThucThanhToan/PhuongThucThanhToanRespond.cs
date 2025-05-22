@@ -12,7 +12,7 @@ public class PhuongThucThanhToanRespond
     public string? id { get; set; }
 
     public string? tenPhuongThuc { get; set; }
-
+    public string? qrCode { get; set; }
     public string? moTa { get; set; }
 
 }

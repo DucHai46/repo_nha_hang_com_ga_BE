@@ -13,7 +13,7 @@ public class RequestAddHoaDonThanhToan
     public DateTimeOffset? gioVao { get; set; }
     public DateTimeOffset? gioRa { get; set; }
     public int? soNguoi { get; set; }
-    // public string? khuyenMai { get; set; }
+    public string? khuyenMai { get; set; }
     public string? phuPhi { get; set; }
     public TrangThaiHoaDon? trangthai { get; set; }
 }

@@ -271,7 +271,8 @@ public class DonOrderRepository : IDonOrderRepository
                     trangThai = donOrder.trangThai,
                     tongTien = donOrder.tongTien,
                     createdDate = donOrder.createdDate?.Date,
-                }).ToList();
+                }).OrderBy(x => x.trangThai)
+                    .ThenByDescending(x => x.createdDate).ToList();
                 var pagingDetail = new PagingDetail(currentPage, request.PageSize, totalRecords);
                 var pagingResponse = new PagingResponse<List<DonOrderRespond>>
                 {
@@ -1021,5 +1022,191 @@ public class DonOrderRepository : IDonOrderRepository
         }
     }
 
+    public async Task<RespondAPI<DonOrderRespond>> UpdateStatusDonOrder(string id, RequestUpdateStatusDonOrder request)
+    {
+        try
+        {
+            var filter = Builders<DonOrder>.Filter.Eq(x => x.Id, id);
+            filter &= Builders<DonOrder>.Filter.Eq(x => x.isDelete, false);
+            var donOrder = await _collection.Find(filter).FirstOrDefaultAsync();
+
+            if (donOrder == null)
+            {
+                return new RespondAPI<DonOrderRespond>(
+                    ResultRespond.NotFound,
+                    "Không tìm thấy đơn order với ID đã cung cấp."
+                );
+            }
+
+            // Kiểm tra nếu trạng thái là null
+            if (request.trangThai == null)
+            {
+                return new RespondAPI<DonOrderRespond>(
+                    ResultRespond.Error,
+                    "Trạng thái đơn order không được để trống."
+                );
+            }
+
+            // Cập nhật trực tiếp đối tượng
+            donOrder.trangThai = request.trangThai;
+            donOrder.updatedDate = DateTimeOffset.UtcNow;
+
+            var updateResult = await _collection.ReplaceOneAsync(filter, donOrder);
+
+
+            // Cập nhật người dùng nếu có thông tin
+            // danhMucNguyenLieu.updatedUser = currentUser.Id;
+
+            if (!updateResult.IsAcknowledged || updateResult.ModifiedCount == 0)
+            {
+                return new RespondAPI<DonOrderRespond>(
+                    ResultRespond.Error,
+                    "Cập nhật trạng thái đơn order không thành công."
+                );
+            }
+
+            // var donOrderRespond = _mapper.Map<DonOrderRespond>(donOrder);
+            var monAnDict = new Dictionary<string, string>();
+            var loaiDonDict = new Dictionary<string, string>();
+            var banDict = new Dictionary<string, string>();
+            var khachHangDict = new Dictionary<string, string>();
+            var comBoDict = new Dictionary<string, string>();
+
+            var loaiDonIds = new List<string> { donOrder.loaiDon }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+            var banIds = new List<string> { donOrder.ban }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+            var khachHangIds = new List<string> { donOrder.khachHang }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
+            var khachHangFilter = Builders<KhachHang>.Filter.In(x => x.Id, khachHangIds);
+            var khachHangProjection = Builders<KhachHang>.Projection
+                .Include(x => x.Id)
+               .Include(x => x.tenKhachHang);
+            var khachHangs = await _collectionkhachHang.Find(khachHangFilter)
+               .Project<KhachHang>(khachHangProjection)
+              .ToListAsync();
+            khachHangDict = khachHangs.ToDictionary(x => x.Id, x => x.tenKhachHang);
+
+            var loaiDonFilter = Builders<LoaiDon>.Filter.In(x => x.Id, loaiDonIds);
+            var loaiDonProjection = Builders<LoaiDon>.Projection
+              .Include(x => x.Id)
+             .Include(x => x.tenLoaiDon);
+            var loaiDons = await _collectionLoaiDon.Find(loaiDonFilter)
+             .Project<LoaiDon>(loaiDonProjection)
+             .ToListAsync();
+            loaiDonDict = loaiDons.ToDictionary(x => x.Id, x => x.tenLoaiDon);
+
+            var banFilter = Builders<Ban>.Filter.In(x => x.Id, banIds);
+            var banProjection = Builders<Ban>.Projection
+             .Include(x => x.Id)
+            .Include(x => x.tenBan);
+            var bans = await _collectionBan.Find(banFilter)
+            .Project<Ban>(banProjection)
+            .ToListAsync();
+            banDict = bans.ToDictionary(x => x.Id, x => x.tenBan);
+
+            List<Combo> comBos = new List<Combo>();
+            List<MonAn> monAns = new List<MonAn>();
+
+            var monAnIds = donOrder.chiTietDonOrder.SelectMany(x => x.monAns.Select(y => y.monAn)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+            var comBoIds = donOrder.chiTietDonOrder.SelectMany(x => x.comBos.Select(y => y.comBo)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
+            var comBoFilter = Builders<Combo>.Filter.In(x => x.Id, comBoIds);
+            var comBoProjection = Builders<Combo>.Projection
+             .Include(x => x.Id)
+            .Include(x => x.tenCombo)
+            .Include(x => x.giaTien)
+            .Include(x => x.moTa);
+            comBos = await _collectionCombo.Find(comBoFilter)
+             .Project<Combo>(comBoProjection)
+             .ToListAsync();
+
+            var monAnFilter = Builders<MonAn>.Filter.In(x => x.Id, monAnIds);
+            var monAnProjection = Builders<MonAn>.Projection
+                .Include(x => x.Id)
+                .Include(x => x.tenMonAn)
+                .Include(x => x.giaTien)
+                .Include(x => x.moTa);
+            monAns = await _collectionMonAn.Find(monAnFilter)
+                .Project<MonAn>(monAnProjection)
+                .ToListAsync();
+
+            monAnDict = monAns.ToDictionary(x => x.Id, x => x.tenMonAn);
+            comBoDict = comBos.ToDictionary(x => x.Id, x => x.tenCombo);
+
+            var donOrderRespond = new DonOrderRespond
+            {
+                id = donOrder.Id,
+                tenDon = donOrder.tenDon,
+                loaiDon = donOrder.loaiDon != null ? new IdName
+                {
+                    Id = donOrder.loaiDon,
+                    Name = loaiDonDict.ContainsKey(donOrder.loaiDon) ? loaiDonDict[donOrder.loaiDon] : null
+                } : new IdName
+                {
+                    Id = null,
+                    Name = null,
+                },
+                ban = donOrder.ban != null ? new IdName
+                {
+                    Id = donOrder.ban,
+                    Name = banDict.ContainsKey(donOrder.ban) ? banDict[donOrder.ban] : null
+                } : new IdName
+                {
+                    Id = null,
+                    Name = null,
+                },
+                khachHang = donOrder.khachHang != null ? new IdName
+                {
+                    Id = donOrder.khachHang,
+                    Name = khachHangDict.ContainsKey(donOrder.khachHang) ? khachHangDict[donOrder.khachHang] : null
+                } : new IdName
+                {
+                    Id = null,
+                    Name = null,
+                },
+                chiTietDonOrder = donOrder.chiTietDonOrder.Select(x => new ChiTietDonOrderRespond
+                {
+                    monAns = x.monAns.Select(y => new DonMonAnRespond
+                    {
+                        monAn = new IdName
+                        {
+                            Id = y.monAn,
+                            Name = monAnDict.ContainsKey(y.monAn) ? monAnDict[y.monAn] : null,
+                        },
+                        monAn_trangThai = y.monAn_trangThai,
+                        soLuong = y.soLuong,
+                        giaTien = monAnDict.ContainsKey(y.monAn) ? monAns.FirstOrDefault(m => m.Id == y.monAn)?.giaTien : null,
+                        moTa = y.moTa,
+                    }).ToList(),
+                    comBos = x.comBos.Select(y => new DonComBoRespond
+                    {
+                        comBo = new IdName
+                        {
+                            Id = y.comBo,
+                            Name = comBoDict.ContainsKey(y.comBo) ? comBoDict[y.comBo] : null,
+                        },
+                        comBo_trangThai = y.comBo_trangThai,
+                        soLuong = y.soLuong,
+                        giaTien = comBoDict.ContainsKey(y.comBo) ? comBos.FirstOrDefault(m => m.Id == y.comBo)?.giaTien : null,
+                        moTa = y.moTa,
+                    }).ToList(),
+                    trangThai = x.trangThai
+                }).ToList(),
+                trangThai = donOrder.trangThai,
+                tongTien = donOrder.tongTien
+            };
+            return new RespondAPI<DonOrderRespond>(
+                ResultRespond.Succeeded,
+                "Cập nhật đơn order thành công.",
+                donOrderRespond
+            );
+        }
+        catch (Exception ex)
+        {
+            return new RespondAPI<DonOrderRespond>(
+                ResultRespond.Error,
+                $"Đã xảy ra lỗi khi cập nhật đơn order: {ex.Message}"
+            );
+        }
+    }
 
 }
