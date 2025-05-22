@@ -271,8 +271,9 @@ public class DonOrderRepository : IDonOrderRepository
                     trangThai = donOrder.trangThai,
                     tongTien = donOrder.tongTien,
                     createdDate = donOrder.createdDate?.Date,
+                    ngayTao = donOrder.createdDate,
                 }).OrderBy(x => x.trangThai)
-                    .ThenByDescending(x => x.createdDate).ToList();
+                    .ThenByDescending(x => x.ngayTao).ToList();
                 var pagingDetail = new PagingDetail(currentPage, request.PageSize, totalRecords);
                 var pagingResponse = new PagingResponse<List<DonOrderRespond>>
                 {
@@ -399,7 +400,6 @@ public class DonOrderRepository : IDonOrderRepository
                     }
                 }
 
-
                 // Map dữ liệu
                 var donOrderResponds = dons.Select(donOrder => new DonOrderRespond
                 {
@@ -452,7 +452,9 @@ public class DonOrderRepository : IDonOrderRepository
                     trangThai = donOrder.trangThai,
                     tongTien = donOrder.tongTien,
                     createdDate = donOrder.createdDate?.Date,
-                }).ToList();
+                    ngayTao = donOrder.createdDate,
+                }).OrderBy(x => x.trangThai)
+                    .ThenByDescending(x => x.ngayTao).ToList();
 
                 return new RespondAPIPaging<List<DonOrderRespond>>(
                     ResultRespond.Succeeded,

@@ -233,9 +233,10 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                         Name = x.phuPhi != null && phuPhiDict.ContainsKey(x.phuPhi) ? phuPhiDict[x.phuPhi] : null
                     },
                     trangthai = x.trangthai,
-                    createdDate = x.createdDate?.Date
+                    createdDate = x.createdDate?.Date,
+                    ngayTao = x.createdDate,
                 }).OrderBy(x => x.trangthai)
-                    .ThenByDescending(x => x.createdDate)
+                    .ThenByDescending(x => x.ngayTao)
                     .ToList();
 
 
@@ -357,8 +358,11 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                         Name = x.phuPhi != null && phuPhiDict.ContainsKey(x.phuPhi) ? phuPhiDict[x.phuPhi] : null
                     },
                     trangthai = x.trangthai,
-                    createdDate = x.createdDate?.Date
-                }).ToList();
+                    createdDate = x.createdDate?.Date,
+                    ngayTao = x.createdDate,
+                }).OrderBy(x => x.trangthai)
+                    .ThenByDescending(x => x.ngayTao)
+                    .ToList();
 
                 return new RespondAPIPaging<List<HoaDonThanhToanRespond>>(
                     ResultRespond.Succeeded,

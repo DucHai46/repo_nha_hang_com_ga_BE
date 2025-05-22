@@ -18,6 +18,8 @@ public class DonOrderRespond
     public List<ChiTietDonOrderRespond>? chiTietDonOrder { get; set; }
     public int? tongTien { get; set; }
     public DateTime? createdDate { get; set; }
+    public DateTimeOffset? ngayTao { get; set; }
+
 
 }
 

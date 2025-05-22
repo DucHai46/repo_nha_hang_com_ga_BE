@@ -25,5 +25,6 @@ public class HoaDonThanhToanRespond
     public IdName? phuPhi { get; set; }
     public TrangThaiHoaDon? trangthai { get; set; }
     public DateTime? createdDate { get; set; }
+    public DateTimeOffset? ngayTao { get; set; }
 
 }
