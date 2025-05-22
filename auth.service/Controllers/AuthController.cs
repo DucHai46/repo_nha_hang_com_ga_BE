@@ -130,22 +130,70 @@ public class AuthController : Controller
 
     [Authorize]
     [HttpGet("get-all-users")]
-    public async Task<IActionResult> GetAllUsers()
+    public IActionResult GetAllUsers(
+        [FromQuery] bool isPaging = false,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? searchFullName = null)
     {
-        var users = _userManager.Users.ToList();
-        var userList = users.Select(user => new
+        var query = _userManager.Users.AsQueryable();
+
+        // Apply search filter if searchFullName is provided
+        if (!string.IsNullOrEmpty(searchFullName))
         {
-            id = user.Id.ToString(),
-            user.FullName,
-            user.Email,
-            user.PhoneNumber,
-            user.Address,
-            user.Avatar,
-            user.Gender,
-            user.DateOfBirth,
-            user.IsActive
-        }).ToList();
-        return Ok(userList);
+            query = query.Where(u => u.FullName.Contains(searchFullName));
+        }
+
+        // Apply paging if isPaging is true
+        if (isPaging)
+        {
+            var totalItems = query.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var users = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(user => new
+                {
+                    id = user.Id.ToString(),
+                    user.FullName,
+                    user.Email,
+                    user.PhoneNumber,
+                    user.Address,
+                    user.Avatar,
+                    user.Gender,
+                    user.DateOfBirth,
+                    user.IsActive
+                })
+                .ToList();
+
+            return Ok(new
+            {
+                Items = users,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber,
+                PageSize = pageSize
+            });
+        }
+
+        // If not paging, return all results
+        var allUsers = query
+            .Select(user => new
+            {
+                id = user.Id.ToString(),
+                user.FullName,
+                user.Email,
+                user.PhoneNumber,
+                user.Address,
+                user.Avatar,
+                user.Gender,
+                user.DateOfBirth,
+                user.IsActive
+            })
+            .ToList();
+
+        return Ok(allUsers);
     }
 
     [Authorize]
