@@ -35,13 +35,14 @@ public class AuthController : Controller
         var user = new MongoUser
         {
             UserName = model.Username,
-            Email = model.Email,
+            // Email = model.Email,
             FullName = model.FullName,
-            PhoneNumber = model.PhoneNumber,
-            Address = model.Address,
-            Avatar = model.Avatar,
-            Gender = model.Gender,
-            DateOfBirth = model.DateOfBirth
+            nhanVienId = model.nhanVienId,
+            // PhoneNumber = model.PhoneNumber,
+            // Address = model.Address,
+            // Avatar = model.Avatar,
+            // Gender = model.Gender,
+            // DateOfBirth = model.DateOfBirth
         };
         var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -86,13 +87,14 @@ public class AuthController : Controller
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(ClaimTypes.Role, user.PhanQuyen)
+            new Claim(ClaimTypes.Role, user.PhanQuyen),
+            new Claim("nhanVienId", user.nhanVienId)
         };
 
-        if (!string.IsNullOrEmpty(user.Email))
-        {
-            claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
-        }
+        // if (!string.IsNullOrEmpty(user.Email))
+        // {
+        //     claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
+        // }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -124,14 +126,15 @@ public class AuthController : Controller
         {
             id,
             user.FullName,
-            user.Email,
-            user.PhoneNumber,
-            user.Address,
-            user.Avatar,
-            user.Gender,
-            user.DateOfBirth,
+            // user.Email,
+            // user.PhoneNumber,
+            // user.Address,
+            // user.Avatar,
+            // user.Gender,
+            // user.DateOfBirth,
             user.PhanQuyen,
-            user.IsActive
+            user.IsActive,
+            user.nhanVienId
         };
         return Ok(userInfo);
     }
@@ -144,12 +147,13 @@ public class AuthController : Controller
         if (user == null)
             return NotFound();
         user.FullName = model.FullName;
-        user.Email = model.Email;
-        user.PhoneNumber = model.PhoneNumber;
-        user.Address = model.Address;
-        user.Avatar = model.Avatar;
-        user.Gender = model.Gender;
-        user.DateOfBirth = model.DateOfBirth;
+        user.nhanVienId = model.nhanVienId;
+        // user.Email = model.Email;
+        // user.PhoneNumber = model.PhoneNumber;
+        // user.Address = model.Address;
+        // user.Avatar = model.Avatar;
+        // user.Gender = model.Gender;
+        // user.DateOfBirth = model.DateOfBirth;
         await _userManager.UpdateAsync(user);
         return Ok(new { Message = "Cập nhật thông tin người dùng thành công" });
     }
@@ -183,14 +187,15 @@ public class AuthController : Controller
                 {
                     id = user.Id.ToString(),
                     user.FullName,
-                    user.Email,
-                    user.PhoneNumber,
-                    user.Address,
-                    user.Avatar,
-                    user.Gender,
-                    user.DateOfBirth,
+                    // user.Email,
+                    // user.PhoneNumber,
+                    // user.Address,
+                    // user.Avatar,
+                    // user.Gender,
+                    // user.DateOfBirth,
                     user.PhanQuyen,
-                    user.IsActive
+                    user.IsActive,
+                    user.nhanVienId
                 })
                 .ToList();
 
@@ -210,14 +215,15 @@ public class AuthController : Controller
             {
                 id = user.Id.ToString(),
                 user.FullName,
-                user.Email,
-                user.PhoneNumber,
-                user.Address,
-                user.Avatar,
-                user.Gender,
-                user.DateOfBirth,
+                // user.Email,
+                // user.PhoneNumber,
+                // user.Address,
+                // user.Avatar,
+                // user.Gender,
+                // user.DateOfBirth,
                 user.PhanQuyen,
-                user.IsActive
+                user.IsActive,
+                user.nhanVienId
             })
             .ToList();
 
@@ -277,14 +283,15 @@ public class RegisterModel
 {
     public string FullName { get; set; }
     public string Username { get; set; }
-    public string Email { get; set; }
+    // public string Email { get; set; }
     public string Password { get; set; }
-    // public string? PhanQuyen { get; set; } // Thêm trường Role (tùy chọn)
-    public string? PhoneNumber { get; set; }
-    public string? Address { get; set; }
-    public string? Avatar { get; set; }
-    public bool? Gender { get; set; }
-    public DateTime? DateOfBirth { get; set; }
+    public string? PhanQuyen { get; set; } // Thêm trường Role (tùy chọn)
+    // public string? PhoneNumber { get; set; }
+    // public string? Address { get; set; }
+    // public string? Avatar { get; set; }
+    // public bool? Gender { get; set; }
+    // public DateTime? DateOfBirth { get; set; }
+    public string? nhanVienId { get; set; }
 }
 
 public class LoginModel
@@ -301,12 +308,13 @@ public class RoleModel
 public class UpdateUserInfoModel
 {
     public string FullName { get; set; }
-    public string Email { get; set; }
-    public string PhoneNumber { get; set; }
-    public string Address { get; set; }
-    public string Avatar { get; set; }
-    public bool Gender { get; set; }
-    public DateTime DateOfBirth { get; set; }
+    public string nhanVienId { get; set; }
+    // public string Email { get; set; }
+    // public string PhoneNumber { get; set; }
+    // public string Address { get; set; }
+    // public string Avatar { get; set; }
+    // public bool Gender { get; set; }
+    // public DateTime DateOfBirth { get; set; }
 }
 
 public class UpdateUserRoleModel
