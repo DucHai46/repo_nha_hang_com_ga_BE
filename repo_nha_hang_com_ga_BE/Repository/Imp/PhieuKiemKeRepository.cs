@@ -149,7 +149,7 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    } : null,
+                    } : new IdName { Id = "", Name = "" },
                     loaiNguyenLieus = x.loaiNguyenLieus.Select(y => new loaiNguyenLieuKiemKeRespond
                     {
                         Id = y.id,
@@ -245,7 +245,7 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    } : null,
+                    } : new IdName { Id = "", Name = "" },
                     loaiNguyenLieus = x.loaiNguyenLieus.Select(y => new loaiNguyenLieuKiemKeRespond
                     {
                         Id = y.id,
@@ -334,7 +334,7 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
                 {
                     Id = phieuKiemKe.nhanVien,
                     Name = _collectionNhanVien.Find(x => x.Id == phieuKiemKe.nhanVien).FirstOrDefault().tenNhanVien
-                } : null,
+                } : new IdName { Id = "", Name = "" },
                 loaiNguyenLieus = phieuKiemKe.loaiNguyenLieus.Select(y => new loaiNguyenLieuKiemKeRespond
                 {
                     Id = y.id,

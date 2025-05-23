@@ -399,7 +399,7 @@ public class PhieuThanhLyRepository : IPhieuThanhLyRepository
                 {
                     Id = phieuThanhLy.nhanVien,
                     Name = _collectionNhanVien.Find(x => x.Id == phieuThanhLy.nhanVien).FirstOrDefault()?.tenNhanVien
-                } : null,
+                } : new IdName { Id = "", Name = "" },
                 loaiNguyenLieus = phieuThanhLy.loaiNguyenLieus.Select(y => new loaiNguyenLieuThanhLyRespond
                 {
                     Id = y.id,
