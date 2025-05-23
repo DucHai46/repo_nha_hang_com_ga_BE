@@ -139,5 +139,7 @@ public class MongoUser : MongoIdentityUser<ObjectId>
     public DateTime? DateOfBirth { get; set; }
     public string? PhanQuyen { get; set; }
     public bool IsActive { get; set; } = true;
+
+    public int? SoLanSaiMatKhau { get; set; } = 0;
 }
 

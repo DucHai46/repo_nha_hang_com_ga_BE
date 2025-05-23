@@ -55,12 +55,31 @@ public class AuthController : Controller
     public async Task<IActionResult> GetToken([FromBody] LoginModel model)
     {
         var user = await _userManager.FindByNameAsync(model.Username);
-        if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
-            return Unauthorized();
+        if (user == null)
+            return Ok(new
+            {
+                message = "Tài khoản không tồn tại"
+            });
 
+        if (!await _userManager.CheckPasswordAsync(user, model.Password))
+        {
+            user.SoLanSaiMatKhau++;
+            if (user.SoLanSaiMatKhau >= 3)
+            {
+                user.IsActive = false;
+                await _userManager.UpdateAsync(user);
+            }
+            return Ok(new
+            {
+                message = "Mật khẩu không chính xác"
+            });
+        }
         if (user.IsActive == false)
         {
-            return BadRequest("Tài khoản đã bị khóa");
+            return Ok(new
+            {
+                message = "Tài khoản đã bị khóa"
+            });
         }
 
         var claims = new List<Claim>
@@ -238,6 +257,7 @@ public class AuthController : Controller
         if (user == null)
             return NotFound();
         user.IsActive = isActive;
+        user.SoLanSaiMatKhau = 0;
         await _userManager.UpdateAsync(user);
         return Ok(new { Message = isActive ? "Mở khóa người dùng thành công" : "Khóa người dùng thành công" });
     }
