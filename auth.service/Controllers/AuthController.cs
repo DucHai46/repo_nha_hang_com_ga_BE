@@ -300,11 +300,6 @@ public class LoginModel
     public string Password { get; set; }
 }
 
-public class RoleModel
-{
-    public string Name { get; set; }
-}
-
 public class UpdateUserInfoModel
 {
     public string FullName { get; set; }
