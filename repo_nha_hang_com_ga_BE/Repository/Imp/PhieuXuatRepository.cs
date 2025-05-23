@@ -172,7 +172,7 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    } : null,
+                    } : new IdName { Id = "", Name = "" },
                     loaiNguyenLieus = x.loaiNguyenLieus.Select(y => new loaiNguyenLieuXuatRespond
                     {
                         Id = y.id,
@@ -293,7 +293,7 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    } : null,
+                    } : new IdName { Id = "", Name = "" },
                     loaiNguyenLieus = x.loaiNguyenLieus.Select(y => new loaiNguyenLieuXuatRespond
                     {
                         Id = y.id,
@@ -399,7 +399,7 @@ public class PhieuXuatRepository : IPhieuXuatRepository
                 {
                     Id = phieuXuat.nhanVien,
                     Name = _collectionNhanVien.Find(x => x.Id == phieuXuat.nhanVien).FirstOrDefault()?.tenNhanVien
-                } : null,
+                } : new IdName { Id = "", Name = "" },
                 loaiNguyenLieus = phieuXuat.loaiNguyenLieus.Select(y => new loaiNguyenLieuXuatRespond
                 {
                     Id = y.id,

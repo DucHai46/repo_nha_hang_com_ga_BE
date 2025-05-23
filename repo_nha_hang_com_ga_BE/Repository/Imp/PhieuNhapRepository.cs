@@ -149,7 +149,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     {
                         Id = x.nhaCungCap,
                         Name = nhaCungCapDict.ContainsKey(x.nhaCungCap) ? nhaCungCapDict[x.nhaCungCap] : null
-                    } : null,
+                    } : new IdName { Id = "", Name = "" },
                     dienGiai = x.dienGiai,
                     diaDiem = x.diaDiem,
                     tongTien = x.tongTien,
@@ -158,7 +158,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    } : null,
+                    } : new IdName { Id = "", Name = "" },
                     nguyenLieus = x.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                     {
                         id = y.id,
@@ -267,7 +267,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     {
                         Id = x.nhaCungCap,
                         Name = nhaCungCapDict.ContainsKey(x.nhaCungCap) ? nhaCungCapDict[x.nhaCungCap] : null
-                    } : null,
+                    } : new IdName { Id = "", Name = "" },
                     dienGiai = x.dienGiai,
                     diaDiem = x.diaDiem,
                     tongTien = x.tongTien,
@@ -276,7 +276,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    } : null,
+                    } : new IdName { Id = "", Name = "" },
                     nguyenLieus = x.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                     {
                         id = y.id,
@@ -347,7 +347,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 {
                     Id = phieuNhap.nhaCungCap,
                     Name = _collectionNhaCungCap.Find(x => x.Id == phieuNhap.nhaCungCap).FirstOrDefault()?.tenNhaCungCap,
-                } : null,
+                } : new IdName { Id = "", Name = "" },
                 dienGiai = phieuNhap.dienGiai,
                 diaDiem = phieuNhap.diaDiem,
                 tongTien = phieuNhap.tongTien,
@@ -356,7 +356,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 {
                     Id = phieuNhap.nhanVien,
                     Name = _collectionNhanVien.Find(x => x.Id == phieuNhap.nhanVien).FirstOrDefault()?.tenNhanVien,
-                } : null,
+                } : new IdName { Id = "", Name = "" },
                 nguyenLieus = phieuNhap.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                 {
                     id = y.id,
