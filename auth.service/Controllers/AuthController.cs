@@ -60,25 +60,24 @@ public class AuthController : Controller
             {
                 message = "Tài khoản không tồn tại"
             });
-
+        if (user.IsActive == false)
+        {
+            return Ok(new
+            {
+                message = "Tài khoản đã bị khóa"
+            });
+        }
         if (!await _userManager.CheckPasswordAsync(user, model.Password))
         {
             user.SoLanSaiMatKhau++;
             if (user.SoLanSaiMatKhau >= 3)
             {
                 user.IsActive = false;
-                await _userManager.UpdateAsync(user);
             }
+            await _userManager.UpdateAsync(user);
             return Ok(new
             {
                 message = "Mật khẩu không chính xác"
-            });
-        }
-        if (user.IsActive == false)
-        {
-            return Ok(new
-            {
-                message = "Tài khoản đã bị khóa"
             });
         }
 
