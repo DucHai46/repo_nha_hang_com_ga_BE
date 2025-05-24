@@ -910,30 +910,33 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
 
             if (request.doanhThuEnum == DoanhThuEnum.TheoNgay)
             {
-                var dailyRevenue = hoaDonThanhToans
-                    .GroupBy(x => x.createdDate?.Date)
-                    .Select(g => new DoanhThuMonAnRespond
+
+                var startDate = request.tuNgay.Value.Date;
+                var endDate = request.denNgay.Value.Date;
+                var dailyRevenue = new List<DoanhThuMonAnRespond>();
+
+                for (var date = startDate; date <= endDate; date = date.AddDays(1))
+                {
+                    var dayOrders = hoaDonThanhToans
+                        .Where(x => x.createdDate?.Date == date)
+                        .ToList();
+
+                    dailyRevenue.Add(new DoanhThuMonAnRespond
                     {
-                        thoiGian = g.Key?.ToString("dd/MM/yyyy"),
-                        doanhThu = g.Sum(x => donOrderAmounts.ContainsKey(x.donOrder) ? donOrderAmounts[x.donOrder] : 0)
-                    })
-                    .OrderBy(x => x.thoiGian)
-                    .ToList();
+                        thoiGian = date.ToString("dd/MM/yyyy"),
+                        doanhThu = dayOrders.Sum(x => donOrderAmounts.ContainsKey(x.donOrder) ? donOrderAmounts[x.donOrder] : 0)
+                    });
+                }
 
                 return dailyRevenue;
             }
             else if (request.doanhThuEnum == DoanhThuEnum.TheoTuan)
             {
-                if (request.tuNgay == null)
-                {
-                    return new List<DoanhThuMonAnRespond>();
-                }
 
                 var startDate = request.tuNgay.Value.Date;
                 var weeklyRevenue = new List<DoanhThuMonAnRespond>();
-                var numberOfWeeks = request.soTuan ?? 4; // Default to 4 weeks if not specified
+                var numberOfWeeks = request.soTuan ?? 4;
 
-                // Calculate for specified number of weeks from start date
                 for (int i = 0; i < numberOfWeeks; i++)
                 {
                     var weekStart = startDate.AddDays(i * 7);
@@ -954,19 +957,27 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
             }
             else if (request.doanhThuEnum == DoanhThuEnum.TheoThang)
             {
-                var monthlyRevenue = hoaDonThanhToans
-                    .GroupBy(x => new
+
+                var startDate = request.tuNgay.Value.Date;
+                var endDate = request.denNgay.Value.Date;
+                var monthlyRevenue = new List<DoanhThuMonAnRespond>();
+
+                // Generate all months in range
+                for (var date = startDate; date <= endDate; date = date.AddMonths(1))
+                {
+                    var monthStart = new DateTime(date.Year, date.Month, 1);
+                    var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+
+                    var monthOrders = hoaDonThanhToans
+                        .Where(x => x.createdDate?.Date >= monthStart && x.createdDate?.Date <= monthEnd)
+                        .ToList();
+
+                    monthlyRevenue.Add(new DoanhThuMonAnRespond
                     {
-                        Year = x.createdDate?.Year,
-                        Month = x.createdDate?.Month
-                    })
-                    .Select(g => new DoanhThuMonAnRespond
-                    {
-                        thoiGian = $"{g.Key.Month}/{g.Key.Year}",
-                        doanhThu = g.Sum(x => donOrderAmounts.ContainsKey(x.donOrder) ? donOrderAmounts[x.donOrder] : 0)
-                    })
-                    .OrderBy(x => x.thoiGian)
-                    .ToList();
+                        thoiGian = $"{date.Month}/{date.Year}",
+                        doanhThu = monthOrders.Sum(x => donOrderAmounts.ContainsKey(x.donOrder) ? donOrderAmounts[x.donOrder] : 0)
+                    });
+                }
 
                 return monthlyRevenue;
             }
