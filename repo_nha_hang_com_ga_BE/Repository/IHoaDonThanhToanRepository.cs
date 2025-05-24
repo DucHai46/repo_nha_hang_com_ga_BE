@@ -1,5 +1,6 @@
 using repo_nha_hang_com_ga_BE.Models.Common.Models.Respond;
 using repo_nha_hang_com_ga_BE.Models.Common.Respond;
+using repo_nha_hang_com_ga_BE.Models.Requests.BaoCaoThongKe;
 using repo_nha_hang_com_ga_BE.Models.Requests.HoaDonThanhToan;
 using repo_nha_hang_com_ga_BE.Models.Responds.HoaDonThanhToan;
 
@@ -13,5 +14,12 @@ public interface IHoaDonThanhToanRepository
     Task<RespondAPI<HoaDonThanhToanRespond>> CreateHoaDonThanhToan(RequestAddHoaDonThanhToan request);
     Task<RespondAPI<HoaDonThanhToanRespond>> UpdateHoaDonThanhToan(string id, RequestUpdateHoaDonThanhToan request);
     Task<RespondAPI<string>> DeleteHoaDonThanhToan(string id);
-
+    Task<List<DoanhThuMonAnRespond>> GetDoanhThu(RequestSearchThoiGian request);
 }
+
+public class DoanhThuMonAnRespond
+{
+    public string? thoiGian { get; set; }
+    public int? doanhThu { get; set; }
+}
+

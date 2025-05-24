@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using repo_nha_hang_com_ga_BE.Models.Common.Respond;
+using repo_nha_hang_com_ga_BE.Models.Requests.BaoCaoThongKe;
 using repo_nha_hang_com_ga_BE.Models.Requests.HoaDonThanhToan;
 using repo_nha_hang_com_ga_BE.Models.Responds.HoaDonThanhToan;
 using repo_nha_hang_com_ga_BE.Repository;
@@ -47,5 +48,11 @@ public class HoaDonThanhToanController : ControllerBase
     public async Task<IActionResult> DeleteHoaDonThanhToan(string id)
     {
         return Ok(await _repository.DeleteHoaDonThanhToan(id));
+    }
+
+    [HttpGet("doanh-thu")]
+    public async Task<IActionResult> GetDoanhThu([FromQuery] RequestSearchThoiGian request)
+    {
+        return Ok(await _repository.GetDoanhThu(request));
     }
 }

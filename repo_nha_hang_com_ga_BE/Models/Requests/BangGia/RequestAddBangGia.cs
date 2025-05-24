@@ -6,7 +6,7 @@ public class RequestAddBangGia
     public string? tenGia { get; set; }
 
     public int? giaTri { get; set; }
-    public string? monAn {get; set; }
+    public string? monAn { get; set; }
 
 
 }

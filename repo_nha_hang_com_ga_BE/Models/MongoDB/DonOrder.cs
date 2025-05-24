@@ -19,7 +19,6 @@ public class DonOrder : BaseMongoDb
 
     public List<ChiTietDonOrder>? chiTietDonOrder { get; set; }
     public int? tongTien { get; set; }
-
 }
 
 

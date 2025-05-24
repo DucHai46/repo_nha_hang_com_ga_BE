@@ -1,4 +1,3 @@
-
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -10,6 +9,7 @@ using repo_nha_hang_com_ga_BE.Models.Common.Models.Respond;
 using repo_nha_hang_com_ga_BE.Models.Common.Paging;
 using repo_nha_hang_com_ga_BE.Models.Common.Respond;
 using repo_nha_hang_com_ga_BE.Models.MongoDB;
+using repo_nha_hang_com_ga_BE.Models.Requests.BaoCaoThongKe;
 using repo_nha_hang_com_ga_BE.Models.Requests.HoaDonThanhToan;
 using repo_nha_hang_com_ga_BE.Models.Responds.HoaDonThanhToan;
 
@@ -872,6 +872,110 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 ResultRespond.Error,
                 $"Đã xảy ra lỗi khi xóa hóa đơn thanh toán: {ex.Message}"
             );
+        }
+    }
+
+    public async Task<List<DoanhThuMonAnRespond>> GetDoanhThu(RequestSearchThoiGian request)
+    {
+        try
+        {
+            var filter = Builders<HoaDonThanhToan>.Filter.Empty;
+            filter &= Builders<HoaDonThanhToan>.Filter.Eq(x => x.isDelete, false);
+            filter &= Builders<HoaDonThanhToan>.Filter.Eq(x => x.trangthai, TrangThaiHoaDon.DaThanhToan);
+            if (request.doanhThuEnum == DoanhThuEnum.TheoNgay || request.doanhThuEnum == DoanhThuEnum.TheoThang)
+            {
+                if (request.tuNgay != null)
+                {
+                    filter &= Builders<HoaDonThanhToan>.Filter.Gte(x => x.createdDate, request.tuNgay.Value);
+                }
+                if (request.denNgay != null)
+                {
+                    filter &= Builders<HoaDonThanhToan>.Filter.Lte(x => x.createdDate, request.denNgay.Value);
+                }
+            }
+            else if (request.doanhThuEnum == DoanhThuEnum.TheoTuan)
+            {
+                if (request.tuNgay != null)
+                {
+                    filter &= Builders<HoaDonThanhToan>.Filter.Gte(x => x.createdDate, request.tuNgay.Value);
+                }
+            }
+
+            var hoaDonThanhToans = await _collection.Find(filter).ToListAsync();
+            var donOrderIds = hoaDonThanhToans.Select(x => x.donOrder).Distinct().ToList();
+            var donOrders = await _collectionDonOrder.Find(Builders<DonOrder>.Filter.In(x => x.Id, donOrderIds)).ToListAsync();
+            var doanhThuMonAns = new List<DoanhThuMonAnRespond>();
+
+            var donOrderAmounts = donOrders.ToDictionary(x => x.Id, x => x.tongTien ?? 0);
+
+            if (request.doanhThuEnum == DoanhThuEnum.TheoNgay)
+            {
+                var dailyRevenue = hoaDonThanhToans
+                    .GroupBy(x => x.createdDate?.Date)
+                    .Select(g => new DoanhThuMonAnRespond
+                    {
+                        thoiGian = g.Key?.ToString("dd/MM/yyyy"),
+                        doanhThu = g.Sum(x => donOrderAmounts.ContainsKey(x.donOrder) ? donOrderAmounts[x.donOrder] : 0)
+                    })
+                    .OrderBy(x => x.thoiGian)
+                    .ToList();
+
+                return dailyRevenue;
+            }
+            else if (request.doanhThuEnum == DoanhThuEnum.TheoTuan)
+            {
+                if (request.tuNgay == null)
+                {
+                    return new List<DoanhThuMonAnRespond>();
+                }
+
+                var startDate = request.tuNgay.Value.Date;
+                var weeklyRevenue = new List<DoanhThuMonAnRespond>();
+                var numberOfWeeks = request.soTuan ?? 4; // Default to 4 weeks if not specified
+
+                // Calculate for specified number of weeks from start date
+                for (int i = 0; i < numberOfWeeks; i++)
+                {
+                    var weekStart = startDate.AddDays(i * 7);
+                    var weekEnd = weekStart.AddDays(6);
+
+                    var weekOrders = hoaDonThanhToans
+                        .Where(x => x.createdDate?.Date >= weekStart && x.createdDate?.Date <= weekEnd)
+                        .ToList();
+
+                    weeklyRevenue.Add(new DoanhThuMonAnRespond
+                    {
+                        thoiGian = $"Tuần {i + 1} ({weekStart:dd/MM/yyyy} - {weekEnd:dd/MM/yyyy})",
+                        doanhThu = weekOrders.Sum(x => donOrderAmounts.ContainsKey(x.donOrder) ? donOrderAmounts[x.donOrder] : 0)
+                    });
+                }
+
+                return weeklyRevenue;
+            }
+            else if (request.doanhThuEnum == DoanhThuEnum.TheoThang)
+            {
+                var monthlyRevenue = hoaDonThanhToans
+                    .GroupBy(x => new
+                    {
+                        Year = x.createdDate?.Year,
+                        Month = x.createdDate?.Month
+                    })
+                    .Select(g => new DoanhThuMonAnRespond
+                    {
+                        thoiGian = $"{g.Key.Month}/{g.Key.Year}",
+                        doanhThu = g.Sum(x => donOrderAmounts.ContainsKey(x.donOrder) ? donOrderAmounts[x.donOrder] : 0)
+                    })
+                    .OrderBy(x => x.thoiGian)
+                    .ToList();
+
+                return monthlyRevenue;
+            }
+
+            return doanhThuMonAns;
+        }
+        catch (Exception ex)
+        {
+            return new List<DoanhThuMonAnRespond>();
         }
     }
 }
