@@ -116,6 +116,7 @@ public class AuthController : Controller
         {
             id,
             user.FullName,
+            user.UserName,
             user.PhanQuyen,
             user.IsActive,
             user.nhanVienId
@@ -218,6 +219,24 @@ public class AuthController : Controller
     }
 
     [Authorize]
+    [HttpPut("update-user")]
+    public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserModel model)
+    {
+        var userNameExist = await _userManager.FindByNameAsync(model.Username);
+        if (userNameExist != null)
+        {
+            return Ok(new { Message = "Tên người dùng đã tồn tại" });
+        }
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+            return NotFound();
+        user.UserName = model.Username;
+        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
+        await _userManager.UpdateAsync(user);
+        return Ok(new { Message = "Cập nhật tên người dùng thành công" });
+    }
+
+    [Authorize]
     [HttpPut("lock-user")]
     public async Task<IActionResult> LockUser(string id, bool isActive)
     {
@@ -240,6 +259,12 @@ public class AuthController : Controller
         await _userManager.DeleteAsync(user);
         return Ok(new { Message = "Xóa người dùng thành công" });
     }
+}
+
+public class UpdateUserModel
+{
+    public string Username { get; set; }
+    public string Password { get; set; }
 }
 
 public class RegisterModel
