@@ -223,11 +223,15 @@ public class AuthController : Controller
     public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserModel model)
     {
         var userNameExist = await _userManager.FindByNameAsync(model.Username);
-        if (userNameExist != null)
-        {
-            return Ok(new { Message = "Tên người dùng đã tồn tại" });
-        }
         var user = await _userManager.FindByIdAsync(id);
+        if (userNameExist != null && userNameExist.Id.ToString() != id)
+        {
+            return Ok(new
+            {
+                message = "Tên người dùng đã tồn tại",
+                isSuccess = false
+            });
+        }
         if (user == null)
             return NotFound();
         user.UserName = model.Username;
@@ -235,7 +239,11 @@ public class AuthController : Controller
         {
             if (!await _userManager.CheckPasswordAsync(user, model.OldPassword))
             {
-                return Ok(new { Message = "Mật khẩu cũ không chính xác" });
+                return Ok(new
+                {
+                    message = "Mật khẩu cũ không chính xác",
+                    isSuccess = false
+                });
             }
         }
         if (model.Password != null)
@@ -243,7 +251,11 @@ public class AuthController : Controller
             user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
         }
         await _userManager.UpdateAsync(user);
-        return Ok(new { Message = "Cập nhật tài khoản thành công" });
+        return Ok(new
+        {
+            message = "Cập nhật tài khoản thành công",
+            isSuccess = true
+        });
     }
 
     [Authorize]
