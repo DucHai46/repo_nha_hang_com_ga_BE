@@ -15,7 +15,7 @@ public class MongoDbContext
     {
         var client = new MongoClient(settings.Value.ConnectionString);
         _database = client.GetDatabase(settings.Value.DatabaseName);
-        _gridFS = new GridFSBucket(_database); // Khởi tạo GridFS
+        _gridFS = new GridFSBucket(_database);
     }
 
     public IMongoCollection<FileMetadata> Files => _database.GetCollection<FileMetadata>("Files");

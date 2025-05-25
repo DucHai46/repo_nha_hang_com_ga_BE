@@ -75,10 +75,8 @@ public class LoaiNguyenLieuRepository : ILoaiNguyenLieuRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var loaiNguyenLieus = await cursor.ToListAsync();
 
-                // Lấy danh sách ID loại bàn
                 var danhMucNguyenLieuIds = loaiNguyenLieus.Select(x => x.danhMucNguyenLieu).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-                // Query bảng loại bàn
                 var danhMucNguyenLieuFilter = Builders<DanhMucNguyenLieu>.Filter.In(x => x.Id, danhMucNguyenLieuIds);
                 var danhMucNguyenLieuProjection = Builders<DanhMucNguyenLieu>.Projection
                     .Include(x => x.Id)
@@ -87,10 +85,8 @@ public class LoaiNguyenLieuRepository : ILoaiNguyenLieuRepository
                     .Project<DanhMucNguyenLieu>(danhMucNguyenLieuProjection)
                     .ToListAsync();
 
-                // Tạo dictionary để map nhanh
                 var danhMucNguyenLieuDict = danhMucNguyenLieus.ToDictionary(x => x.Id, x => x.tenDanhMuc);
 
-                // Map dữ liệu
                 var loaiNguyenLieuResponds = loaiNguyenLieus.Select(loaiNguyenLieu => new LoaiNguyenLieuRespond
                 {
                     id = loaiNguyenLieu.Id,
@@ -120,10 +116,8 @@ public class LoaiNguyenLieuRepository : ILoaiNguyenLieuRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var loaiNguyenLieus = await cursor.ToListAsync();
 
-                // Lấy danh sách ID loại bàn
                 var danhMucNguyenLieuIds = loaiNguyenLieus.Select(x => x.danhMucNguyenLieu).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-                // Query bảng loại bàn
                 var danhMucNguyenLieuFilter = Builders<DanhMucNguyenLieu>.Filter.In(x => x.Id, danhMucNguyenLieuIds);
                 var danhMucNguyenLieuProjection = Builders<DanhMucNguyenLieu>.Projection
                     .Include(x => x.Id)
@@ -132,10 +126,8 @@ public class LoaiNguyenLieuRepository : ILoaiNguyenLieuRepository
                     .Project<DanhMucNguyenLieu>(danhMucNguyenLieuProjection)
                     .ToListAsync();
 
-                // Tạo dictionary để map nhanh
                 var danhMucNguyenLieuDict = danhMucNguyenLieus.ToDictionary(x => x.Id, x => x.tenDanhMuc);
 
-                // Map dữ liệu
                 var loaiNguyenLieuResponds = loaiNguyenLieus.Select(loaiNguyenLieu => new LoaiNguyenLieuRespond
                 {
                     id = loaiNguyenLieu.Id,
@@ -218,9 +210,6 @@ public class LoaiNguyenLieuRepository : ILoaiNguyenLieuRepository
             newLoaiNguyenLieu.createdDate = DateTimeOffset.UtcNow;
             newLoaiNguyenLieu.updatedDate = DateTimeOffset.UtcNow;
             newLoaiNguyenLieu.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newLoaiNguyenLieu.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newLoaiNguyenLieu);
 
@@ -270,9 +259,6 @@ public class LoaiNguyenLieuRepository : ILoaiNguyenLieuRepository
             _mapper.Map(request, loaiNguyenLieu);
 
             loaiNguyenLieu.updatedDate = DateTimeOffset.UtcNow;
-
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, loaiNguyenLieu);
 

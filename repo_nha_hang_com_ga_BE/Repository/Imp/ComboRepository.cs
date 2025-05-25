@@ -264,7 +264,6 @@ public class ComboRepository : IComboRepository
                 );
             }
 
-            // var comboRespond = _mapper.Map<ComboRespond>(combo);
             var monAnDict = new Dictionary<string, string>();
             var loaiMonAnDict = new Dictionary<string, string>();
 
@@ -344,13 +343,9 @@ public class ComboRepository : IComboRepository
             newCombo.createdDate = DateTimeOffset.UtcNow;
             newCombo.updatedDate = DateTimeOffset.UtcNow;
             newCombo.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newDanhMucMonAn.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newCombo);
 
-            // var comboRespond = _mapper.Map<ComboRespond>(newCombo);
             var monAnDict = new Dictionary<string, string>();
             var loaiMonAnDict = new Dictionary<string, string>();
 
@@ -441,8 +436,6 @@ public class ComboRepository : IComboRepository
 
             combo.updatedDate = DateTimeOffset.UtcNow;
 
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, combo);
 
@@ -454,7 +447,6 @@ public class ComboRepository : IComboRepository
                 );
             }
 
-            // var comboRespond = _mapper.Map<ComboRespond>(combo);
             var monAnDict = new Dictionary<string, string>();
             var loaiMonAnDict = new Dictionary<string, string>();
 

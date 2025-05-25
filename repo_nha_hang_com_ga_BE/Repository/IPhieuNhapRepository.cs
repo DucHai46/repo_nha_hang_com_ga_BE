@@ -11,6 +11,5 @@ public interface IPhieuNhapRepository
     Task<RespondAPIPaging<List<PhieuNhapRespond>>> GetAllPhieuNhaps(RequestSearchPhieuNhap request);
     Task<RespondAPI<PhieuNhapRespond>> GetPhieuNhapById(string id);
     Task<RespondAPI<PhieuNhapRespond>> CreatePhieuNhap(RequestAddPhieuNhap product);
-    // Task<RespondAPI<PhieuNhapRespond>> UpdatePhieuNhap(string id, RequestUpdatePhieuNhap product);
     Task<RespondAPI<string>> DeletePhieuNhap(string id);
 }

@@ -143,9 +143,6 @@ public class LoaiTuDoRepository : ILoaiTuDoRepository
             newLoaiTuDo.createdDate = DateTimeOffset.UtcNow;
             newLoaiTuDo.updatedDate = DateTimeOffset.UtcNow;
             newLoaiTuDo.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newLoaiNguyenLieu.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newLoaiTuDo);
 
@@ -185,9 +182,6 @@ public class LoaiTuDoRepository : ILoaiTuDoRepository
             _mapper.Map(request, loaiTuDo);
 
             loaiTuDo.updatedDate = DateTimeOffset.UtcNow;
-
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, loaiTuDo);
 

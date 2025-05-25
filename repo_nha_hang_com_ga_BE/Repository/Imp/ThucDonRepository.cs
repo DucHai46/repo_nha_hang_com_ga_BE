@@ -196,7 +196,7 @@ public class ThucDonRepository : IThucDonRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var thucDons = await cursor.ToListAsync();
 
-                                var monAnDict = new Dictionary<string, string>();
+                var monAnDict = new Dictionary<string, string>();
                 var loaiMonAnDict = new Dictionary<string, string>();
                 var comboDict = new Dictionary<string, string>();
 
@@ -418,13 +418,10 @@ public class ThucDonRepository : IThucDonRepository
             newThucDon.createdDate = DateTimeOffset.UtcNow;
             newThucDon.updatedDate = DateTimeOffset.UtcNow;
             newThucDon.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newDanhMucMonAn.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newThucDon);
 
-           var monAnDict = new Dictionary<string, string>();
+            var monAnDict = new Dictionary<string, string>();
             var loaiMonAnDict = new Dictionary<string, string>();
 
             var loaiMonAnIds = newThucDon.loaiMonAns.Select(x => x.id).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
@@ -535,8 +532,6 @@ public class ThucDonRepository : IThucDonRepository
 
             thucDon.updatedDate = DateTimeOffset.UtcNow;
 
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, thucDon);
 
@@ -548,7 +543,7 @@ public class ThucDonRepository : IThucDonRepository
                 );
             }
 
-           var monAnDict = new Dictionary<string, string>();
+            var monAnDict = new Dictionary<string, string>();
             var loaiMonAnDict = new Dictionary<string, string>();
 
             var loaiMonAnIds = thucDon.loaiMonAns.Select(x => x.id).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();

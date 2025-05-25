@@ -13,14 +13,11 @@ public class PhieuKiemKeRespond
     [BsonRepresentation(BsonType.ObjectId)]
     public string? id { get; set; }
     public string? tenPhieu { get; set; }
-    // public List<LoaiMonAnMenu>? loaiMonAns { get; set; }
     public string? diaDiem { get; set; }
     public DateTime? ngayKiemKe { get; set; }
     public string? ghiChu { get; set; }
     public IdName? nhanVien { get; set; }
     public List<loaiNguyenLieuKiemKeRespond>? loaiNguyenLieus { get; set; }
-    // public DateTime? tuNgay { get; set; }
-    // public DateTime? denNgay { get; set; }
 
 }
 
@@ -28,7 +25,7 @@ public class loaiNguyenLieuKiemKeRespond : IdName
 {
     public List<nguyenLieuKiemKeRespond>? nguyenLieus { get; set; }
 }
-public class nguyenLieuKiemKeRespond 
+public class nguyenLieuKiemKeRespond
 {
     public string? id { get; set; }
     public string? tenNguyenLieu { get; set; }

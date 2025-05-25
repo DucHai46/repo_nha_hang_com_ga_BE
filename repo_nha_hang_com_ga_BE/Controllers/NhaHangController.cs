@@ -18,8 +18,8 @@ public class NhaHangController : ControllerBase
         _repository = repository;
     }
 
-    [HttpGet("")] // định nghĩa route cho phương thức này
-    public async Task<IActionResult> GetAllNhaHangs([FromQuery] RequestSearchNhaHang request) // 
+    [HttpGet("")]
+    public async Task<IActionResult> GetAllNhaHangs([FromQuery] RequestSearchNhaHang request)
     {
         return Ok(await _repository.GetAllNhaHangs(request));
     }

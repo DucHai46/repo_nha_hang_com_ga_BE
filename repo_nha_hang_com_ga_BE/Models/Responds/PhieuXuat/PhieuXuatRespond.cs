@@ -20,8 +20,6 @@ public class PhieuXuatRespond
     public string? ghiChu { get; set; }
     public IdName? nhanVien { get; set; }
     public List<loaiNguyenLieuXuatRespond>? loaiNguyenLieus { get; set; }
-    // public DateTime? tuNgay { get; set; }
-    // public DateTime? denNgay { get; set; }
 
 }
 

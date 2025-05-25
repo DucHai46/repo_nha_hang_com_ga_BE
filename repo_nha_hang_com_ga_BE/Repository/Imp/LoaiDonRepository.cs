@@ -144,9 +144,6 @@ public class LoaiDonRepository : ILoaiDonRepository
             newLoaiDon.createdDate = DateTimeOffset.UtcNow;
             newLoaiDon.updatedDate = DateTimeOffset.UtcNow;
             newLoaiDon.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newDanhMucMonAn.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newLoaiDon);
 
@@ -186,9 +183,6 @@ public class LoaiDonRepository : ILoaiDonRepository
             _mapper.Map(request, LoaiDon);
 
             LoaiDon.updatedDate = DateTimeOffset.UtcNow;
-
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, LoaiDon);
 

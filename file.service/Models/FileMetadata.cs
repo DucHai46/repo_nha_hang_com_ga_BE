@@ -12,6 +12,6 @@ public class FileMetadata
     public string FileName { get; set; }
     public string ContentType { get; set; }
     public long FileSize { get; set; }
-    public ObjectId FileId { get; set; } // Thêm trường này
+    public ObjectId FileId { get; set; }
     public DateTime UploadDate { get; set; } = DateTime.UtcNow;
 }

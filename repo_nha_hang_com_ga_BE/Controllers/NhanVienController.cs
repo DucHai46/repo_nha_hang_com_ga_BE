@@ -19,8 +19,8 @@ public class NhanVienController : ControllerBase
         _repository = repository;
     }
 
-    [HttpGet("")] // định nghĩa route cho phương thức này
-    public async Task<IActionResult> GetAllNhanViens([FromQuery] RequestSearchNhanVien request) // 
+    [HttpGet("")]
+    public async Task<IActionResult> GetAllNhanViens([FromQuery] RequestSearchNhanVien request)
     {
         return Ok(await _repository.GetAllNhanViens(request));
     }

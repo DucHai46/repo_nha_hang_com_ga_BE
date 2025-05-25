@@ -10,8 +10,6 @@ public class RequestSearchNguyenLieu : PagingParameterModel
 
     public DateTimeOffset? hanSuDung { get; set; }
 
-    // public int? soLuong { get; set; }
-
     public string? loaiNguyenLieuId { get; set; }
 
     public string? donViTinhId { get; set; }

@@ -143,9 +143,6 @@ public class LoaiKhuyenMaiRepository : ILoaiKhuyenMaiRepository
             newLoaiKhuyenMai.createdDate = DateTimeOffset.UtcNow;
             newLoaiKhuyenMai.updatedDate = DateTimeOffset.UtcNow;
             newLoaiKhuyenMai.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newLoaiNguyenLieu.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newLoaiKhuyenMai);
 
@@ -185,9 +182,6 @@ public class LoaiKhuyenMaiRepository : ILoaiKhuyenMaiRepository
             _mapper.Map(request, loaiKhuyenMai);
 
             loaiKhuyenMai.updatedDate = DateTimeOffset.UtcNow;
-
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, loaiKhuyenMai);
 

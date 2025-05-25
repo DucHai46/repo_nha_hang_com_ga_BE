@@ -19,8 +19,8 @@ public class BanController : ControllerBase
         _repository = repository;
     }
 
-    [HttpGet("")] // định nghĩa route cho phương thức này
-    public async Task<IActionResult> GetAllBans([FromQuery] RequestSearchBan request) // 
+    [HttpGet("")]
+    public async Task<IActionResult> GetAllBans([FromQuery] RequestSearchBan request)
     {
         return Ok(await _repository.GetAllBans(request));
     }

@@ -13,7 +13,6 @@ public class PhieuNhapRespond
     [BsonRepresentation(BsonType.ObjectId)]
     public string? id { get; set; }
     public string? tenPhieu { get; set; }
-    // public List<LoaiMonAnMenu>? loaiMonAns { get; set; }
     public string? tenNguoiGiao { get; set; }
     public IdName? nhaCungCap { get; set; }
     public string? dienGiai { get; set; }

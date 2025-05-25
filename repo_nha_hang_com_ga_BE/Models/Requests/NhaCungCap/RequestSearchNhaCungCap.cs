@@ -6,6 +6,5 @@ public class RequestSearchNhaCungCap : PagingParameterModel
 {
     public string? tenNhaCungCap { get; set; }
     public string? diaChi { get; set; }
-    // public int? trangThai { get; set; }
 
 }

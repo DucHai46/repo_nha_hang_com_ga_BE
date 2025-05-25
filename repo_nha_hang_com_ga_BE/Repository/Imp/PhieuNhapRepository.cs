@@ -407,7 +407,6 @@ public class PhieuNhapRepository : IPhieuNhapRepository
         try
         {
 
-            // 1. Mapping từ request → entity và set mặc định
             var nguyenLieuEntities = request.nguyenLieus.Select(nl =>
             {
                 var entity = new NguyenLieu();
@@ -425,7 +424,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 return entity;
             }).ToList();
 
-            // 2. Insert tất cả vào MongoDB
+
             await _collectionNguyenLieu.InsertManyAsync(nguyenLieuEntities);
 
             var nguyenLieuIds = nguyenLieuEntities.Select(x => x.Id).ToList();
@@ -576,12 +575,6 @@ public class PhieuNhapRepository : IPhieuNhapRepository
         }
 
     }
-
-    // public async Task<RespondAPI<PhieuNhapRespond>> UpdatePhieuNhap(string id, RequestUpdatePhieuNhap request)
-    // {
-
-
-    // }
 
     public async Task<RespondAPI<string>> DeletePhieuNhap(string id)
     {

@@ -35,14 +35,8 @@ public class AuthController : Controller
         var user = new MongoUser
         {
             UserName = model.Username,
-            // Email = model.Email,
             FullName = model.FullName,
             nhanVienId = model.nhanVienId,
-            // PhoneNumber = model.PhoneNumber,
-            // Address = model.Address,
-            // Avatar = model.Avatar,
-            // Gender = model.Gender,
-            // DateOfBirth = model.DateOfBirth
         };
         var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -91,10 +85,6 @@ public class AuthController : Controller
             new Claim("nhanVienId", user.nhanVienId)
         };
 
-        // if (!string.IsNullOrEmpty(user.Email))
-        // {
-        //     claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
-        // }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -126,12 +116,6 @@ public class AuthController : Controller
         {
             id,
             user.FullName,
-            // user.Email,
-            // user.PhoneNumber,
-            // user.Address,
-            // user.Avatar,
-            // user.Gender,
-            // user.DateOfBirth,
             user.PhanQuyen,
             user.IsActive,
             user.nhanVienId
@@ -148,12 +132,6 @@ public class AuthController : Controller
             return NotFound();
         user.FullName = model.FullName;
         user.nhanVienId = model.nhanVienId;
-        // user.Email = model.Email;
-        // user.PhoneNumber = model.PhoneNumber;
-        // user.Address = model.Address;
-        // user.Avatar = model.Avatar;
-        // user.Gender = model.Gender;
-        // user.DateOfBirth = model.DateOfBirth;
         await _userManager.UpdateAsync(user);
         return Ok(new { Message = "Cập nhật thông tin người dùng thành công" });
     }
@@ -168,13 +146,11 @@ public class AuthController : Controller
     {
         var query = _userManager.Users.AsQueryable();
 
-        // Apply search filter if searchFullName is provided
         if (!string.IsNullOrEmpty(searchFullName))
         {
             query = query.Where(u => u.FullName.Contains(searchFullName));
         }
 
-        // Apply paging if isPaging is true
         if (isPaging)
         {
             var totalItems = query.Count();
@@ -187,12 +163,6 @@ public class AuthController : Controller
                 {
                     id = user.Id.ToString(),
                     user.FullName,
-                    // user.Email,
-                    // user.PhoneNumber,
-                    // user.Address,
-                    // user.Avatar,
-                    // user.Gender,
-                    // user.DateOfBirth,
                     user.PhanQuyen,
                     user.IsActive,
                     user.nhanVienId
@@ -209,18 +179,11 @@ public class AuthController : Controller
             });
         }
 
-        // If not paging, return all results
         var allUsers = query
             .Select(user => new
             {
                 id = user.Id.ToString(),
                 user.FullName,
-                // user.Email,
-                // user.PhoneNumber,
-                // user.Address,
-                // user.Avatar,
-                // user.Gender,
-                // user.DateOfBirth,
                 user.PhanQuyen,
                 user.IsActive,
                 user.nhanVienId
@@ -283,14 +246,8 @@ public class RegisterModel
 {
     public string FullName { get; set; }
     public string Username { get; set; }
-    // public string Email { get; set; }
     public string Password { get; set; }
-    public string? PhanQuyen { get; set; } // Thêm trường Role (tùy chọn)
-    // public string? PhoneNumber { get; set; }
-    // public string? Address { get; set; }
-    // public string? Avatar { get; set; }
-    // public bool? Gender { get; set; }
-    // public DateTime? DateOfBirth { get; set; }
+    public string? PhanQuyen { get; set; }
     public string? nhanVienId { get; set; }
 }
 
@@ -304,12 +261,6 @@ public class UpdateUserInfoModel
 {
     public string FullName { get; set; }
     public string nhanVienId { get; set; }
-    // public string Email { get; set; }
-    // public string PhoneNumber { get; set; }
-    // public string Address { get; set; }
-    // public string Avatar { get; set; }
-    // public bool Gender { get; set; }
-    // public DateTime DateOfBirth { get; set; }
 }
 
 public class UpdateUserRoleModel

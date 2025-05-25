@@ -8,7 +8,6 @@ public class PhieuNhap : BaseMongoDb
 
 
     public string? tenPhieu { get; set; }
-    // public List<LoaiMonAnMenu>? loaiMonAns { get; set; }
     public string? tenNguoiGiao { get; set; }
     public string? nhaCungCap { get; set; }
     public string? dienGiai { get; set; }

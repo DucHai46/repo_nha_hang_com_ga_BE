@@ -85,10 +85,8 @@ public class LoaiMonAnRepository : ILoaiMonAnRepository
                     .Project<DanhMucMonAn>(danhMucMonAnProjection)
                     .ToListAsync();
 
-                // Tạo dictionary để map nhanh
                 var danhMucMonAnDict = danhMucMonAns.ToDictionary(x => x.Id, x => x.tenDanhMuc);
 
-                // Map dữ liệu
                 var loaiMonAnResponds = loaiMonAns.Select(loaiMonAn => new LoaiMonAnRespond
                 {
                     id = loaiMonAn.Id,
@@ -208,9 +206,6 @@ public class LoaiMonAnRepository : ILoaiMonAnRepository
             newLoaiMonAn.createdDate = DateTimeOffset.UtcNow;
             newLoaiMonAn.updatedDate = DateTimeOffset.UtcNow;
             newLoaiMonAn.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newLoaiNguyenLieu.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newLoaiMonAn);
 
@@ -256,9 +251,6 @@ public class LoaiMonAnRepository : ILoaiMonAnRepository
             _mapper.Map(request, loaiMonAn);
 
             loaiMonAn.updatedDate = DateTimeOffset.UtcNow;
-
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, loaiMonAn);
 

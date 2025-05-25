@@ -25,6 +25,8 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
     private readonly IMongoCollection<NhaHang> _collectionNhaHang;
     private readonly IMongoCollection<KhuyenMai> _collectionKhuyenMai;
     private readonly IMongoCollection<PhuPhi> _collectionPhuPhi;
+    private readonly IMongoCollection<MonAn> _collectionMonAn;
+    private readonly IMongoCollection<Combo> _collectionCombo;
 
     private readonly IMapper _mapper;
 
@@ -40,6 +42,8 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
         _collectionNhaHang = database.GetCollection<NhaHang>("NhaHang");
         _collectionKhuyenMai = database.GetCollection<KhuyenMai>("KhuyenMai");
         _collectionPhuPhi = database.GetCollection<PhuPhi>("PhuPhi");
+        _collectionMonAn = database.GetCollection<MonAn>("MonAn");
+        _collectionCombo = database.GetCollection<Combo>("Combo");
         _mapper = mapper;
     }
 
@@ -87,7 +91,7 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 filter &= Builders<HoaDonThanhToan>.Filter.Eq(x => x.soNguoi, request.soNguoi);
             }
 
-            if (request.trangthai.HasValue) // Kiểm tra nếu trangThai có giá trị: True hoặc False
+            if (request.trangthai.HasValue)
             {
                 filter &= Builders<HoaDonThanhToan>.Filter.Eq(x => x.trangthai, request.trangthai);
             }
@@ -129,7 +133,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var hoadons = await cursor.ToListAsync();
 
-                // Lấy danh sách các Id từ danh sách hóa đơn
                 var nhanVienIds = hoadons.Select(x => x.nhanVien).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                 var donOrderIds = hoadons.Select(x => x.donOrder).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                 var nhaHangIds = hoadons.Select(x => x.nhaHang).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
@@ -138,7 +141,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 var phuPhiIds = hoadons.Select(x => x.phuPhi).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
 
-                // Query tới các bảng khác
                 var nhanVienFilter = Builders<NhanVien>.Filter.In(x => x.Id, nhanVienIds);
                 var nhanVienProjection = Builders<NhanVien>.Projection
                  .Include(x => x.Id)
@@ -153,9 +155,7 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 var donOrders = await _collectionDonOrder.Find(donOrderFilter)
                 .Project<DonOrder>(donOrderProjection).ToListAsync();
 
-                // Thêm điều kiện isActive cho nhà hàng
                 var nhaHangFilter = Builders<NhaHang>.Filter.In(x => x.Id, nhaHangIds);
-                // nhaHangFilter &= Builders<NhaHang>.Filter.Eq(x => x.isActive, true); // Chỉ lấy nhà hàng đang hoạt động
                 var nhaHangProjection = Builders<NhaHang>.Projection
                     .Include(x => x.Id)
                     .Include(x => x.tenNhaHang)
@@ -185,7 +185,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                     .Project<PhuPhi>(phuPhiProjection).ToListAsync();
 
 
-                // Tạo dictionary để map nhanh
                 var nhanVienDict = nhanViens.ToDictionary(x => x.Id, x => x.tenNhanVien);
                 var donOrderDict = donOrders.ToDictionary(x => x.Id, x => x.tenDon);
                 var nhaHangDict = nhaHangs.ToDictionary(x => x.Id, x => x.tenNhaHang);
@@ -193,7 +192,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 var khuyenMaiDict = khuyenMais.ToDictionary(x => x.Id, x => x.tenKhuyenMai);
                 var phuPhiDict = phuPhis.ToDictionary(x => x.Id, x => x.tenPhuPhi);
 
-                // Map dữ liệu
                 var hoaDonThanhToanResponds = hoadons.Select(x => new HoaDonThanhToanRespond
                 {
                     id = x.Id,
@@ -257,7 +255,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var hoadons = await cursor.ToListAsync();
 
-                // Lấy danh sách các Id từ danh sách hóa đơn
                 var nhanVienIds = hoadons.Select(x => x.nhanVien).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                 var donOrderIds = hoadons.Select(x => x.donOrder).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                 var nhaHangIds = hoadons.Select(x => x.nhaHang).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
@@ -266,7 +263,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 var phuPhiIds = hoadons.Select(x => x.phuPhi).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
 
-                // Query tới các bảng khác
                 var nhanVienFilter = Builders<NhanVien>.Filter.In(x => x.Id, nhanVienIds);
                 var nhanVienProjection = Builders<NhanVien>.Projection
                  .Include(x => x.Id)
@@ -310,7 +306,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                     .Project<PhuPhi>(phuPhiProjection).ToListAsync();
 
 
-                // Tạo dictionary để map nhanh
                 var nhanVienDict = nhanViens.ToDictionary(x => x.Id, x => x.tenNhanVien);
                 var donOrderDict = donOrders.ToDictionary(x => x.Id, x => x.tenDon);
                 var nhaHangDict = nhaHangs.ToDictionary(x => x.Id, x => x.tenNhaHang);
@@ -318,7 +313,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 var khuyenMaiDict = khuyenMais.ToDictionary(x => x.Id, x => x.tenKhuyenMai);
                 var phuPhiDict = phuPhis.ToDictionary(x => x.Id, x => x.tenPhuPhi);
 
-                // Map dữ liệu
                 var hoaDonThanhToanResponds = hoadons.Select(x => new HoaDonThanhToanRespond
                 {
                     id = x.Id,
@@ -397,7 +391,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 );
             }
 
-            // Lấy danh sách các Id từ danh sách hóa đơn
             var nhanVienIds = new List<string> { hoaDonThanhToan.nhanVien }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var donOrderIds = new List<string> { hoaDonThanhToan.donOrder }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var nhaHangIds = new List<string> { hoaDonThanhToan.nhaHang }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
@@ -406,7 +399,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
             var phuPhiIds = new List<string> { hoaDonThanhToan.phuPhi }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
 
-            // Query tới các bảng khác
             var nhanVienFilter = Builders<NhanVien>.Filter.In(x => x.Id, nhanVienIds);
             var nhanVienProjection = Builders<NhanVien>.Projection
              .Include(x => x.Id)
@@ -450,7 +442,7 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 .Project<PhuPhi>(phuPhiProjection).ToListAsync();
 
 
-            // Tạo dictionary để map nhanh
+
             var nhanVienDict = nhanViens.ToDictionary(x => x.Id, x => x.tenNhanVien);
             var donOrderDict = donOrders.ToDictionary(x => x.Id, x => x.tenDon);
             var nhaHangDict = nhaHangs.ToDictionary(x => x.Id, x => x.tenNhaHang);
@@ -458,7 +450,7 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
             var khuyenMaiDict = khuyenMais.ToDictionary(x => x.Id, x => x.tenKhuyenMai);
             var phuPhiDict = phuPhis.ToDictionary(x => x.Id, x => x.tenPhuPhi);
 
-            // Map dữ liệu
+
             var hoaDonThanhToanResponds = new HoaDonThanhToanRespond
             {
                 id = hoaDonThanhToan.Id,
@@ -520,7 +512,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
     {
         try
         {
-            // Kiểm tra xem nhà hàng có tồn tại và đang hoạt động không
             if (!string.IsNullOrEmpty(request.nhaHang))
             {
                 var nhaHangActiveFilter = Builders<NhaHang>.Filter.Eq(x => x.Id, request.nhaHang);
@@ -542,13 +533,10 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                     newHoaDonThanhToan.createdDate = DateTimeOffset.UtcNow;
                     newHoaDonThanhToan.updatedDate = DateTimeOffset.UtcNow;
                     newHoaDonThanhToan.isDelete = false;
-                    // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-                    // newDanhMucMonAn.createdUser = currentUser.Id;
-                    // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
                     await _collection.InsertOneAsync(newHoaDonThanhToan);
 
-                    // Tạo dictionary để map nhanh
+
                     var nhanVienDict = new Dictionary<string, string>();
                     var donOrderDict = new Dictionary<string, string>();
                     var nhaHangDict = new Dictionary<string, string>();
@@ -556,7 +544,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                     var khuyenMaiDict = new Dictionary<string, string>();
                     var phuPhiDict = new Dictionary<string, string>();
 
-                    // Lấy danh sách các Id từ danh sách hóa đơn
                     var nhanVienIds = new List<string> { newHoaDonThanhToan.nhanVien }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                     var donOrderIds = new List<string> { newHoaDonThanhToan.donOrder }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                     var nhaHangIds = new List<string> { newHoaDonThanhToan.nhaHang }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
@@ -565,7 +552,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                     var phuPhiIds = new List<string> { newHoaDonThanhToan.phuPhi }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
 
-                    // Query tới các bảng khác
                     var nhanVienFilter = Builders<NhanVien>.Filter.In(x => x.Id, nhanVienIds);
                     var nhanVienProjection = Builders<NhanVien>.Projection
                     .Include(x => x.Id)
@@ -614,7 +600,7 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                       .Project<PhuPhi>(phuPhiProjection).ToListAsync();
                     phuPhiDict = phuPhis.ToDictionary(x => x.Id, x => x.tenPhuPhi);
 
-                    // Map dữ liệu
+
                     var hoaDonThanhToanResponds = new HoaDonThanhToanRespond
                     {
                         id = newHoaDonThanhToan.Id,
@@ -701,9 +687,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
 
             hoaDonThanhToan.updatedDate = DateTimeOffset.UtcNow;
 
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
-
             var updateResult = await _collection.ReplaceOneAsync(filter, hoaDonThanhToan);
 
             if (!updateResult.IsAcknowledged || updateResult.ModifiedCount == 0)
@@ -714,7 +697,7 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 );
             }
 
-            // Tạo dictionary để map nhanh
+
             var nhanVienDict = new Dictionary<string, string>();
             var donOrderDict = new Dictionary<string, string>();
             var nhaHangDict = new Dictionary<string, string>();
@@ -722,7 +705,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
             var khuyenMaiDict = new Dictionary<string, string>();
             var phuPhiDict = new Dictionary<string, string>();
 
-            // Lấy danh sách các Id từ danh sách hóa đơn
             var nhanVienIds = new List<string> { hoaDonThanhToan.nhanVien }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var donOrderIds = new List<string> { hoaDonThanhToan.donOrder }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var nhaHangIds = new List<string> { hoaDonThanhToan.nhaHang }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
@@ -731,7 +713,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
             var phuPhiIds = new List<string> { hoaDonThanhToan.phuPhi }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
 
-            // Query tới các bảng khác
             var nhanVienFilter = Builders<NhanVien>.Filter.In(x => x.Id, nhanVienIds);
             var nhanVienProjection = Builders<NhanVien>.Projection
             .Include(x => x.Id)
@@ -780,7 +761,7 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
               .Project<PhuPhi>(phuPhiProjection).ToListAsync();
             phuPhiDict = phuPhis.ToDictionary(x => x.Id, x => x.tenPhuPhi);
 
-            // Map dữ liệu
+
             var hoaDonThanhToanResponds = new HoaDonThanhToanRespond
             {
                 id = hoaDonThanhToan.Id,
@@ -962,7 +943,6 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 var endDate = request.denNgay.Value.Date;
                 var monthlyRevenue = new List<DoanhThuMonAnRespond>();
 
-                // Generate all months in range
                 for (var date = startDate; date <= endDate; date = date.AddMonths(1))
                 {
                     var monthStart = new DateTime(date.Year, date.Month, 1);
@@ -987,6 +967,131 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
         catch (Exception ex)
         {
             return new List<DoanhThuMonAnRespond>();
+        }
+    }
+
+    public async Task<List<BestSellingMonAnRespond>> GetBestSellingMonAn(RequestSearchThoiGian request)
+    {
+        try
+        {
+            var filter = Builders<HoaDonThanhToan>.Filter.Empty;
+            filter &= Builders<HoaDonThanhToan>.Filter.Eq(x => x.isDelete, false);
+            filter &= Builders<HoaDonThanhToan>.Filter.Eq(x => x.trangthai, TrangThaiHoaDon.DaThanhToan);
+            if (request.doanhThuEnum == DoanhThuEnum.TheoNgay || request.doanhThuEnum == DoanhThuEnum.TheoThang)
+            {
+                if (request.tuNgay != null)
+                {
+                    filter &= Builders<HoaDonThanhToan>.Filter.Gte(x => x.createdDate, request.tuNgay.Value);
+                }
+                if (request.denNgay != null)
+                {
+                    filter &= Builders<HoaDonThanhToan>.Filter.Lte(x => x.createdDate, request.denNgay.Value);
+                }
+            }
+            else if (request.doanhThuEnum == DoanhThuEnum.TheoTuan)
+            {
+                if (request.tuNgay != null)
+                {
+                    filter &= Builders<HoaDonThanhToan>.Filter.Gte(x => x.createdDate, request.tuNgay.Value);
+                }
+
+                if (request.soTuan != null)
+                {
+                    filter &= Builders<HoaDonThanhToan>.Filter.Lte(x => x.createdDate, request.tuNgay.Value.AddDays(-request.soTuan.Value * 7));
+                }
+            }
+
+            var hoaDonThanhToans = await _collection.Find(filter).ToListAsync();
+            var donOrderIds = hoaDonThanhToans.Select(x => x.donOrder).Distinct().ToList();
+            var donOrders = await _collectionDonOrder.Find(Builders<DonOrder>.Filter.In(x => x.Id, donOrderIds)).ToListAsync();
+
+            var monAnQuantities = new Dictionary<string, int>();
+            var comBoQuantities = new Dictionary<string, int>();
+
+            foreach (var donOrder in donOrders)
+            {
+                if (donOrder.chiTietDonOrder != null)
+                {
+                    foreach (var chiTiet in donOrder.chiTietDonOrder)
+                    {
+                        if (chiTiet.monAns != null)
+                        {
+                            foreach (var monAn in chiTiet.monAns)
+                            {
+                                if (monAn.monAn != null)
+                                {
+                                    if (!monAnQuantities.ContainsKey(monAn.monAn))
+                                    {
+                                        monAnQuantities[monAn.monAn] = 0;
+                                    }
+                                    monAnQuantities[monAn.monAn] += monAn.soLuong ?? 0;
+                                }
+                            }
+                        }
+                        if (chiTiet.comBos != null)
+                        {
+                            foreach (var comBo in chiTiet.comBos)
+                            {
+                                if (comBo.comBo != null)
+                                {
+                                    if (!comBoQuantities.ContainsKey(comBo.comBo))
+                                    {
+                                        comBoQuantities[comBo.comBo] = 0;
+                                    }
+                                    comBoQuantities[comBo.comBo] += comBo.soLuong ?? 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            var monAnIds = monAnQuantities.Keys.ToList();
+            var comBoIds = comBoQuantities.Keys.ToList();
+
+            var monAnFilter = Builders<MonAn>.Filter.In(x => x.Id, monAnIds);
+            var monAnProjection = Builders<MonAn>.Projection
+                .Include(x => x.Id)
+                .Include(x => x.tenMonAn);
+            var monAns = await _collectionMonAn.Find(monAnFilter)
+                .Project<MonAn>(monAnProjection)
+                .ToListAsync();
+            var monAnDict = monAns.ToDictionary(x => x.Id, x => x.tenMonAn);
+
+            var comBoFilter = Builders<Combo>.Filter.In(x => x.Id, comBoIds);
+            var comBoProjection = Builders<Combo>.Projection
+                .Include(x => x.Id)
+                .Include(x => x.tenCombo);
+            var comBos = await _collectionCombo.Find(comBoFilter)
+                .Project<Combo>(comBoProjection)
+                .ToListAsync();
+            var comBoDict = comBos.ToDictionary(x => x.Id, x => x.tenCombo);
+
+            var bestSellingMonAns = new List<BestSellingMonAnRespond>();
+
+            bestSellingMonAns.AddRange(monAnQuantities
+                .Select(x => new BestSellingMonAnRespond
+                {
+                    monAn = monAnDict.ContainsKey(x.Key) ? monAnDict[x.Key] : null,
+                    soLuong = x.Value
+                }));
+
+            bestSellingMonAns.AddRange(comBoQuantities
+                .Select(x => new BestSellingMonAnRespond
+                {
+                    monAn = comBoDict.ContainsKey(x.Key) ? comBoDict[x.Key] : null,
+                    soLuong = x.Value
+                }));
+
+            bestSellingMonAns = bestSellingMonAns
+                .OrderByDescending(x => x.soLuong)
+                .ToList();
+
+            return bestSellingMonAns;
+        }
+        catch (Exception ex)
+        {
+            return new List<BestSellingMonAnRespond>();
         }
     }
 }

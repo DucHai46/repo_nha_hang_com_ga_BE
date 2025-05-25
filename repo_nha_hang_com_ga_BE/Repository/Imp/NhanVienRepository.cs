@@ -88,10 +88,8 @@ public class NhanVienRepository : INhanVienRepository
                     .Project<ChucVu>(chucVuProjection)
                     .ToListAsync();
 
-                // Tạo dictionary để map nhanh
                 var chucVuDict = chucVus.ToDictionary(x => x.Id, x => x.tenChucVu);
 
-                // Map dữ liệu
                 var nhanVienResponds = nhanViens.Select(nhanVien => new NhanVienRespond
                 {
                     id = nhanVien.Id,
@@ -185,7 +183,6 @@ public class NhanVienRepository : INhanVienRepository
                 );
             }
 
-            // var nhanVienRespond = _mapper.Map<NhanVienRespond>(nhanVien);
             var chucVu = await _collectionChucVu.Find(x => x.Id == nhanVien.chucVu).FirstOrDefaultAsync();
             var nhanVienRespond = new NhanVienRespond
             {
@@ -226,13 +223,9 @@ public class NhanVienRepository : INhanVienRepository
             newNhanVien.createdDate = DateTimeOffset.UtcNow;
             newNhanVien.updatedDate = DateTimeOffset.UtcNow;
             newNhanVien.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newLoaiNguyenLieu.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newNhanVien);
 
-            // var nhanVienRespond = _mapper.Map<NhanVienRespond>(newNhanVien);
             var chucVu = await _collectionChucVu.Find(x => x.Id == newNhanVien.chucVu).FirstOrDefaultAsync();
             var nhanVienRespond = new NhanVienRespond
             {
@@ -284,9 +277,6 @@ public class NhanVienRepository : INhanVienRepository
 
             nhanVien.updatedDate = DateTimeOffset.UtcNow;
 
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
-
             var updateResult = await _collection.ReplaceOneAsync(filter, nhanVien);
 
             if (!updateResult.IsAcknowledged || updateResult.ModifiedCount == 0)
@@ -297,7 +287,6 @@ public class NhanVienRepository : INhanVienRepository
                 );
             }
 
-            // var nhanVienRespond = _mapper.Map<NhanVienRespond>(nhanVien);
             var chucVu = await _collectionChucVu.Find(x => x.Id == nhanVien.chucVu).FirstOrDefaultAsync();
             var nhanVienRespond = new NhanVienRespond
             {

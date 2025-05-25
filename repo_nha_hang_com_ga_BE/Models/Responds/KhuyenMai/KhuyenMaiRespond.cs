@@ -13,8 +13,6 @@ public class KhuyenMaiRespond
 
     public string? tenKhuyenMai { get; set; }
 
-    // public IdName? loaiKhuyenMai { get; set; }
-
     public DateTimeOffset ngayBatDau { get; set; }
 
     public DateTimeOffset ngayKetThuc { get; set; }

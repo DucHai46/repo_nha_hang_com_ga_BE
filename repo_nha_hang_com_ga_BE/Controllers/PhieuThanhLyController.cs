@@ -19,8 +19,8 @@ public class PhieuThanhLyController : ControllerBase
         _repository = repository;
     }
 
-    [HttpGet("")] // định nghĩa route cho phương thức này
-    public async Task<IActionResult> GetAllPhieuThanhLys([FromQuery] RequestSearchPhieuThanhLy request) // 
+    [HttpGet("")]
+    public async Task<IActionResult> GetAllPhieuThanhLys([FromQuery] RequestSearchPhieuThanhLy request)
     {
         return Ok(await _repository.GetAllPhieuThanhLys(request));
     }
@@ -37,11 +37,7 @@ public class PhieuThanhLyController : ControllerBase
         return Ok(await _repository.CreatePhieuThanhLy(request));
     }
 
-    // [HttpPut("{id}")]
-    // public async Task<IActionResult> UpdatePhieu(string id, RequestUpdatePhieu request)
-    // {
-    //     return Ok(await _repository.UpdatePhieuNhap(id, request));
-    // }
+
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePhieuThanhLy(string id)

@@ -11,6 +11,5 @@ public interface IPhieuXuatRepository
     Task<RespondAPIPaging<List<PhieuXuatRespond>>> GetAllPhieuXuats(RequestSearchPhieuXuat request);
     Task<RespondAPI<PhieuXuatRespond>> GetPhieuXuatById(string id);
     Task<RespondAPI<PhieuXuatRespond>> CreatePhieuXuat(RequestAddPhieuXuat product);
-    // Task<RespondAPI<PhieuNhapRespond>> UpdatePhieuNhap(string id, RequestUpdatePhieuNhap product);
     Task<RespondAPI<string>> DeletePhieuXuat(string id);
 }

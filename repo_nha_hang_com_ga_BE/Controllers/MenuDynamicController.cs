@@ -19,8 +19,8 @@ public class MenuDynamicController : ControllerBase
         _repository = repository;
     }
 
-    [HttpGet("")] // định nghĩa route cho phương thức này
-    public async Task<IActionResult> GetAllMenuDynamics([FromQuery] RequestSearchMenuDynamic request) // 
+    [HttpGet("")]
+    public async Task<IActionResult> GetAllMenuDynamics([FromQuery] RequestSearchMenuDynamic request)
     {
         return Ok(await _repository.GetAllMenuDynamics(request));
     }
