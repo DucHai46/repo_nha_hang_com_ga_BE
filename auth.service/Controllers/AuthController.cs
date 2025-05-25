@@ -230,12 +230,18 @@ public class AuthController : Controller
         var user = await _userManager.FindByIdAsync(id);
         if (user == null)
             return NotFound();
-        if (!await _userManager.CheckPasswordAsync(user, model.OldPassword))
-        {
-            return Ok(new { Message = "Mật khẩu cũ không chính xác" });
-        }
         user.UserName = model.Username;
-        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
+        if (model.OldPassword != null)
+        {
+            if (!await _userManager.CheckPasswordAsync(user, model.OldPassword))
+            {
+                return Ok(new { Message = "Mật khẩu cũ không chính xác" });
+            }
+        }
+        if (model.Password != null)
+        {
+            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
+        }
         await _userManager.UpdateAsync(user);
         return Ok(new { Message = "Cập nhật tên người dùng thành công" });
     }
