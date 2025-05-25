@@ -230,6 +230,10 @@ public class AuthController : Controller
         var user = await _userManager.FindByIdAsync(id);
         if (user == null)
             return NotFound();
+        if (!await _userManager.CheckPasswordAsync(user, model.OldPassword))
+        {
+            return Ok(new { Message = "Mật khẩu cũ không chính xác" });
+        }
         user.UserName = model.Username;
         user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
         await _userManager.UpdateAsync(user);
@@ -264,6 +268,7 @@ public class AuthController : Controller
 public class UpdateUserModel
 {
     public string Username { get; set; }
+    public string OldPassword { get; set; }
     public string Password { get; set; }
 }
 
