@@ -997,7 +997,7 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
 
                 if (request.soTuan != null)
                 {
-                    filter &= Builders<HoaDonThanhToan>.Filter.Lte(x => x.createdDate, request.tuNgay.Value.AddDays(-request.soTuan.Value * 7));
+                    filter &= Builders<HoaDonThanhToan>.Filter.Gte(x => x.createdDate, request.tuNgay.Value.AddDays(-request.soTuan.Value * 7));
                 }
             }
 
