@@ -16,6 +16,7 @@ public interface IHoaDonThanhToanRepository
     Task<RespondAPI<string>> DeleteHoaDonThanhToan(string id);
     Task<List<DoanhThuMonAnRespond>> GetDoanhThu(RequestSearchThoiGian request);
     Task<List<BestSellingMonAnRespond>> GetBestSellingMonAn(RequestSearchThoiGian request);
+    Task<List<MatDoKhachHangRespond>> GetMatDoKhachHang(RequestSearchThoiGian request);
 }
 
 public class DoanhThuMonAnRespond
@@ -28,6 +29,12 @@ public class BestSellingMonAnRespond
 {
     public string? monAn { get; set; }
     public int? soLuong { get; set; }
+}
+
+public class MatDoKhachHangRespond
+{
+    public string? thoiGian { get; set; }
+    public int? matDoKhachHang { get; set; }
 }
 
 

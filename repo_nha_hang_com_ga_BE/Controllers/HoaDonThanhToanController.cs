@@ -61,4 +61,10 @@ public class HoaDonThanhToanController : ControllerBase
     {
         return Ok(await _repository.GetBestSellingMonAn(request));
     }
+
+    [HttpGet("mat-do-khach-hang")]
+    public async Task<IActionResult> GetMatDoKhachHang([FromQuery] RequestSearchThoiGian request)
+    {
+        return Ok(await _repository.GetMatDoKhachHang(request));
+    }
 }

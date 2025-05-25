@@ -1094,4 +1094,118 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
             return new List<BestSellingMonAnRespond>();
         }
     }
+
+    public async Task<List<MatDoKhachHangRespond>> GetMatDoKhachHang(RequestSearchThoiGian request)
+    {
+        try
+        {
+            var filter = Builders<HoaDonThanhToan>.Filter.Empty;
+            filter &= Builders<HoaDonThanhToan>.Filter.Eq(x => x.isDelete, false);
+            filter &= Builders<HoaDonThanhToan>.Filter.Eq(x => x.trangthai, TrangThaiHoaDon.DaThanhToan);
+            if (request.doanhThuEnum == DoanhThuEnum.TheoNgay || request.doanhThuEnum == DoanhThuEnum.TheoThang)
+            {
+                if (request.tuNgay != null)
+                {
+                    filter &= Builders<HoaDonThanhToan>.Filter.Gte(x => x.createdDate, request.tuNgay.Value);
+                }
+                if (request.denNgay != null)
+                {
+                    filter &= Builders<HoaDonThanhToan>.Filter.Lte(x => x.createdDate, request.denNgay.Value);
+                }
+            }
+            else if (request.doanhThuEnum == DoanhThuEnum.TheoTuan)
+            {
+                if (request.tuNgay != null)
+                {
+                    filter &= Builders<HoaDonThanhToan>.Filter.Gte(x => x.createdDate, request.tuNgay.Value);
+                }
+            }
+
+            var hoaDonThanhToans = await _collection.Find(filter).ToListAsync();
+            var matDoKhachHangResponds = new List<MatDoKhachHangRespond>();
+
+
+            var hoaDonDict = hoaDonThanhToans.ToDictionary(x => x.Id, x => x.soNguoi);
+
+
+            if (request.doanhThuEnum == DoanhThuEnum.TheoNgay)
+            {
+
+                var startDate = request.tuNgay.Value.Date;
+                var endDate = request.denNgay.Value.Date;
+                var dailyRevenue = new List<MatDoKhachHangRespond>();
+
+                for (var date = startDate; date <= endDate; date = date.AddDays(1))
+                {
+                    var dayOrders = hoaDonThanhToans
+                        .Where(x => x.createdDate?.Date == date)
+                        .ToList();
+
+                    dailyRevenue.Add(new MatDoKhachHangRespond
+                    {
+                        thoiGian = date.ToString("dd/MM/yyyy"),
+                        matDoKhachHang = dayOrders.Sum(x => hoaDonDict.ContainsKey(x.Id) ? hoaDonDict[x.Id] : 0)
+                    });
+                }
+
+                return dailyRevenue;
+            }
+            else if (request.doanhThuEnum == DoanhThuEnum.TheoTuan)
+            {
+
+                var startDate = request.tuNgay.Value.Date;
+                var weeklyRevenue = new List<MatDoKhachHangRespond>();
+                var numberOfWeeks = request.soTuan ?? 4;
+
+                for (int i = 0; i < numberOfWeeks; i++)
+                {
+                    var weekStart = startDate.AddDays(i * 7);
+                    var weekEnd = weekStart.AddDays(6);
+
+                    var weekOrders = hoaDonThanhToans
+                        .Where(x => x.createdDate?.Date >= weekStart && x.createdDate?.Date <= weekEnd)
+                        .ToList();
+
+                    weeklyRevenue.Add(new MatDoKhachHangRespond
+                    {
+                        thoiGian = $"Tuần {i + 1} ({weekStart:dd/MM/yyyy} - {weekEnd:dd/MM/yyyy})",
+                        matDoKhachHang = weekOrders.Sum(x => hoaDonDict.ContainsKey(x.Id) ? hoaDonDict[x.Id] : 0)
+                    });
+                }
+
+                return weeklyRevenue;
+            }
+            else if (request.doanhThuEnum == DoanhThuEnum.TheoThang)
+            {
+
+                var startDate = request.tuNgay.Value.Date;
+                var endDate = request.denNgay.Value.Date;
+                var monthlyRevenue = new List<MatDoKhachHangRespond>();
+
+                for (var date = startDate; date <= endDate; date = date.AddMonths(1))
+                {
+                    var monthStart = new DateTime(date.Year, date.Month, 1);
+                    var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+
+                    var monthOrders = hoaDonThanhToans
+                        .Where(x => x.createdDate?.Date >= monthStart && x.createdDate?.Date <= monthEnd)
+                        .ToList();
+
+                    monthlyRevenue.Add(new MatDoKhachHangRespond
+                    {
+                        thoiGian = $"{date.Month}/{date.Year}",
+                        matDoKhachHang = monthOrders.Sum(x => hoaDonDict.ContainsKey(x.Id) ? hoaDonDict[x.Id] : 0)
+                    });
+                }
+
+                return monthlyRevenue;
+            }
+
+            return matDoKhachHangResponds;
+        }
+        catch (Exception ex)
+        {
+            return new List<MatDoKhachHangRespond>();
+        }
+    }
 }

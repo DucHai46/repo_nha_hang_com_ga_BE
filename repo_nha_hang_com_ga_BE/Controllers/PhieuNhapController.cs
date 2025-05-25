@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using repo_nha_hang_com_ga_BE.Models.Common.Respond;
 using repo_nha_hang_com_ga_BE.Models.Requests.PhieuNhap;
+using repo_nha_hang_com_ga_BE.Models.Requests.BaoCaoThongKe;
 using repo_nha_hang_com_ga_BE.Models.Responds.PhieuNhap;
 using repo_nha_hang_com_ga_BE.Repository;
 
@@ -43,5 +44,11 @@ public class PhieuNhapController : ControllerBase
     public async Task<IActionResult> DeletePhieuNhap(string id)
     {
         return Ok(await _repository.DeletePhieuNhap(id));
+    }
+
+    [HttpGet("khoan-chi")]
+    public async Task<IActionResult> GetKhoanChi([FromQuery] RequestSearchThoiGian request)
+    {
+        return Ok(await _repository.GetKhoanChi(request));
     }
 }
