@@ -243,7 +243,7 @@ public class AuthController : Controller
             user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
         }
         await _userManager.UpdateAsync(user);
-        return Ok(new { Message = "Cập nhật tên người dùng thành công" });
+        return Ok(new { Message = "Cập nhật tài khoản thành công" });
     }
 
     [Authorize]
