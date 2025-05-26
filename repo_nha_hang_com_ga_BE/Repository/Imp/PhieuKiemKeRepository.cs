@@ -59,6 +59,7 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
             var projection = Builders<PhieuKiemKe>.Projection
                .Include(x => x.Id)
                .Include(x => x.tenPhieu)
+               .Include(x => x.createdDate)
                .Include(x => x.ngayKiemKe)
                .Include(x => x.diaDiem)
                .Include(x => x.ghiChu)
@@ -142,7 +143,7 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
                 {
                     id = x.Id,
                     tenPhieu = x.tenPhieu,
-                    ngayKiemKe = x.createdDate?.Date,
+                    ngayKiemKe = x.createdDate,
                     diaDiem = x.diaDiem,
                     ghiChu = x.ghiChu,
                     nhanVien = x.nhanVien != null ? new IdName
@@ -238,7 +239,7 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
                 {
                     id = x.Id,
                     tenPhieu = x.tenPhieu,
-                    ngayKiemKe = x.createdDate?.Date,
+                    ngayKiemKe = x.createdDate,
                     diaDiem = x.diaDiem,
                     ghiChu = x.ghiChu,
                     nhanVien = x.nhanVien != null ? new IdName
@@ -327,7 +328,7 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
             {
                 id = phieuKiemKe.Id,
                 tenPhieu = phieuKiemKe.tenPhieu,
-                ngayKiemKe = phieuKiemKe.createdDate?.Date,
+                ngayKiemKe = phieuKiemKe.createdDate,
                 diaDiem = phieuKiemKe.diaDiem,
                 ghiChu = phieuKiemKe.ghiChu,
                 nhanVien = phieuKiemKe.nhanVien != null ? new IdName
@@ -416,7 +417,7 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
             {
                 id = newPhieuKiemKe.Id,
                 tenPhieu = newPhieuKiemKe.tenPhieu,
-                ngayKiemKe = newPhieuKiemKe.createdDate?.Date,
+                ngayKiemKe = newPhieuKiemKe.createdDate,
                 diaDiem = newPhieuKiemKe.diaDiem,
                 ghiChu = newPhieuKiemKe.ghiChu,
                 nhanVien = newPhieuKiemKe.nhanVien != null ? new IdName

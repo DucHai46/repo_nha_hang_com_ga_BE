@@ -11,7 +11,7 @@ public class PhieuKiemKe : BaseMongoDb
     public string? diaDiem { get; set; }
     public string? ghiChu { get; set; }
     public string? nhanVien { get; set; }
-    public DateTime? ngayKiemKe { get; set; }
+    public DateTimeOffset? ngayKiemKe { get; set; }
     public List<loaiNguyenLieuKiemKe>? loaiNguyenLieus { get; set; }
 }
 public class loaiNguyenLieuKiemKe

@@ -14,7 +14,7 @@ public class PhieuKiemKeRespond
     public string? id { get; set; }
     public string? tenPhieu { get; set; }
     public string? diaDiem { get; set; }
-    public DateTime? ngayKiemKe { get; set; }
+    public DateTimeOffset? ngayKiemKe { get; set; }
     public string? ghiChu { get; set; }
     public IdName? nhanVien { get; set; }
     public List<loaiNguyenLieuKiemKeRespond>? loaiNguyenLieus { get; set; }
