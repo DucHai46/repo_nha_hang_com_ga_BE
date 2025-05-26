@@ -449,6 +449,7 @@ public class PhieuThanhLyRepository : IPhieuThanhLyRepository
             newPhieuThanhLy.createdDate = DateTimeOffset.UtcNow;
             newPhieuThanhLy.updatedDate = DateTimeOffset.UtcNow;
             newPhieuThanhLy.isDelete = false;
+            newPhieuThanhLy.ngayLap = newPhieuThanhLy.createdDate; 
             var nguyenLieuDict = new Dictionary<string, string>();
             var loaiNguyenLieuDict = new Dictionary<string, string>();
             var donViTinhDict = new Dictionary<string, string>();

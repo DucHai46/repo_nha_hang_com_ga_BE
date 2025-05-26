@@ -379,6 +379,7 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
             newPhieuKiemKe.createdDate = DateTimeOffset.UtcNow;
             newPhieuKiemKe.updatedDate = DateTimeOffset.UtcNow;
             newPhieuKiemKe.isDelete = false;
+            newPhieuKiemKe.ngayKiemKe = newPhieuKiemKe.createdDate;
 
             await _collection.InsertOneAsync(newPhieuKiemKe);
 

@@ -446,6 +446,8 @@ public class PhieuXuatRepository : IPhieuXuatRepository
             newPhieuXuat.createdDate = DateTimeOffset.UtcNow;
             newPhieuXuat.updatedDate = DateTimeOffset.UtcNow;
             newPhieuXuat.isDelete = false;
+            newPhieuXuat.ngayLap = newPhieuXuat.createdDate; 
+
             var nguyenLieuDict = new Dictionary<string, string>();
             var loaiNguyenLieuDict = new Dictionary<string, string>();
             var donViTinhDict = new Dictionary<string, string>();
