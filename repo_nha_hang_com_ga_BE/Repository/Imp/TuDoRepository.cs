@@ -75,10 +75,8 @@ public class TuDoRepository : ITuDoRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var tuDos = await cursor.ToListAsync();
 
-                // Lấy danh sách ID loại bàn
                 var loaiTuDoIds = tuDos.Select(x => x.loaiTuDo).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-                // Query bảng loại bàn
                 var loaiTuDoFilter = Builders<LoaiTuDo>.Filter.In(x => x.Id, loaiTuDoIds);
                 var loaiTuDoProjection = Builders<LoaiTuDo>.Projection
                     .Include(x => x.Id)
@@ -87,10 +85,8 @@ public class TuDoRepository : ITuDoRepository
                     .Project<LoaiTuDo>(loaiTuDoProjection)
                     .ToListAsync();
 
-                // Tạo dictionary để map nhanh
                 var loaiTuDoDict = loaiTuDos.ToDictionary(x => x.Id, x => x.tenLoai);
 
-                // Map dữ liệu
                 var tuDoResponds = tuDos.Select(tuDo => new TuDoRespond
                 {
                     id = tuDo.Id,
@@ -120,10 +116,8 @@ public class TuDoRepository : ITuDoRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var tuDos = await cursor.ToListAsync();
 
-                // Lấy danh sách ID loại bàn
                 var loaiTuDoIds = tuDos.Select(x => x.loaiTuDo).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-                // Query bảng loại bàn
                 var loaiTuDoFilter = Builders<LoaiTuDo>.Filter.In(x => x.Id, loaiTuDoIds);
                 var loaiTuDoProjection = Builders<LoaiTuDo>.Projection
                     .Include(x => x.Id)
@@ -132,10 +126,8 @@ public class TuDoRepository : ITuDoRepository
                     .Project<LoaiTuDo>(loaiTuDoProjection)
                     .ToListAsync();
 
-                // Tạo dictionary để map nhanh
                 var loaiTuDoDict = loaiTuDos.ToDictionary(x => x.Id, x => x.tenLoai);
 
-                // Map dữ liệu
                 var tuDoResponds = tuDos.Select(tuDo => new TuDoRespond
                 {
                     id = tuDo.Id,
@@ -213,9 +205,6 @@ public class TuDoRepository : ITuDoRepository
             newTuDo.createdDate = DateTimeOffset.UtcNow;
             newTuDo.updatedDate = DateTimeOffset.UtcNow;
             newTuDo.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newLoaiNguyenLieu.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newTuDo);
 
@@ -262,8 +251,6 @@ public class TuDoRepository : ITuDoRepository
 
             tuDo.updatedDate = DateTimeOffset.UtcNow;
 
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, tuDo);
 

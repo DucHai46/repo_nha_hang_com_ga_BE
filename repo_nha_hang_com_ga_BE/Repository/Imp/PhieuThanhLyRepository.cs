@@ -62,6 +62,7 @@ public class PhieuThanhLyRepository : IPhieuThanhLyRepository
             var projection = Builders<PhieuThanhLy>.Projection
                .Include(x => x.Id)
                .Include(x => x.tenPhieu)
+               .Include(x => x.createdDate)
                .Include(x => x.ngayLap)
                .Include(x => x.diaDiem)
                .Include(x => x.ghiChu)
@@ -164,7 +165,7 @@ public class PhieuThanhLyRepository : IPhieuThanhLyRepository
                 {
                     id = x.Id,
                     tenPhieu = x.tenPhieu,
-                    ngayLap = x.createdDate?.Date,
+                    ngayLap = x.createdDate,
                     diaDiem = x.diaDiem,
                     ghiChu = x.ghiChu,
                     nhanVien = x.nhanVien != null ? new IdName
@@ -287,7 +288,7 @@ public class PhieuThanhLyRepository : IPhieuThanhLyRepository
                 {
                     id = x.Id,
                     tenPhieu = x.tenPhieu,
-                    ngayLap = x.createdDate?.Date,
+                    ngayLap = x.createdDate,
                     diaDiem = x.diaDiem,
                     ghiChu = x.ghiChu,
                     nhanVien = x.nhanVien != null ? new IdName
@@ -392,14 +393,14 @@ public class PhieuThanhLyRepository : IPhieuThanhLyRepository
             {
                 id = phieuThanhLy.Id,
                 tenPhieu = phieuThanhLy.tenPhieu,
-                ngayLap = phieuThanhLy.createdDate?.Date,
+                ngayLap = phieuThanhLy.createdDate,
                 diaDiem = phieuThanhLy.diaDiem,
                 ghiChu = phieuThanhLy.ghiChu,
                 nhanVien = phieuThanhLy.nhanVien != null ? new IdName
                 {
                     Id = phieuThanhLy.nhanVien,
                     Name = _collectionNhanVien.Find(x => x.Id == phieuThanhLy.nhanVien).FirstOrDefault()?.tenNhanVien
-                } : null,
+                } : new IdName { Id = "", Name = "" },
                 loaiNguyenLieus = phieuThanhLy.loaiNguyenLieus.Select(y => new loaiNguyenLieuThanhLyRespond
                 {
                     Id = y.id,
@@ -448,6 +449,7 @@ public class PhieuThanhLyRepository : IPhieuThanhLyRepository
             newPhieuThanhLy.createdDate = DateTimeOffset.UtcNow;
             newPhieuThanhLy.updatedDate = DateTimeOffset.UtcNow;
             newPhieuThanhLy.isDelete = false;
+            newPhieuThanhLy.ngayLap = newPhieuThanhLy.createdDate; 
             var nguyenLieuDict = new Dictionary<string, string>();
             var loaiNguyenLieuDict = new Dictionary<string, string>();
             var donViTinhDict = new Dictionary<string, string>();
@@ -511,7 +513,7 @@ public class PhieuThanhLyRepository : IPhieuThanhLyRepository
             {
                 id = newPhieuThanhLy.Id,
                 tenPhieu = newPhieuThanhLy.tenPhieu,
-                ngayLap = newPhieuThanhLy.createdDate?.Date,
+                ngayLap = newPhieuThanhLy.createdDate,
                 diaDiem = newPhieuThanhLy.diaDiem,
                 ghiChu = newPhieuThanhLy.ghiChu,
                 nhanVien = newPhieuThanhLy.nhanVien != null ? new IdName

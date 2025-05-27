@@ -149,9 +149,6 @@ public class NhaHangRepository : INhaHangRepository
             newNhaHang.createdDate = DateTimeOffset.UtcNow;
             newNhaHang.updatedDate = DateTimeOffset.UtcNow;
             newNhaHang.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newDanhMucMonAn.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newNhaHang);
 
@@ -192,8 +189,7 @@ public class NhaHangRepository : INhaHangRepository
 
             nhaHang.updatedDate = DateTimeOffset.UtcNow;
 
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
+
 
             var updateResult = await _collection.ReplaceOneAsync(filter, nhaHang);
 

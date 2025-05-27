@@ -133,11 +133,11 @@ app.Run();
 public class MongoUser : MongoIdentityUser<ObjectId>
 {
     public string? FullName { get; set; }
-    public string? Address { get; set; }
-    public string? Avatar { get; set; }
-    public bool? Gender { get; set; }
-    public DateTime? DateOfBirth { get; set; }
     public string? PhanQuyen { get; set; }
     public bool IsActive { get; set; } = true;
+
+    public int? SoLanSaiMatKhau { get; set; } = 0;
+
+    public string? nhanVienId { get; set; }
 }
 

@@ -19,8 +19,8 @@ public class ChucVuController : ControllerBase
         _repository = repository;
     }
 
-    [HttpGet("")] // định nghĩa route cho phương thức này
-    public async Task<IActionResult> GetAllChucVus([FromQuery] RequestSearchChucVu request) // 
+    [HttpGet("")]
+    public async Task<IActionResult> GetAllChucVus([FromQuery] RequestSearchChucVu request)
     {
         return Ok(await _repository.GetAllChucVus(request));
     }

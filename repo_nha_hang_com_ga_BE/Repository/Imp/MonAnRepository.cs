@@ -127,7 +127,6 @@ public class MonAnRepository : IMonAnRepository
                     .Project<GiamGia>(giamGiaProjection)
                     .ToListAsync();
 
-                // giamGiaDict = giamGias.ToDictionary(x => x.Id, x => x.tenGiamGia);
 
                 var monAnsRespond = monAns.Select(x => new MonAnRespond
                 {
@@ -209,7 +208,6 @@ public class MonAnRepository : IMonAnRepository
                     .Project<GiamGia>(giamGiaProjection)
                     .ToListAsync();
 
-                // giamGiaDict = giamGias.ToDictionary(x => x.Id, x => x.tenGiamGia);
 
                 var monAnsRespond = monAns.Select(x => new MonAnRespond
                 {
@@ -269,7 +267,6 @@ public class MonAnRepository : IMonAnRepository
                 );
             }
 
-            // var monAnRespond = _mapper.Map<MonAnRespond>(monAn);
             var loaiMonAn = await _collectionLoaiMonAn.Find(x => x.Id == monAn.loaiMonAn).FirstOrDefaultAsync();
             var congThuc = await _collectionCongThuc.Find(x => x.Id == monAn.congThuc).FirstOrDefaultAsync();
             var giamGia = await _collectionGiamGia.Find(x => x.Id == monAn.giamGia).FirstOrDefaultAsync();
@@ -323,9 +320,6 @@ public class MonAnRepository : IMonAnRepository
             newMonAn.createdDate = DateTimeOffset.UtcNow;
             newMonAn.updatedDate = DateTimeOffset.UtcNow;
             newMonAn.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newLoaiNguyenLieu.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newMonAn);
 
@@ -358,7 +352,6 @@ public class MonAnRepository : IMonAnRepository
                 giaTien = newMonAn.giaTien
             };
 
-            // var monAnRespond = _mapper.Map<MonAnRespond>(newMonAn);
 
             return new RespondAPI<MonAnRespond>(
                 ResultRespond.Succeeded,
@@ -395,9 +388,6 @@ public class MonAnRepository : IMonAnRepository
 
             monAn.updatedDate = DateTimeOffset.UtcNow;
 
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
-
             var updateResult = await _collection.ReplaceOneAsync(filter, monAn);
 
             if (!updateResult.IsAcknowledged || updateResult.ModifiedCount == 0)
@@ -408,7 +398,6 @@ public class MonAnRepository : IMonAnRepository
                 );
             }
 
-            // var monAnRespond = _mapper.Map<MonAnRespond>(monAn);
             var loaiMonAn = await _collectionLoaiMonAn.Find(x => x.Id == monAn.loaiMonAn).FirstOrDefaultAsync();
             var congThuc = await _collectionCongThuc.Find(x => x.Id == monAn.congThuc).FirstOrDefaultAsync();
             var giamGia = await _collectionGiamGia.Find(x => x.Id == monAn.giamGia).FirstOrDefaultAsync();

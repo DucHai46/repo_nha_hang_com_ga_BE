@@ -13,15 +13,13 @@ public class PhieuXuatRespond
     [BsonRepresentation(BsonType.ObjectId)]
     public string? id { get; set; }
     public string? tenPhieu { get; set; }
-    public DateTime? ngayLap { get; set; }
+    public DateTimeOffset? ngayLap { get; set; }
     public string? nguoiNhan { get; set; }
     public string? lyDoXuat { get; set; }
     public string? diaDiem { get; set; }
     public string? ghiChu { get; set; }
     public IdName? nhanVien { get; set; }
     public List<loaiNguyenLieuXuatRespond>? loaiNguyenLieus { get; set; }
-    // public DateTime? tuNgay { get; set; }
-    // public DateTime? denNgay { get; set; }
 
 }
 

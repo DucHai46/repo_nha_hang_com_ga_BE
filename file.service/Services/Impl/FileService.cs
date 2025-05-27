@@ -22,14 +22,13 @@ public class FileService : IFileService
         _environment = environment;
         _context = context;
     }
-    
+
     public async Task<FileMetadata> UploadFileAsync(IFormFile file)
     {
         using var stream = new MemoryStream();
         await file.CopyToAsync(stream);
-        stream.Position = 0; // Reset stream position
+        stream.Position = 0;
 
-        // Upload file vào GridFS
         var fileId = await _context._gridFS.UploadFromStreamAsync(
             file.FileName,
             stream,
@@ -41,7 +40,6 @@ public class FileService : IFileService
                 }
             });
 
-        // Lưu metadata
         var metadata = new FileMetadata
         {
             FileName = file.FileName,
@@ -53,7 +51,7 @@ public class FileService : IFileService
         await _fileRepository.AddAsync(metadata);
         return metadata;
     }
-    
+
     public async Task<(byte[] fileBytes, string fileName, string contentType)> DownloadFileAsync(string fileId)
     {
         var metadata = await _fileRepository.GetByIdAsync(fileId);
@@ -64,21 +62,19 @@ public class FileService : IFileService
         await _context._gridFS.DownloadToStreamAsync(metadata.FileId, stream);
         stream.Position = 0;
 
-        // Lấy thông tin content type từ GridFS metadata (nếu cần)
         var filter = Builders<GridFSFileInfo>.Filter.Eq("_id", metadata.FileId);
         var fileInfo = (await _context._gridFS.FindAsync(filter)).FirstOrDefault();
         var contentType = fileInfo?.Metadata?.GetValue("contentType", "application/octet-stream").AsString;
 
         return (stream.ToArray(), metadata.FileName, contentType);
     }
-    
+
     public async Task DeleteFileAsync(string fileId)
     {
         var metadata = await _fileRepository.GetByIdAsync(fileId);
         if (metadata == null)
             throw new FileNotFoundException("Metadata not found.");
 
-        // Xóa file từ GridFS và metadata
         await _context._gridFS.DeleteAsync(metadata.FileId);
         await _fileRepository.DeleteAsync(fileId);
     }

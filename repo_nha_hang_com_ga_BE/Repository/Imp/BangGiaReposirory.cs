@@ -38,9 +38,7 @@ public class BangGiaRepository : IBangGiaRepository
         try
         {
             var collection = _collection;
-            // tạo filter trống
             var filter = Builders<BangGia>.Filter.Empty;
-            //lọc cái chưa bị xóa
             filter &= Builders<BangGia>.Filter.Eq(x => x.isDelete, false);
 
             if (!string.IsNullOrEmpty(request.tenGia))
@@ -48,7 +46,7 @@ public class BangGiaRepository : IBangGiaRepository
                 filter &= Builders<BangGia>.Filter.Regex(x => x.tenGia, new BsonRegularExpression($".*{request.tenGia}.*"));
 
             }
-            
+
             if (!string.IsNullOrEmpty(request.idMonAn))
             {
                 filter &= Builders<BangGia>.Filter.Eq(x => x.monAn, request.idMonAn);
@@ -69,7 +67,6 @@ public class BangGiaRepository : IBangGiaRepository
 
             if (request.IsPaging)
             {
-                // tính các bản ghi thỏa mãn bộ lọc filter
                 long totalRecord = await collection.CountDocumentsAsync(filter);
                 int totalPages = (int)Math.Ceiling((double)totalRecord / request.PageSize);
 
@@ -77,36 +74,35 @@ public class BangGiaRepository : IBangGiaRepository
                 if (currentPage < 1) currentPage = 1;
                 if (currentPage > totalPages) currentPage = totalPages;
 
-                //bỏ qua bản ghi bằng skip và limit
                 findOptions.Skip = (currentPage - 1) * request.PageSize;
                 findOptions.Limit = request.PageSize;
 
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var BangGias = await cursor.ToListAsync();
-                
+
                 var monAnIds = BangGias.Select(x => x.monAn).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var monAnFilter=Builders<MonAn>.Filter.In(x => x.Id, monAnIds);
-                var monAnProjection=Builders<MonAn>.Projection
+                var monAnFilter = Builders<MonAn>.Filter.In(x => x.Id, monAnIds);
+                var monAnProjection = Builders<MonAn>.Projection
                     .Include(x => x.Id)
                     .Include(x => x.tenMonAn);
                 var monAns = await _collectionMonAn.Find(monAnFilter)
                     .Project<MonAn>(monAnProjection)
                     .ToListAsync();
-                var monAnDict=monAns.ToDictionary(x => x.Id, x => x.tenMonAn);
-                var BangGiaRespond=BangGias.Select(bangGia=> new BangGiaRespond
+                var monAnDict = monAns.ToDictionary(x => x.Id, x => x.tenMonAn);
+                var BangGiaRespond = BangGias.Select(bangGia => new BangGiaRespond
                 {
-                    id=bangGia.Id,
-                    tenGia=bangGia.tenGia,
-                    giaTri=bangGia.giaTri,
-                    createdDate=bangGia.createdDate?.Date,
-                    monAn= new IdName
+                    id = bangGia.Id,
+                    tenGia = bangGia.tenGia,
+                    giaTri = bangGia.giaTri,
+                    createdDate = bangGia.createdDate?.Date,
+                    monAn = new IdName
                     {
-                        Id=bangGia.monAn,
-                        Name=bangGia.monAn !=null && monAnDict.ContainsKey(bangGia.monAn) ? monAnDict[bangGia.monAn] : null
+                        Id = bangGia.monAn,
+                        Name = bangGia.monAn != null && monAnDict.ContainsKey(bangGia.monAn) ? monAnDict[bangGia.monAn] : null
                     }
-                    
+
                 }).ToList();
-                
+
 
                 var pagingDetail = new PagingDetail(currentPage, request.PageSize, totalRecord);
                 var pagingResponse = new PagingResponse<List<BangGiaRespond>>
@@ -126,26 +122,26 @@ public class BangGiaRepository : IBangGiaRepository
                 var BangGias = await cursor.ToListAsync();
 
                 var monAnIds = BangGias.Select(x => x.monAn).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-                var monAnFilter=Builders<MonAn>.Filter.In(x => x.Id, monAnIds);
-                var monAnProjection=Builders<MonAn>.Projection
+                var monAnFilter = Builders<MonAn>.Filter.In(x => x.Id, monAnIds);
+                var monAnProjection = Builders<MonAn>.Projection
                     .Include(x => x.Id)
                     .Include(x => x.tenMonAn);
                 var monAns = await _collectionMonAn.Find(monAnFilter)
                     .Project<MonAn>(monAnProjection)
                     .ToListAsync();
-                var monAnDict=monAns.ToDictionary(x => x.Id, x => x.tenMonAn);
-                var BangGiaRespond=BangGias.Select(bangGia=> new BangGiaRespond
+                var monAnDict = monAns.ToDictionary(x => x.Id, x => x.tenMonAn);
+                var BangGiaRespond = BangGias.Select(bangGia => new BangGiaRespond
                 {
-                    id=bangGia.Id,
-                    tenGia=bangGia.tenGia,
-                    giaTri=bangGia.giaTri,
-                    createdDate=bangGia.createdDate?.Date,
-                    monAn= new IdName
+                    id = bangGia.Id,
+                    tenGia = bangGia.tenGia,
+                    giaTri = bangGia.giaTri,
+                    createdDate = bangGia.createdDate?.Date,
+                    monAn = new IdName
                     {
-                        Id=bangGia.monAn,
-                        Name=bangGia.monAn !=null && monAnDict.ContainsKey(bangGia.monAn) ? monAnDict[bangGia.monAn] : null
+                        Id = bangGia.monAn,
+                        Name = bangGia.monAn != null && monAnDict.ContainsKey(bangGia.monAn) ? monAnDict[bangGia.monAn] : null
                     }
-                    
+
                 }).ToList();
 
                 return new RespondAPIPaging<List<BangGiaRespond>>(
@@ -153,7 +149,7 @@ public class BangGiaRepository : IBangGiaRepository
                     data: new PagingResponse<List<BangGiaRespond>>
                     {
                         Data = BangGiaRespond,
-                        Paging = new PagingDetail(1, BangGiaRespond.Count,  BangGiaRespond.Count)
+                        Paging = new PagingDetail(1, BangGiaRespond.Count, BangGiaRespond.Count)
                     }
                 );
             }
@@ -181,15 +177,16 @@ public class BangGiaRepository : IBangGiaRepository
                 );
             }
             var monAn = await _collectionMonAn.Find(x => x.Id == BangGia.monAn).FirstOrDefaultAsync();
-            var BangGiaRespond=new BangGiaRespond{
-                id=BangGia.Id,
-                tenGia=BangGia.tenGia,
-                giaTri=BangGia.giaTri,
-                createdDate=BangGia.createdDate?.Date,
-                monAn= new IdName
+            var BangGiaRespond = new BangGiaRespond
+            {
+                id = BangGia.Id,
+                tenGia = BangGia.tenGia,
+                giaTri = BangGia.giaTri,
+                createdDate = BangGia.createdDate?.Date,
+                monAn = new IdName
                 {
-                    Id=monAn.Id,
-                    Name=monAn.tenMonAn
+                    Id = monAn.Id,
+                    Name = monAn.tenMonAn
                 }
             };
 
@@ -219,21 +216,21 @@ public class BangGiaRepository : IBangGiaRepository
             newBangGia.updatedDate = DateTimeOffset.UtcNow;
 
             await _collection.InsertOneAsync(newBangGia);
-             var monAn = await _collectionMonAn.Find(x => x.Id == newBangGia.monAn).FirstOrDefaultAsync();
-            // var BangGiaRespond = _mapper.Map<BangGiaRespond>(newBangGia);
-            var BangGiaRespond=new BangGiaRespond{
-                id=newBangGia.Id,
-                tenGia=newBangGia.tenGia,
-                giaTri=newBangGia.giaTri,
-                createdDate=newBangGia.createdDate?.Date,
-                monAn= new IdName
+            var monAn = await _collectionMonAn.Find(x => x.Id == newBangGia.monAn).FirstOrDefaultAsync();
+            var BangGiaRespond = new BangGiaRespond
+            {
+                id = newBangGia.Id,
+                tenGia = newBangGia.tenGia,
+                giaTri = newBangGia.giaTri,
+                createdDate = newBangGia.createdDate?.Date,
+                monAn = new IdName
                 {
-                    Id=monAn.Id,
-                    Name=monAn.tenMonAn
+                    Id = monAn.Id,
+                    Name = monAn.tenMonAn
                 }
             };
 
-            
+
 
             return new RespondAPI<BangGiaRespond>(
                 ResultRespond.Succeeded,
@@ -281,15 +278,16 @@ public class BangGiaRepository : IBangGiaRepository
             }
 
             var monAn = await _collectionMonAn.Find(x => x.Id == BangGia.monAn).FirstOrDefaultAsync();
-            var BangGiaRespond=new BangGiaRespond{
-                id=BangGia.Id,
-                tenGia=BangGia.tenGia,
-                giaTri=BangGia.giaTri,
-                createdDate=BangGia.createdDate?.Date,
-                monAn= new IdName
+            var BangGiaRespond = new BangGiaRespond
+            {
+                id = BangGia.Id,
+                tenGia = BangGia.tenGia,
+                giaTri = BangGia.giaTri,
+                createdDate = BangGia.createdDate?.Date,
+                monAn = new IdName
                 {
-                    Id=monAn.Id,
-                    Name=monAn.tenMonAn
+                    Id = monAn.Id,
+                    Name = monAn.tenMonAn
                 }
             };
 

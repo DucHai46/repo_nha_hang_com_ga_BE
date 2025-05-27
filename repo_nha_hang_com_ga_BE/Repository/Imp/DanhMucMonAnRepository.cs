@@ -142,9 +142,6 @@ public class DanhMucMonAnRepository : IDanhMucMonAnRepository
             newDanhMucMonAn.createdDate = DateTimeOffset.UtcNow;
             newDanhMucMonAn.updatedDate = DateTimeOffset.UtcNow;
             newDanhMucMonAn.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newDanhMucMonAn.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newDanhMucMonAn);
 
@@ -184,9 +181,6 @@ public class DanhMucMonAnRepository : IDanhMucMonAnRepository
             _mapper.Map(request, danhMucMonAn);
 
             danhMucMonAn.updatedDate = DateTimeOffset.UtcNow;
-
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, danhMucMonAn);
 

@@ -6,7 +6,6 @@ namespace repo_nha_hang_com_ga_BE.Models.Requests.PhieuNhap;
 public class RequestAddPhieuNhap
 {
     public string? tenPhieu { get; set; }
-    // public List<LoaiMonAnMenu>? loaiMonAns { get; set; }
     public string? tenNguoiGiao { get; set; }
     public string? nhaCungCap { get; set; }
     public string? dienGiai { get; set; }

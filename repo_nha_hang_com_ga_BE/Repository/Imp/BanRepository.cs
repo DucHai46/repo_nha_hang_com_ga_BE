@@ -79,10 +79,9 @@ public class BanRepository : IBanRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var bans = await cursor.ToListAsync();
 
-                // Lấy danh sách ID loại bàn
+
                 var loaiBanIds = bans.Select(x => x.loaiBan).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-                // Query bảng loại bàn
                 var loaiBanFilter = Builders<LoaiBan>.Filter.In(x => x.Id, loaiBanIds);
                 var loaiBanProjection = Builders<LoaiBan>.Projection
                     .Include(x => x.Id)
@@ -91,10 +90,8 @@ public class BanRepository : IBanRepository
                     .Project<LoaiBan>(loaiBanProjection)
                     .ToListAsync();
 
-                // Tạo dictionary để map nhanh
                 var loaiBanDict = loaiBans.ToDictionary(x => x.Id, x => x.tenLoai);
 
-                // Map dữ liệu
                 var banResponds = bans.Select(ban => new BanRespond
                 {
                     id = ban.Id,
@@ -124,10 +121,10 @@ public class BanRepository : IBanRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var bans = await cursor.ToListAsync();
 
-                // Lấy danh sách ID loại bàn
+
                 var loaiBanIds = bans.Select(x => x.loaiBan).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-                // Query bảng loại bàn
+
                 var loaiBanFilter = Builders<LoaiBan>.Filter.In(x => x.Id, loaiBanIds);
                 var loaiBanProjection = Builders<LoaiBan>.Projection
                     .Include(x => x.Id)
@@ -136,10 +133,10 @@ public class BanRepository : IBanRepository
                     .Project<LoaiBan>(loaiBanProjection)
                     .ToListAsync();
 
-                // Tạo dictionary để map nhanh
+
                 var loaiBanDict = loaiBans.ToDictionary(x => x.Id, x => x.tenLoai);
 
-                // Map dữ liệu
+
                 var banResponds = bans.Select(ban => new BanRespond
                 {
                     id = ban.Id,
@@ -216,9 +213,6 @@ public class BanRepository : IBanRepository
             newBan.createdDate = DateTimeOffset.UtcNow;
             newBan.updatedDate = DateTimeOffset.UtcNow;
             newBan.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newDanhMucMonAn.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newBan);
             var loaiBan = await _collectionLoaiBan.Find(x => x.Id == newBan.loaiBan).FirstOrDefaultAsync();
@@ -263,9 +257,6 @@ public class BanRepository : IBanRepository
             _mapper.Map(request, ban);
 
             ban.updatedDate = DateTimeOffset.UtcNow;
-
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, ban);
 

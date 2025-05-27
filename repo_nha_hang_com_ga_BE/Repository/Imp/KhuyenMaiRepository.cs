@@ -40,11 +40,6 @@ public class KhuyenMaiRepository : IKhuyenMaiRepository
                 filter &= Builders<KhuyenMai>.Filter.Regex(x => x.tenKhuyenMai, new BsonRegularExpression($".*{request.tenKhuyenMai}.*"));
             }
 
-            // if (!string.IsNullOrEmpty(request.loaiKhuyenMaiId))
-            // {
-            //     filter &= Builders<KhuyenMai>.Filter.Eq(x => x.loaiKhuyenMai.Id, request.loaiKhuyenMaiId);
-            // }
-
             if (request.ngayBatDau != null)
             {
                 filter &= Builders<KhuyenMai>.Filter.Gte(x => x.ngayBatDau, request.ngayBatDau);
@@ -63,8 +58,6 @@ public class KhuyenMaiRepository : IKhuyenMaiRepository
             var projection = Builders<KhuyenMai>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenKhuyenMai)
-                // .Include(x => x.loaiKhuyenMai.Id)
-                // .Include(x => x.loaiKhuyenMai.Name)
                 .Include(x => x.ngayBatDau)
                 .Include(x => x.ngayKetThuc)
                 .Include(x => x.giaTri);
@@ -166,9 +159,6 @@ public class KhuyenMaiRepository : IKhuyenMaiRepository
             newKhuyenMai.createdDate = DateTimeOffset.UtcNow;
             newKhuyenMai.updatedDate = DateTimeOffset.UtcNow;
             newKhuyenMai.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newLoaiNguyenLieu.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newKhuyenMai);
 
@@ -208,9 +198,6 @@ public class KhuyenMaiRepository : IKhuyenMaiRepository
             _mapper.Map(request, khuyenMai);
 
             khuyenMai.updatedDate = DateTimeOffset.UtcNow;
-
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, khuyenMai);
 

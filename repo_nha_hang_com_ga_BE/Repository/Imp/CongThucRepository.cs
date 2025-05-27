@@ -326,9 +326,6 @@ public class CongThucRepository : ICongThucRepository
             newCongThuc.createdDate = DateTimeOffset.UtcNow;
             newCongThuc.updatedDate = DateTimeOffset.UtcNow;
             newCongThuc.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newDanhMucMonAn.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newCongThuc);
 
@@ -420,9 +417,6 @@ public class CongThucRepository : ICongThucRepository
             _mapper.Map(request, congThuc);
 
             congThuc.updatedDate = DateTimeOffset.UtcNow;
-
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, congThuc);
 

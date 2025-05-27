@@ -35,13 +35,8 @@ public class AuthController : Controller
         var user = new MongoUser
         {
             UserName = model.Username,
-            Email = model.Email,
             FullName = model.FullName,
-            PhoneNumber = model.PhoneNumber,
-            Address = model.Address,
-            Avatar = model.Avatar,
-            Gender = model.Gender,
-            DateOfBirth = model.DateOfBirth
+            nhanVienId = model.nhanVienId,
         };
         var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -55,21 +50,41 @@ public class AuthController : Controller
     public async Task<IActionResult> GetToken([FromBody] LoginModel model)
     {
         var user = await _userManager.FindByNameAsync(model.Username);
-        if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
-            return Unauthorized();
+        if (user == null)
+            return Ok(new
+            {
+                message = "Tài khoản không tồn tại"
+            });
+        if (user.IsActive == false)
+        {
+            return Ok(new
+            {
+                message = "Tài khoản đã bị khóa"
+            });
+        }
+        if (!await _userManager.CheckPasswordAsync(user, model.Password))
+        {
+            user.SoLanSaiMatKhau++;
+            if (user.SoLanSaiMatKhau >= 3)
+            {
+                user.IsActive = false;
+            }
+            await _userManager.UpdateAsync(user);
+            return Ok(new
+            {
+                message = "Mật khẩu không chính xác"
+            });
+        }
 
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(ClaimTypes.Role, user.PhanQuyen)
+            new Claim(ClaimTypes.Role, user.PhanQuyen),
+            new Claim("nhanVienId", user.nhanVienId)
         };
 
-        if (!string.IsNullOrEmpty(user.Email))
-        {
-            claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
-        }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -101,14 +116,10 @@ public class AuthController : Controller
         {
             id,
             user.FullName,
-            user.Email,
-            user.PhoneNumber,
-            user.Address,
-            user.Avatar,
-            user.Gender,
-            user.DateOfBirth,
+            user.UserName,
             user.PhanQuyen,
-            user.IsActive
+            user.IsActive,
+            user.nhanVienId
         };
         return Ok(userInfo);
     }
@@ -121,12 +132,7 @@ public class AuthController : Controller
         if (user == null)
             return NotFound();
         user.FullName = model.FullName;
-        user.Email = model.Email;
-        user.PhoneNumber = model.PhoneNumber;
-        user.Address = model.Address;
-        user.Avatar = model.Avatar;
-        user.Gender = model.Gender;
-        user.DateOfBirth = model.DateOfBirth;
+        user.nhanVienId = model.nhanVienId;
         await _userManager.UpdateAsync(user);
         return Ok(new { Message = "Cập nhật thông tin người dùng thành công" });
     }
@@ -141,13 +147,11 @@ public class AuthController : Controller
     {
         var query = _userManager.Users.AsQueryable();
 
-        // Apply search filter if searchFullName is provided
         if (!string.IsNullOrEmpty(searchFullName))
         {
             query = query.Where(u => u.FullName.Contains(searchFullName));
         }
 
-        // Apply paging if isPaging is true
         if (isPaging)
         {
             var totalItems = query.Count();
@@ -160,14 +164,9 @@ public class AuthController : Controller
                 {
                     id = user.Id.ToString(),
                     user.FullName,
-                    user.Email,
-                    user.PhoneNumber,
-                    user.Address,
-                    user.Avatar,
-                    user.Gender,
-                    user.DateOfBirth,
                     user.PhanQuyen,
-                    user.IsActive
+                    user.IsActive,
+                    user.nhanVienId
                 })
                 .ToList();
 
@@ -181,20 +180,14 @@ public class AuthController : Controller
             });
         }
 
-        // If not paging, return all results
         var allUsers = query
             .Select(user => new
             {
                 id = user.Id.ToString(),
                 user.FullName,
-                user.Email,
-                user.PhoneNumber,
-                user.Address,
-                user.Avatar,
-                user.Gender,
-                user.DateOfBirth,
                 user.PhanQuyen,
-                user.IsActive
+                user.IsActive,
+                user.nhanVienId
             })
             .ToList();
 
@@ -226,6 +219,46 @@ public class AuthController : Controller
     }
 
     [Authorize]
+    [HttpPut("update-user")]
+    public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserModel model)
+    {
+        var userNameExist = await _userManager.FindByNameAsync(model.Username);
+        var user = await _userManager.FindByIdAsync(id);
+        if (userNameExist != null && userNameExist.Id.ToString() != id)
+        {
+            return Ok(new
+            {
+                message = "Tên người dùng đã tồn tại",
+                isSuccess = false
+            });
+        }
+        if (user == null)
+            return NotFound();
+        user.UserName = model.Username;
+        if (model.OldPassword != null)
+        {
+            if (!await _userManager.CheckPasswordAsync(user, model.OldPassword))
+            {
+                return Ok(new
+                {
+                    message = "Mật khẩu cũ không chính xác",
+                    isSuccess = false
+                });
+            }
+        }
+        if (model.Password != null)
+        {
+            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
+        }
+        await _userManager.UpdateAsync(user);
+        return Ok(new
+        {
+            message = "Cập nhật tài khoản thành công",
+            isSuccess = true
+        });
+    }
+
+    [Authorize]
     [HttpPut("lock-user")]
     public async Task<IActionResult> LockUser(string id, bool isActive)
     {
@@ -233,6 +266,7 @@ public class AuthController : Controller
         if (user == null)
             return NotFound();
         user.IsActive = isActive;
+        user.SoLanSaiMatKhau = 0;
         await _userManager.UpdateAsync(user);
         return Ok(new { Message = isActive ? "Mở khóa người dùng thành công" : "Khóa người dùng thành công" });
     }
@@ -249,18 +283,20 @@ public class AuthController : Controller
     }
 }
 
+public class UpdateUserModel
+{
+    public string? Username { get; set; }
+    public string? OldPassword { get; set; }
+    public string? Password { get; set; }
+}
+
 public class RegisterModel
 {
     public string FullName { get; set; }
     public string Username { get; set; }
-    public string Email { get; set; }
     public string Password { get; set; }
-    // public string? PhanQuyen { get; set; } // Thêm trường Role (tùy chọn)
-    public string? PhoneNumber { get; set; }
-    public string? Address { get; set; }
-    public string? Avatar { get; set; }
-    public bool? Gender { get; set; }
-    public DateTime? DateOfBirth { get; set; }
+    public string? PhanQuyen { get; set; }
+    public string? nhanVienId { get; set; }
 }
 
 public class LoginModel
@@ -269,20 +305,10 @@ public class LoginModel
     public string Password { get; set; }
 }
 
-public class RoleModel
-{
-    public string Name { get; set; }
-}
-
 public class UpdateUserInfoModel
 {
     public string FullName { get; set; }
-    public string Email { get; set; }
-    public string PhoneNumber { get; set; }
-    public string Address { get; set; }
-    public string Avatar { get; set; }
-    public bool Gender { get; set; }
-    public DateTime DateOfBirth { get; set; }
+    public string nhanVienId { get; set; }
 }
 
 public class UpdateUserRoleModel

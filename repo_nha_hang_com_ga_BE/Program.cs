@@ -9,10 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 
-// Add services to the container.
 builder.Services.AddSignalR();
 builder.Services.AddMongoDbServices(builder.Configuration);
-builder.Services.AddAutoMapper(typeof(MappingProfile)); // Đăng ký AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: myAllowSpecificOrigins,
@@ -25,13 +24,11 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "MongoWebApi", Version = "v1" });
 
-    // Cấu hình JWT Bearer Token
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -41,7 +38,6 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer"
     });
 
-    // Thêm yêu cầu bắt buộc phải có token
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -58,7 +54,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Thêm services
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -82,10 +77,6 @@ builder.Services.AddAuthentication(options =>
     });
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-
-// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment() || true)
 {
     app.UseSwagger();

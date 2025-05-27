@@ -61,7 +61,6 @@ public class MenuDynamicRepository : IMenuDynamicRepository
                 .Include(x => x.parent)
                 .Include(x => x.position)
                 .Include(x => x.isActive);
-            // .Include(x => x.Children);
 
 
             var findOptions = new FindOptions<MenuDynamic, MenuDynamic>
@@ -85,10 +84,8 @@ public class MenuDynamicRepository : IMenuDynamicRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var menuDynamics = await cursor.ToListAsync();
 
-                // Lấy danh sách ID loại bàn
                 var parentIds = menuDynamics.Select(x => x.parent).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-                // Query bảng loại bàn
                 var parentFilter = Builders<MenuDynamic>.Filter.In(x => x.Id, parentIds);
                 var parentProjection = Builders<MenuDynamic>.Projection
                     .Include(x => x.Id)
@@ -97,10 +94,8 @@ public class MenuDynamicRepository : IMenuDynamicRepository
                     .Project<MenuDynamic>(parentProjection)
                     .ToListAsync();
 
-                // Tạo dictionary để map nhanh
                 var parentDict = parents.ToDictionary(x => x.Id, x => x.label);
 
-                // Map dữ liệu
                 var menuDynamicResponds = menuDynamics.Select(menuDynamic => new MenuDynamicRespond
                 {
                     id = menuDynamic.Id,
@@ -134,10 +129,8 @@ public class MenuDynamicRepository : IMenuDynamicRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var menuDynamics = await cursor.ToListAsync();
 
-                // Lấy danh sách ID loại bàn
                 var parentIds = menuDynamics.Select(x => x.parent).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-                // Query bảng loại bàn
                 var parentFilter = Builders<MenuDynamic>.Filter.In(x => x.Id, parentIds);
                 var parentProjection = Builders<MenuDynamic>.Projection
                     .Include(x => x.Id)
@@ -146,10 +139,8 @@ public class MenuDynamicRepository : IMenuDynamicRepository
                     .Project<MenuDynamic>(parentProjection)
                     .ToListAsync();
 
-                // Tạo dictionary để map nhanh
                 var parentDict = parents.ToDictionary(x => x.Id, x => x.label);
 
-                // Map dữ liệu
                 var menuDynamicResponds = menuDynamics.Select(menuDynamic => new MenuDynamicRespond
                 {
                     id = menuDynamic.Id,
@@ -240,9 +231,6 @@ public class MenuDynamicRepository : IMenuDynamicRepository
             newMenuDynamic.createdDate = DateTimeOffset.UtcNow;
             newMenuDynamic.updatedDate = DateTimeOffset.UtcNow;
             newMenuDynamic.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newDanhMucMonAn.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newMenuDynamic);
 
@@ -296,9 +284,6 @@ public class MenuDynamicRepository : IMenuDynamicRepository
             _mapper.Map(request, menuDynamic);
 
             menuDynamic.updatedDate = DateTimeOffset.UtcNow;
-
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, menuDynamic);
 
@@ -407,10 +392,8 @@ public class MenuDynamicRepository : IMenuDynamicRepository
             var cursor = await _collection.FindAsync(filter, findOptions);
             var menuDynamics = await cursor.ToListAsync();
 
-            // Lấy danh sách ID loại bàn
             var parentIds = menuDynamics.Select(x => x.parent).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-            // Query bảng loại bàn
             var parentFilter = Builders<MenuDynamic>.Filter.In(x => x.Id, parentIds);
             var parentProjection = Builders<MenuDynamic>.Projection
                 .Include(x => x.Id)
@@ -419,10 +402,8 @@ public class MenuDynamicRepository : IMenuDynamicRepository
                 .Project<MenuDynamic>(parentProjection)
                 .ToListAsync();
 
-            // Tạo dictionary để map nhanh
             var parentDict = parents.ToDictionary(x => x.Id, x => x.label);
 
-            // Map dữ liệu
             var menuDynamicResponds = menuDynamics.Select(menuDynamic => new MenuDynamicRespond
             {
                 id = menuDynamic.Id,

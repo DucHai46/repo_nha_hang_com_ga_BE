@@ -8,6 +8,7 @@ using repo_nha_hang_com_ga_BE.Models.Common.Models.Respond;
 using repo_nha_hang_com_ga_BE.Models.Common.Paging;
 using repo_nha_hang_com_ga_BE.Models.Common.Respond;
 using repo_nha_hang_com_ga_BE.Models.MongoDB;
+using repo_nha_hang_com_ga_BE.Models.Requests.BaoCaoThongKe;
 using repo_nha_hang_com_ga_BE.Models.Requests.PhieuNhap;
 using repo_nha_hang_com_ga_BE.Models.Responds.PhieuNhap;
 namespace repo_nha_hang_com_ga_BE.Repository.Imp;
@@ -149,7 +150,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     {
                         Id = x.nhaCungCap,
                         Name = nhaCungCapDict.ContainsKey(x.nhaCungCap) ? nhaCungCapDict[x.nhaCungCap] : null
-                    } : null,
+                    } : new IdName { Id = "", Name = "" },
                     dienGiai = x.dienGiai,
                     diaDiem = x.diaDiem,
                     tongTien = x.tongTien,
@@ -158,7 +159,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    } : null,
+                    } : new IdName { Id = "", Name = "" },
                     nguyenLieus = x.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                     {
                         id = y.id,
@@ -267,7 +268,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     {
                         Id = x.nhaCungCap,
                         Name = nhaCungCapDict.ContainsKey(x.nhaCungCap) ? nhaCungCapDict[x.nhaCungCap] : null
-                    } : null,
+                    } : new IdName { Id = "", Name = "" },
                     dienGiai = x.dienGiai,
                     diaDiem = x.diaDiem,
                     tongTien = x.tongTien,
@@ -276,7 +277,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                     {
                         Id = x.nhanVien,
                         Name = nhanVienDict.ContainsKey(x.nhanVien) ? nhanVienDict[x.nhanVien] : null
-                    } : null,
+                    } : new IdName { Id = "", Name = "" },
                     nguyenLieus = x.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                     {
                         id = y.id,
@@ -347,7 +348,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 {
                     Id = phieuNhap.nhaCungCap,
                     Name = _collectionNhaCungCap.Find(x => x.Id == phieuNhap.nhaCungCap).FirstOrDefault()?.tenNhaCungCap,
-                } : null,
+                } : new IdName { Id = "", Name = "" },
                 dienGiai = phieuNhap.dienGiai,
                 diaDiem = phieuNhap.diaDiem,
                 tongTien = phieuNhap.tongTien,
@@ -356,7 +357,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 {
                     Id = phieuNhap.nhanVien,
                     Name = _collectionNhanVien.Find(x => x.Id == phieuNhap.nhanVien).FirstOrDefault()?.tenNhanVien,
-                } : null,
+                } : new IdName { Id = "", Name = "" },
                 nguyenLieus = phieuNhap.nguyenLieus.Select(y => new nguyenLieuMenuRespond
                 {
                     id = y.id,
@@ -407,7 +408,6 @@ public class PhieuNhapRepository : IPhieuNhapRepository
         try
         {
 
-            // 1. Mapping từ request → entity và set mặc định
             var nguyenLieuEntities = request.nguyenLieus.Select(nl =>
             {
                 var entity = new NguyenLieu();
@@ -425,7 +425,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 return entity;
             }).ToList();
 
-            // 2. Insert tất cả vào MongoDB
+
             await _collectionNguyenLieu.InsertManyAsync(nguyenLieuEntities);
 
             var nguyenLieuIds = nguyenLieuEntities.Select(x => x.Id).ToList();
@@ -577,12 +577,6 @@ public class PhieuNhapRepository : IPhieuNhapRepository
 
     }
 
-    // public async Task<RespondAPI<PhieuNhapRespond>> UpdatePhieuNhap(string id, RequestUpdatePhieuNhap request)
-    // {
-
-
-    // }
-
     public async Task<RespondAPI<string>> DeletePhieuNhap(string id)
     {
         try
@@ -629,6 +623,117 @@ public class PhieuNhapRepository : IPhieuNhapRepository
         }
     }
 
+    public async Task<List<KhoanChiRespond>> GetKhoanChi(RequestSearchThoiGian request)
+    {
+        try
+        {
+            var filter = Builders<PhieuNhap>.Filter.Empty;
+            filter &= Builders<PhieuNhap>.Filter.Eq(x => x.isDelete, false);
+            if (request.doanhThuEnum == DoanhThuEnum.TheoNgay || request.doanhThuEnum == DoanhThuEnum.TheoThang)
+            {
+                if (request.tuNgay != null)
+                {
+                    filter &= Builders<PhieuNhap>.Filter.Gte(x => x.createdDate, request.tuNgay.Value);
+                }
+                if (request.denNgay != null)
+                {
+                    filter &= Builders<PhieuNhap>.Filter.Lte(x => x.createdDate, request.denNgay.Value);
+                }
+            }
+            else if (request.doanhThuEnum == DoanhThuEnum.TheoTuan)
+            {
+                if (request.tuNgay != null)
+                {
+                    filter &= Builders<PhieuNhap>.Filter.Gte(x => x.createdDate, request.tuNgay.Value);
+                }
+            }
 
+            var phieuNhaps = await _collection.Find(filter).ToListAsync();
+            var khoanChiResponds = new List<KhoanChiRespond>();
+
+
+            var phieuNhapDict = phieuNhaps.ToDictionary(x => x.Id, x => x.tongTien);
+
+
+            if (request.doanhThuEnum == DoanhThuEnum.TheoNgay)
+            {
+
+                var startDate = request.tuNgay.Value.Date;
+                var endDate = request.denNgay.Value.Date;
+                var dailyRevenue = new List<KhoanChiRespond>();
+
+                for (var date = startDate; date <= endDate; date = date.AddDays(1))
+                {
+                    var dayOrders = phieuNhaps
+                        .Where(x => x.createdDate?.Date == date)
+                        .ToList();
+
+                    dailyRevenue.Add(new KhoanChiRespond
+                    {
+                        thoiGian = date.ToString("dd/MM/yyyy"),
+                        khoanChi = dayOrders.Sum(x => phieuNhapDict.ContainsKey(x.Id) ? phieuNhapDict[x.Id] : 0)
+                    });
+                }
+
+                return dailyRevenue;
+            }
+            else if (request.doanhThuEnum == DoanhThuEnum.TheoTuan)
+            {
+
+                var startDate = request.tuNgay.Value.Date;
+                var weeklyRevenue = new List<KhoanChiRespond>();
+                var numberOfWeeks = request.soTuan ?? 4;
+
+                for (int i = 0; i < numberOfWeeks; i++)
+                {
+                    var weekStart = startDate.AddDays(i * 7);
+                    var weekEnd = weekStart.AddDays(6);
+
+                    var weekOrders = phieuNhaps
+                        .Where(x => x.createdDate?.Date >= weekStart && x.createdDate?.Date <= weekEnd)
+                        .ToList();
+
+                    weeklyRevenue.Add(new KhoanChiRespond
+                    {
+                        thoiGian = $"Tuần {i + 1} ({weekStart:dd/MM/yyyy} - {weekEnd:dd/MM/yyyy})",
+                        khoanChi = weekOrders.Sum(x => phieuNhapDict.ContainsKey(x.Id) ? phieuNhapDict[x.Id] : 0)
+                    });
+                }
+
+                return weeklyRevenue;
+            }
+            else if (request.doanhThuEnum == DoanhThuEnum.TheoThang)
+            {
+
+                var startDate = request.tuNgay.Value.Date;
+                var endDate = request.denNgay.Value.Date;
+                var monthlyRevenue = new List<KhoanChiRespond>();
+
+                for (var date = startDate; date <= endDate; date = date.AddMonths(1))
+                {
+                    var monthStart = new DateTime(date.Year, date.Month, 1);
+                    var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+
+                    var monthOrders = phieuNhaps
+                        .Where(x => x.createdDate?.Date >= monthStart && x.createdDate?.Date <= monthEnd)
+                        .ToList();
+
+                    monthlyRevenue.Add(new KhoanChiRespond
+                    {
+                        thoiGian = $"{date.Month}/{date.Year}",
+                        khoanChi = monthOrders.Sum(x => phieuNhapDict.ContainsKey(x.Id) ? phieuNhapDict[x.Id] : 0)
+                    });
+                }
+
+                return monthlyRevenue;
+            }
+
+            return khoanChiResponds;
+        }
+        catch (Exception ex)
+        {
+            return new List<KhoanChiRespond>();
+        }
+    }
 
 }

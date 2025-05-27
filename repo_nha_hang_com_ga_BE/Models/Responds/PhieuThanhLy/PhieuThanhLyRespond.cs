@@ -13,7 +13,7 @@ public class PhieuThanhLyRespond
     [BsonRepresentation(BsonType.ObjectId)]
     public string? id { get; set; }
     public string? tenPhieu { get; set; }
-    public DateTime? ngayLap { get; set; }
+    public DateTimeOffset? ngayLap { get; set; }
     public string? diaDiem { get; set; }
     public string? ghiChu { get; set; }
     public IdName? nhanVien { get; set; }

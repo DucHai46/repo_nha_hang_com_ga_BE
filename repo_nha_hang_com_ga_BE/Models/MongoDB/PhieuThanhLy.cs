@@ -8,7 +8,7 @@ public class PhieuThanhLy : BaseMongoDb
 {
 
     public string? tenPhieu { get; set; }
-    public DateTime? ngayLap { get; set; }
+    public DateTimeOffset? ngayLap { get; set; }
     public string? diaDiem { get; set; }
     public string? ghiChu { get; set; }
     public string? nhanVien { get; set; }

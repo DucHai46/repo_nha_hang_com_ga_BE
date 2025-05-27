@@ -142,9 +142,6 @@ public class DonViTinhRepository : IDonViTinhRepository
             newDonViTinh.createdDate = DateTimeOffset.UtcNow;
             newDonViTinh.updatedDate = DateTimeOffset.UtcNow;
             newDonViTinh.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newLoaiNguyenLieu.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newDonViTinh);
 
@@ -184,9 +181,6 @@ public class DonViTinhRepository : IDonViTinhRepository
             _mapper.Map(request, donViTinh);
 
             donViTinh.updatedDate = DateTimeOffset.UtcNow;
-
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, donViTinh);
 

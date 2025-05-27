@@ -142,9 +142,8 @@ public class DanhMucNguyenLieuRepository : IDanhMucNguyenLieuRepository
             newDanhMucNguyenLieu.createdDate = DateTimeOffset.UtcNow;
             newDanhMucNguyenLieu.updatedDate = DateTimeOffset.UtcNow;
             newDanhMucNguyenLieu.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newDanhMucNguyenLieu.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
+
+
 
             await _collection.InsertOneAsync(newDanhMucNguyenLieu);
 
@@ -185,8 +184,6 @@ public class DanhMucNguyenLieuRepository : IDanhMucNguyenLieuRepository
 
             danhMucNguyenLieu.updatedDate = DateTimeOffset.UtcNow;
 
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, danhMucNguyenLieu);
 

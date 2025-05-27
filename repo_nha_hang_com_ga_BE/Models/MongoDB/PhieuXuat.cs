@@ -8,15 +8,13 @@ public class PhieuXuat : BaseMongoDb
 {
 
     public string? tenPhieu { get; set; }
-    public DateTime? ngayLap { get; set; }
+    public DateTimeOffset? ngayLap { get; set; }
     public string? nguoiNhan { get; set; }
     public string? lyDoXuat { get; set; }
     public string? diaDiem { get; set; }
     public string? ghiChu { get; set; }
     public string? nhanVien { get; set; }
     public List<loaiNguyenLieuXuat>? loaiNguyenLieus { get; set; }
-    // public DateTime? tuNgay { get; set; }
-    // public DateTime? denNgay { get; set; }
 }
 public class loaiNguyenLieuXuat
 {
@@ -27,7 +25,7 @@ public class loaiNguyenLieuXuat
 public class nguyenLieuXuat
 {
     public string? id { get; set; }
-    public int?soLuongBanDau { get; set; }
+    public int? soLuongBanDau { get; set; }
 
     public int? soLuongXuat { get; set; }
     public int? chenhLech { get; set; }

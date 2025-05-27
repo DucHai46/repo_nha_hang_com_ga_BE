@@ -50,7 +50,6 @@ public class DonDatBanRepository : IDonDatBanRepository
             if (!string.IsNullOrEmpty(request.khachHang))
             {
                 filter &= Builders<DonDatBan>.Filter.Regex(x => x.khachHang, request.khachHang);
-                // filter &= Builders<DonDatBan>.Filter.Regex(x => x.khachHang!.Name, new BsonRegularExpression($".*{request.khachHangName}.*"));
             }
 
             if (!string.IsNullOrEmpty(request.khungGio))
@@ -58,10 +57,6 @@ public class DonDatBanRepository : IDonDatBanRepository
                 filter &= Builders<DonDatBan>.Filter.Regex(x => x.khungGio, request.khungGio);
             }
 
-            // if (request.ban != null)
-            // {
-            //     filter &= Builders<DonDatBan>.Filter.Eq(x => x.ban, request.ban);
-            // }
 
             var projection = Builders<DonDatBan>.Projection
                 .Include(x => x.Id)
@@ -100,7 +95,6 @@ public class DonDatBanRepository : IDonDatBanRepository
                 var bans = await _collectionBan.Find(banFilter)
                 .Project<Ban>(banProjection)
                 .ToListAsync();
-                // banDict = bans.ToDictionary(x => x.Id, x => x.tenBan);
 
                 var khachHangFilter = Builders<KhachHang>.Filter.In(x => x.Id, khachHangIds);
                 var khachHangProjection = Builders<KhachHang>.Projection
@@ -218,7 +212,6 @@ public class DonDatBanRepository : IDonDatBanRepository
                 );
             }
 
-            // var donDatBanRespond = _mapper.Map<DonDatBanRespond>(donDatBan);
 
             var banIds = new List<string> { donDatBan.ban }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var khachHangIds = new List<string> { donDatBan.khachHang }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
@@ -282,13 +275,9 @@ public class DonDatBanRepository : IDonDatBanRepository
             newDonDatBan.createdDate = DateTimeOffset.UtcNow;
             newDonDatBan.updatedDate = DateTimeOffset.UtcNow;
             newDonDatBan.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newDanhMucMonAn.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newDonDatBan);
 
-            // var donDatBanRespond = _mapper.Map<DonDatBanRespond>(newDonDatBan);
 
 
             var banIds = new List<string> { newDonDatBan.ban }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
@@ -364,8 +353,6 @@ public class DonDatBanRepository : IDonDatBanRepository
 
             donDatBan.updatedDate = DateTimeOffset.UtcNow;
 
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, donDatBan);
 
@@ -377,7 +364,6 @@ public class DonDatBanRepository : IDonDatBanRepository
                 );
             }
 
-            // var donDatBanRespond = _mapper.Map<DonDatBanRespond>(donDatBan);
             var banIds = new List<string> { donDatBan.ban }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var khachHangIds = new List<string> { donDatBan.khachHang }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 

@@ -143,9 +143,6 @@ public class LoaiBanRepository : ILoaiBanRepository
             newLoaiBan.createdDate = DateTimeOffset.UtcNow;
             newLoaiBan.updatedDate = DateTimeOffset.UtcNow;
             newLoaiBan.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newLoaiNguyenLieu.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newLoaiBan);
 
@@ -185,9 +182,6 @@ public class LoaiBanRepository : ILoaiBanRepository
             _mapper.Map(request, loaiBan);
 
             loaiBan.updatedDate = DateTimeOffset.UtcNow;
-
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, loaiBan);
 

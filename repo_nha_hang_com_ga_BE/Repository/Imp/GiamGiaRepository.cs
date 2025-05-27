@@ -40,11 +40,6 @@ public class GiamGiaRepository : IGiamGiaRepository
                 filter &= Builders<GiamGia>.Filter.Regex(x => x.tenGiamGia, new BsonRegularExpression($".*{request.tenGiamGia}.*"));
             }
 
-            // if (!string.IsNullOrEmpty(request.loaiGiamGiaId))
-            // {
-            //     filter &= Builders<GiamGia>.Filter.Eq(x => x.loaiGiamGia.Id, request.loaiGiamGiaId);
-            // }
-
             if (request.ngayBatDau != null)
             {
                 filter &= Builders<GiamGia>.Filter.Gte(x => x.ngayBatDau, request.ngayBatDau);
@@ -63,8 +58,6 @@ public class GiamGiaRepository : IGiamGiaRepository
             var projection = Builders<GiamGia>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenGiamGia)
-                // .Include(x => x.loaiGiamGia.Id)
-                // .Include(x => x.loaiGiamGia.Name)
                 .Include(x => x.ngayBatDau)
                 .Include(x => x.ngayKetThuc)
                 .Include(x => x.giaTri)
@@ -168,9 +161,6 @@ public class GiamGiaRepository : IGiamGiaRepository
             newGiamGia.createdDate = DateTimeOffset.UtcNow;
             newGiamGia.updatedDate = DateTimeOffset.UtcNow;
             newGiamGia.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newLoaiNguyenLieu.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newGiamGia);
 
@@ -210,9 +200,6 @@ public class GiamGiaRepository : IGiamGiaRepository
             _mapper.Map(request, giamGia);
 
             giamGia.updatedDate = DateTimeOffset.UtcNow;
-
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, giamGia);
 

@@ -19,8 +19,8 @@ public class PhieuXuatController : ControllerBase
         _repository = repository;
     }
 
-    [HttpGet("")] // định nghĩa route cho phương thức này
-    public async Task<IActionResult> GetAllPhieuXuats([FromQuery] RequestSearchPhieuXuat request) // 
+    [HttpGet("")]
+    public async Task<IActionResult> GetAllPhieuXuats([FromQuery] RequestSearchPhieuXuat request)
     {
         return Ok(await _repository.GetAllPhieuXuats(request));
     }
@@ -37,11 +37,6 @@ public class PhieuXuatController : ControllerBase
         return Ok(await _repository.CreatePhieuXuat(request));
     }
 
-    // [HttpPut("{id}")]
-    // public async Task<IActionResult> UpdatePhieu(string id, RequestUpdatePhieu request)
-    // {
-    //     return Ok(await _repository.UpdatePhieuNhap(id, request));
-    // }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePhieuXuat(string id)

@@ -57,10 +57,7 @@ public class NguyenLieuRepository : INguyenLieuRepository
                 filter &= Builders<NguyenLieu>.Filter.Regex(x => x.tenNguyenLieu, new BsonRegularExpression($".*{request.tenNguyenLieu}.*"));
             }
 
-            // if (request.hanSuDung != null)
-            // {
-            //     filter &= Builders<NguyenLieu>.Filter.Gte(x => x.hanSuDung, request.hanSuDung);
-            // }
+
 
             if (!string.IsNullOrEmpty(request.tuDoId))
             {
@@ -104,10 +101,8 @@ public class NguyenLieuRepository : INguyenLieuRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var nguyenLieus = await cursor.ToListAsync();
 
-                // Lấy danh sách ID loại bàn
                 var loaiNguyenLieuIds = nguyenLieus.Select(x => x.loaiNguyenLieu).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-                // Query bảng loại bàn
                 var loaiNguyenLieuFilter = Builders<LoaiNguyenLieu>.Filter.In(x => x.Id, loaiNguyenLieuIds);
                 var loaiNguyenLieuProjection = Builders<LoaiNguyenLieu>.Projection
                     .Include(x => x.Id)
@@ -116,7 +111,6 @@ public class NguyenLieuRepository : INguyenLieuRepository
                     .Project<LoaiNguyenLieu>(loaiNguyenLieuProjection)
                     .ToListAsync();
 
-                // Tạo dictionary để map nhanh
                 var loaiNguyenLieuDict = loaiNguyenLieus.ToDictionary(x => x.Id, x => x.tenLoai);
 
                 var donViTinhIds = nguyenLieus.Select(x => x.donViTinh).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
@@ -186,10 +180,8 @@ public class NguyenLieuRepository : INguyenLieuRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var nguyenLieus = await cursor.ToListAsync();
 
-                // Lấy danh sách ID loại bàn
                 var loaiNguyenLieuIds = nguyenLieus.Select(x => x.loaiNguyenLieu).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-                // Query bảng loại bàn
                 var loaiNguyenLieuFilter = Builders<LoaiNguyenLieu>.Filter.In(x => x.Id, loaiNguyenLieuIds);
                 var loaiNguyenLieuProjection = Builders<LoaiNguyenLieu>.Projection
                     .Include(x => x.Id)
@@ -198,7 +190,6 @@ public class NguyenLieuRepository : INguyenLieuRepository
                     .Project<LoaiNguyenLieu>(loaiNguyenLieuProjection)
                     .ToListAsync();
 
-                // Tạo dictionary để map nhanh
                 var loaiNguyenLieuDict = loaiNguyenLieus.ToDictionary(x => x.Id, x => x.tenLoai);
 
                 var donViTinhIds = nguyenLieus.Select(x => x.donViTinh).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
@@ -336,9 +327,6 @@ public class NguyenLieuRepository : INguyenLieuRepository
             newNguyenLieu.createdDate = DateTimeOffset.UtcNow;
             newNguyenLieu.updatedDate = DateTimeOffset.UtcNow;
             newNguyenLieu.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newLoaiNguyenLieu.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newNguyenLieu);
 
@@ -406,8 +394,6 @@ public class NguyenLieuRepository : INguyenLieuRepository
 
             nguyenLieu.updatedDate = DateTimeOffset.UtcNow;
 
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, nguyenLieu);
 
@@ -503,7 +489,6 @@ public class NguyenLieuRepository : INguyenLieuRepository
     {
         try
         {
-            // 1. Mapping từ request → entity và set mặc định
             var nguyenLieuEntities = request.nguyenLieus.Select(nl =>
             {
                 var entity = _mapper.Map<NguyenLieu>(nl);
@@ -513,25 +498,20 @@ public class NguyenLieuRepository : INguyenLieuRepository
                 return entity;
             }).ToList();
 
-            // 2. Insert tất cả vào MongoDB
             await _collection.InsertManyAsync(nguyenLieuEntities);
 
-            // 3. Trích các ID cần truy vấn thêm
             var loaiNguyenLieuIds = nguyenLieuEntities.Select(x => x.loaiNguyenLieu).Distinct().ToList();
             var donViTinhIds = nguyenLieuEntities.Select(x => x.donViTinh).Distinct().ToList();
             var tuDoIds = nguyenLieuEntities.Select(x => x.tuDo).Distinct().ToList();
 
-            // 4. Truy vấn các bảng liên quan
             var loaiNguyenLieus = await _collectionLoaiNguyenLieu.Find(x => loaiNguyenLieuIds.Contains(x.Id)).ToListAsync();
             var donViTinhs = await _collectionDonViTinh.Find(x => donViTinhIds.Contains(x.Id)).ToListAsync();
             var tuDos = await _collectionTuDo.Find(x => tuDoIds.Contains(x.Id)).ToListAsync();
 
-            // 5. Tạo dictionary để tra tên nhanh
             var loaiDict = loaiNguyenLieus.ToDictionary(x => x.Id, x => x.tenLoai);
             var donViDict = donViTinhs.ToDictionary(x => x.Id, x => x.tenDonViTinh);
             var tuDoDict = tuDos.ToDictionary(x => x.Id, x => x.tenTuDo);
 
-            // 6. Tạo danh sách phản hồi
             var responseList = nguyenLieuEntities.Select(x => new NguyenLieuRespond
             {
                 id = x.Id,

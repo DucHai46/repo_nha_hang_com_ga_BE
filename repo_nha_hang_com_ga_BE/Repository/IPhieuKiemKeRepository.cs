@@ -11,6 +11,5 @@ public interface IPhieuKiemKeRepository
     Task<RespondAPIPaging<List<PhieuKiemKeRespond>>> GetAllPhieuKiemKes(RequestSearchPhieuKiemKe request);
     Task<RespondAPI<PhieuKiemKeRespond>> GetPhieuKiemKeById(string id);
     Task<RespondAPI<PhieuKiemKeRespond>> CreatePhieuKiemKe(RequestAddPhieuKiemKe product);
-    // Task<RespondAPI<PhieuNhapRespond>> UpdatePhieuNhap(string id, RequestUpdatePhieuNhap product);
     Task<RespondAPI<string>> DeletePhieuKiemKe(string id);
 }

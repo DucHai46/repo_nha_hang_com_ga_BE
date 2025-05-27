@@ -58,7 +58,6 @@ public class DonOrderRepository : IDonOrderRepository
             if (!string.IsNullOrEmpty(request.loaiDon))
             {
                 filter &= Builders<DonOrder>.Filter.Regex(x => x.loaiDon, request.loaiDon);
-                // filter &= Builders<DonOrder>.Filter.Regex(x => x.khachHang!.Name, new BsonRegularExpression($".*{request.khachHangName}.*"));
             }
 
             if (!string.IsNullOrEmpty(request.ban))
@@ -67,13 +66,12 @@ public class DonOrderRepository : IDonOrderRepository
             }
             if (request.khachHang != null && request.khachHang.Any())
             {
-                // Tạo một bộ lọc OR để tìm các đơn order có khachHang khớp với bất kỳ ID nào trong danh sách
                 var khachHangFilters = request.khachHang.Select(kh =>
                     Builders<DonOrder>.Filter.Eq(x => x.khachHang, kh));
                 filter &= Builders<DonOrder>.Filter.Or(khachHangFilters);
             }
 
-            if (request.trangThai.HasValue) // Kiểm tra nếu trangThai có giá trị: True hoặc False
+            if (request.trangThai.HasValue)
             {
                 filter &= Builders<DonOrder>.Filter.Eq(x => x.trangThai, request.trangThai);
             }
@@ -109,17 +107,17 @@ public class DonOrderRepository : IDonOrderRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var dons = await cursor.ToListAsync();
 
-                // Lấy danh sách ID bàn
+
                 var banIds = dons.Select(x => x.ban).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-                // Lấy danh sách ID loại đơn order 
+
                 var loaiDonIds = dons.Select(x => x.loaiDon).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-                // Lấy danh sách ID khách hàng
+
                 var khachHangIds = dons.Select(x => x.khachHang).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
 
-                // Query bảng bàn
+
                 var banFilter = Builders<Ban>.Filter.In(x => x.Id, banIds);
                 var banProjection = Builders<Ban>.Projection
                     .Include(x => x.Id)
@@ -128,7 +126,7 @@ public class DonOrderRepository : IDonOrderRepository
                     .Project<Ban>(banProjection)
                     .ToListAsync();
 
-                // Query bảng loại đơn
+
                 var loaiDonFilter = Builders<LoaiDon>.Filter.In(x => x.Id, loaiDonIds);
                 var loaiDonProjection = Builders<LoaiDon>.Projection
                     .Include(x => x.Id)
@@ -137,7 +135,7 @@ public class DonOrderRepository : IDonOrderRepository
                     .Project<LoaiDon>(loaiDonProjection)
                     .ToListAsync();
 
-                // Query bảng khách hàng
+
                 var khachHangFilter = Builders<KhachHang>.Filter.In(x => x.Id, khachHangIds);
                 var khachHangProjection = Builders<KhachHang>.Projection
                    .Include(x => x.Id)
@@ -147,7 +145,7 @@ public class DonOrderRepository : IDonOrderRepository
                   .ToListAsync();
 
 
-                // Tạo dictionary để map nhanh
+
                 var banDict = bans.ToDictionary(x => x.Id, x => x.tenBan);
                 var loaiDonDict = loaiDons.ToDictionary(x => x.Id, x => x.tenLoaiDon);
                 var monAnDict = new Dictionary<string, string>();
@@ -219,7 +217,7 @@ public class DonOrderRepository : IDonOrderRepository
                 }
 
 
-                // Map dữ liệu
+
                 var donOrderResponds = dons.Select(donOrder => new DonOrderRespond
                 {
                     id = donOrder.Id,
@@ -291,17 +289,17 @@ public class DonOrderRepository : IDonOrderRepository
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var dons = await cursor.ToListAsync();
 
-                // Lấy danh sách ID bàn
+
                 var banIds = dons.Select(x => x.ban).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-                // Lấy danh sách ID loại đơn order 
+
                 var loaiDonIds = dons.Select(x => x.loaiDon).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-                // Lấy danh sách ID khách hàng
+
                 var khachHangIds = dons.Select(x => x.khachHang).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
 
-                // Query bảng bàn
+
                 var banFilter = Builders<Ban>.Filter.In(x => x.Id, banIds);
                 var banProjection = Builders<Ban>.Projection
                     .Include(x => x.Id)
@@ -310,7 +308,7 @@ public class DonOrderRepository : IDonOrderRepository
                     .Project<Ban>(banProjection)
                     .ToListAsync();
 
-                // Query bảng loại đơn
+
                 var loaiDonFilter = Builders<LoaiDon>.Filter.In(x => x.Id, loaiDonIds);
                 var loaiDonProjection = Builders<LoaiDon>.Projection
                     .Include(x => x.Id)
@@ -319,7 +317,7 @@ public class DonOrderRepository : IDonOrderRepository
                     .Project<LoaiDon>(loaiDonProjection)
                     .ToListAsync();
 
-                // Query bảng khách hàng
+
                 var khachHangFilter = Builders<KhachHang>.Filter.In(x => x.Id, khachHangIds);
                 var khachHangProjection = Builders<KhachHang>.Projection
                    .Include(x => x.Id)
@@ -329,7 +327,7 @@ public class DonOrderRepository : IDonOrderRepository
                   .ToListAsync();
 
 
-                // Tạo dictionary để map nhanh
+
                 var banDict = bans.ToDictionary(x => x.Id, x => x.tenBan);
                 var loaiDonDict = loaiDons.ToDictionary(x => x.Id, x => x.tenLoaiDon);
                 var monAnDict = new Dictionary<string, string>();
@@ -400,7 +398,7 @@ public class DonOrderRepository : IDonOrderRepository
                     }
                 }
 
-                // Map dữ liệu
+
                 var donOrderResponds = dons.Select(donOrder => new DonOrderRespond
                 {
                     id = donOrder.Id,
@@ -489,17 +487,17 @@ public class DonOrderRepository : IDonOrderRepository
                 );
             }
 
-            // Lấy danh sách ID loại bàn
+
             var banIds = new List<string> { donOrder.ban }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-            // Lấy danh sách ID loại đơn order 
+
             var loaiDonIds = new List<string> { donOrder.loaiDon }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
-            // Lấy danh sách ID khách hàng
+
             var khachHangIds = new List<string> { donOrder.khachHang }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
 
-            // Query bảng loại bàn
+
             var banFilter = Builders<Ban>.Filter.In(x => x.Id, banIds);
             var banProjection = Builders<Ban>.Projection
                 .Include(x => x.Id)
@@ -508,7 +506,7 @@ public class DonOrderRepository : IDonOrderRepository
                 .Project<Ban>(banProjection)
                 .ToListAsync();
 
-            // Query bảng loại đơn
+
             var loaiDonFilter = Builders<LoaiDon>.Filter.In(x => x.Id, loaiDonIds);
             var loaiDonProjection = Builders<LoaiDon>.Projection
                 .Include(x => x.Id)
@@ -517,7 +515,7 @@ public class DonOrderRepository : IDonOrderRepository
                 .Project<LoaiDon>(loaiDonProjection)
                 .ToListAsync();
 
-            // Query bảng khách hàng
+
             var khachHangFilter = Builders<KhachHang>.Filter.In(x => x.Id, khachHangIds);
             var khachHangProjection = Builders<KhachHang>.Projection
               .Include(x => x.Id)
@@ -527,7 +525,7 @@ public class DonOrderRepository : IDonOrderRepository
              .ToListAsync();
 
 
-            // Tạo dictionary để map nhanh
+
             var banDict = bans.ToDictionary(x => x.Id, x => x.tenBan);
             var loaiDonDict = loaiDons.ToDictionary(x => x.Id, x => x.tenLoaiDon);
             var monAnDict = new Dictionary<string, string>();
@@ -591,7 +589,7 @@ public class DonOrderRepository : IDonOrderRepository
                 }
             }
 
-            // Map dữ liệu
+
             var donOrderRespond = new DonOrderRespond
             {
                 id = donOrder.Id,
@@ -669,9 +667,6 @@ public class DonOrderRepository : IDonOrderRepository
             newDonOrder.createdDate = DateTimeOffset.UtcNow;
             newDonOrder.updatedDate = DateTimeOffset.UtcNow;
             newDonOrder.isDelete = false;
-            // Thiết lập createdUser và updatedUser nếu có thông tin người dùng
-            // newDanhMucMonAn.createdUser = currentUser.Id;
-            // newDanhMucNguyenLieu.updatedUser = currentUser.Id;
 
             await _collection.InsertOneAsync(newDonOrder);
 
@@ -682,10 +677,6 @@ public class DonOrderRepository : IDonOrderRepository
             var banDict = new Dictionary<string, string>();
             var khachHangDict = new Dictionary<string, string>();
             var comBoDict = new Dictionary<string, string>();
-
-            // List<Combo> comBos = new List<Combo>();
-
-            // List<MonAn> monAns = new List<MonAn>();
 
             var loaiDonIds = new List<string> { newDonOrder.loaiDon }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var banIds = new List<string> { newDonOrder.ban }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
@@ -799,13 +790,6 @@ public class DonOrderRepository : IDonOrderRepository
                 tongTien = newDonOrder.tongTien
             };
 
-            // var loaiDon = await _collectionLoaiDon.Find(x => x.Id == newDonOrder.loaiDon).FirstOrDefaultAsync();
-            // var donOrderRespond = _mapper.Map<DonOrderRespond>(newDonOrder);
-            // donOrderRespond.loaiDon = new IdName
-            // {
-            //     Id = loaiDon.Id,
-            //     Name = loaiDon.tenLoaiDon
-            // };
             return new RespondAPI<DonOrderRespond>(
                 ResultRespond.Succeeded,
                 "Tạo đơn order thành công.",
@@ -841,8 +825,6 @@ public class DonOrderRepository : IDonOrderRepository
 
             donOrder.updatedDate = DateTimeOffset.UtcNow;
 
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, donOrder);
 
@@ -854,7 +836,6 @@ public class DonOrderRepository : IDonOrderRepository
                 );
             }
 
-            // var donOrderRespond = _mapper.Map<DonOrderRespond>(donOrder);
             var monAnDict = new Dictionary<string, string>();
             var loaiDonDict = new Dictionary<string, string>();
             var banDict = new Dictionary<string, string>();
@@ -1040,7 +1021,6 @@ public class DonOrderRepository : IDonOrderRepository
                 );
             }
 
-            // Kiểm tra nếu trạng thái là null
             if (request.trangThai == null)
             {
                 return new RespondAPI<DonOrderRespond>(
@@ -1049,15 +1029,12 @@ public class DonOrderRepository : IDonOrderRepository
                 );
             }
 
-            // Cập nhật trực tiếp đối tượng
             donOrder.trangThai = request.trangThai;
             donOrder.updatedDate = DateTimeOffset.UtcNow;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, donOrder);
 
 
-            // Cập nhật người dùng nếu có thông tin
-            // danhMucNguyenLieu.updatedUser = currentUser.Id;
 
             if (!updateResult.IsAcknowledged || updateResult.ModifiedCount == 0)
             {
@@ -1067,7 +1044,6 @@ public class DonOrderRepository : IDonOrderRepository
                 );
             }
 
-            // var donOrderRespond = _mapper.Map<DonOrderRespond>(donOrder);
             var monAnDict = new Dictionary<string, string>();
             var loaiDonDict = new Dictionary<string, string>();
             var banDict = new Dictionary<string, string>();
