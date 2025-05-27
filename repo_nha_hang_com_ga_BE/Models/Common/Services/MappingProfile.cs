@@ -66,6 +66,11 @@ using repo_nha_hang_com_ga_BE.Models.Requests.PhieuKiemKe;
 using repo_nha_hang_com_ga_BE.Models.Responds.PhieuKiemKe;
 using repo_nha_hang_com_ga_BE.Models.Requests.PhieuXuat;
 using repo_nha_hang_com_ga_BE.Models.Requests.PhieuThanhLy;
+using repo_nha_hang_com_ga_BE.Models.Responds.CaLamViecRespond;
+using repo_nha_hang_com_ga_BE.Models.Requests.CaLamViec;
+using repo_nha_hang_com_ga_BE.Models.Responds.LichLamViecRespond;
+using repo_nha_hang_com_ga_BE.Models.Requests.LichLamViec;
+
 
 namespace repo_nha_hang_com_ga_BE.Models.Common.Services;
 
@@ -258,5 +263,15 @@ public class MappingProfile : Profile
         CreateMap(typeof(PhanQuyen), typeof(PhanQuyenRespond));
         CreateMap(typeof(RequestAddPhanQuyen), typeof(PhanQuyen));
         CreateMap(typeof(RequestUpdatePhanQuyen), typeof(PhanQuyen));
+
+        // Ca lam viec
+        CreateMap(typeof(CaLamViec), typeof(CaLamViecRespond));
+        CreateMap(typeof(RequestAddCaLamViec), typeof(CaLamViec));
+        CreateMap(typeof(RequestUpdateCaLamViec), typeof(CaLamViec));
+
+        // Lịch Làm Việc
+        CreateMap(typeof(LichLamViec), typeof(LichLamViecRespond));
+        CreateMap(typeof(RequestAddLichLamViec), typeof(LichLamViec));
+        CreateMap(typeof(RequestUpdateLichLamViec), typeof(LichLamViec));
     }
 }
