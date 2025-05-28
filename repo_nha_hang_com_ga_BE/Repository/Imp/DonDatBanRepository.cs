@@ -278,10 +278,8 @@ public class DonDatBanRepository : IDonDatBanRepository
             var Ban = await _collectionBan.Find(x => x.Id == newDonDatBan.ban).FirstOrDefaultAsync();
             if (Ban != null)
             {
-                await _collectionBan.UpdateOneAsync(
-                    x => x.Id == newDonDatBan.ban,
-                    Builders<Ban>.Update.Set(b => b.trangThai, 1)
-                );
+                Ban.trangThai = TrangThaiBan.DaDat;
+                await _collectionBan.ReplaceOneAsync(x => x.Id == newDonDatBan.ban, Ban);
             }
 
             await _collection.InsertOneAsync(newDonDatBan);
