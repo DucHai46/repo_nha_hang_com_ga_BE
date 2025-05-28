@@ -53,11 +53,23 @@ public class PhieuNhapRepository : IPhieuNhapRepository
             {
                 filter &= Builders<PhieuNhap>.Filter.Regex(x => x.tenPhieu, new BsonRegularExpression($".*{request.tenPhieu}.*"));
             }
+            if (request.tuNgay != null)
+            {
+                filter &= Builders<PhieuNhap>.Filter.Gte(x => x.ngayLap, request.tuNgay.Value);
+            }
+
+
+            if (request.denNgay != null)
+            {
+                filter &= Builders<PhieuNhap>.Filter.Lte(x => x.ngayLap, request.denNgay.Value);
+            }
 
             var projection = Builders<PhieuNhap>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenPhieu)
                 .Include(x => x.tenNguoiGiao)
+                .Include(x => x.createdDate)
+                .Include(x => x.ngayLap)
                 .Include(x => x.nhaCungCap)
                 .Include(x => x.dienGiai)
                 .Include(x => x.diaDiem)
@@ -144,6 +156,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 var phieuNhapResponds = PhieuNhaps.Select(x => new PhieuNhapRespond
                 {
                     id = x.Id,
+                    ngayLap = x.createdDate,
                     tenPhieu = x.tenPhieu,
                     tenNguoiGiao = x.tenNguoiGiao,
                     nhaCungCap = x.nhaCungCap != null ? new IdName
@@ -262,6 +275,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
                 var phieuNhapResponds = PhieuNhaps.Select(x => new PhieuNhapRespond
                 {
                     id = x.Id,
+                    ngayLap = x.createdDate,
                     tenPhieu = x.tenPhieu,
                     tenNguoiGiao = x.tenNguoiGiao,
                     nhaCungCap = x.nhaCungCap != null ? new IdName
@@ -342,6 +356,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
             var phieuNhapResponds = new PhieuNhapRespond
             {
                 id = phieuNhap.Id,
+                ngayLap = phieuNhap.createdDate,
                 tenPhieu = phieuNhap.tenPhieu,
                 tenNguoiGiao = phieuNhap.tenNguoiGiao,
                 nhaCungCap = phieuNhap.nhaCungCap != null ? new IdName
@@ -432,6 +447,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
 
             var phieuNhap = new PhieuNhap();
             phieuNhap.tenPhieu = request.tenPhieu;
+            phieuNhap.ngayLap = DateTimeOffset.UtcNow;
             phieuNhap.tenNguoiGiao = request.tenNguoiGiao;
             phieuNhap.nhaCungCap = request.nhaCungCap;
             phieuNhap.dienGiai = request.dienGiai;
@@ -462,6 +478,8 @@ public class PhieuNhapRepository : IPhieuNhapRepository
             newPhieuNhap.createdDate = DateTimeOffset.UtcNow;
             newPhieuNhap.updatedDate = DateTimeOffset.UtcNow;
             newPhieuNhap.isDelete = false;
+            newPhieuNhap.ngayLap = newPhieuNhap.createdDate;
+
 
 
 
@@ -518,6 +536,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
             {
                 id = newPhieuNhap.Id,
                 tenPhieu = newPhieuNhap.tenPhieu,
+                ngayLap=newPhieuNhap.ngayLap,
                 tenNguoiGiao = newPhieuNhap.tenNguoiGiao,
                 nhaCungCap = newPhieuNhap.nhaCungCap != null ? new IdName
                 {
