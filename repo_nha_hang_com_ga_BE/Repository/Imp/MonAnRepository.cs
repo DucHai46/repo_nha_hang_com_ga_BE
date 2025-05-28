@@ -142,11 +142,16 @@ public class MonAnRepository : IMonAnRepository
                         Id = x.congThuc,
                         Name = congThucs.FirstOrDefault(y => y.Id == x.congThuc)?.tenCongThuc
                     },
-                    giamGia = new GiamGiaMonAnRespond
+                    giamGia = x.giamGia != null ? new GiamGiaMonAnRespond
                     {
                         Id = x.giamGia,
                         Name = giamGias.FirstOrDefault(y => y.Id == x.giamGia)?.tenGiamGia,
                         giaTri = giamGias.FirstOrDefault(y => y.Id == x.giamGia)?.giaTri
+                    } : new GiamGiaMonAnRespond
+                    {
+                        Id = "",
+                        Name = "",
+                        giaTri = 0
                     },
                     moTa = x.moTa,
                     hinhAnh = x.hinhAnh,
@@ -223,11 +228,16 @@ public class MonAnRepository : IMonAnRepository
                         Id = x.congThuc,
                         Name = congThucs.FirstOrDefault(y => y.Id == x.congThuc)?.tenCongThuc
                     },
-                    giamGia = new GiamGiaMonAnRespond
+                    giamGia = x.giamGia != null ? new GiamGiaMonAnRespond
                     {
                         Id = x.giamGia,
                         Name = giamGias.FirstOrDefault(y => y.Id == x.giamGia)?.tenGiamGia,
                         giaTri = giamGias.FirstOrDefault(y => y.Id == x.giamGia)?.giaTri
+                    } : new GiamGiaMonAnRespond
+                    {
+                        Id = "",
+                        Name = "",
+                        giaTri = 0
                     },
                     moTa = x.moTa,
                     hinhAnh = x.hinhAnh,
@@ -285,11 +295,16 @@ public class MonAnRepository : IMonAnRepository
                     Id = congThuc.Id,
                     Name = congThuc.tenCongThuc
                 },
-                giamGia = new GiamGiaMonAnRespond
+                giamGia = monAn.giamGia != null ? new GiamGiaMonAnRespond
                 {
                     Id = giamGia.Id,
                     Name = giamGia.tenGiamGia,
                     giaTri = giamGia.giaTri
+                } : new GiamGiaMonAnRespond
+                {
+                    Id = "",
+                    Name = "",
+                    giaTri = 0
                 },
                 moTa = monAn.moTa,
                 hinhAnh = monAn.hinhAnh,
@@ -341,11 +356,16 @@ public class MonAnRepository : IMonAnRepository
                     Id = congThuc.Id,
                     Name = congThuc.tenCongThuc
                 },
-                giamGia = new GiamGiaMonAnRespond
+                giamGia = newMonAn.giamGia != null ? new GiamGiaMonAnRespond
                 {
                     Id = giamGia.Id,
                     Name = giamGia.tenGiamGia,
                     giaTri = giamGia.giaTri
+                }: new GiamGiaMonAnRespond
+                {
+                    Id = "",
+                    Name = "",
+                    giaTri = 0
                 },
                 moTa = newMonAn.moTa,
                 hinhAnh = newMonAn.hinhAnh,
@@ -416,11 +436,16 @@ public class MonAnRepository : IMonAnRepository
                     Id = congThuc.Id,
                     Name = congThuc.tenCongThuc
                 },
-                giamGia = new GiamGiaMonAnRespond
+                giamGia = monAn.giamGia != null ? new GiamGiaMonAnRespond
                 {
                     Id = giamGia.Id,
                     Name = giamGia.tenGiamGia,
                     giaTri = giamGia.giaTri
+                }: new GiamGiaMonAnRespond
+                {
+                    Id = "",
+                    Name = "",
+                    giaTri = 0
                 },
                 moTa = monAn.moTa,
                 hinhAnh = monAn.hinhAnh,
