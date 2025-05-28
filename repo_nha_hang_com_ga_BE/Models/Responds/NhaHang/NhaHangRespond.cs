@@ -2,6 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using repo_nha_hang_com_ga_BE.Models.Common;
 using repo_nha_hang_com_ga_BE.Models.Common.Models;
+using repo_nha_hang_com_ga_BE.Models.MongoDB;
 
 namespace repo_nha_hang_com_ga_BE.Models.Responds.NhaHang;
 
@@ -20,4 +21,5 @@ public class NhaHangRespond
     public string? banner { get; set; }
     public string? moTa { get; set; }
     public bool isActive { get; set; }
+    public GiaoDienNhaHang? giaoDien { get; set; }
 }

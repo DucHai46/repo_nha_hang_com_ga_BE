@@ -50,7 +50,8 @@ public class NhaHangRepository : INhaHangRepository
                 .Include(x => x.logo)
                 .Include(x => x.banner)
                 .Include(x => x.moTa)
-                .Include(x => x.isActive);
+                .Include(x => x.isActive)
+                .Include(x => x.giaoDien);
 
             var findOptions = new FindOptions<NhaHang, NhaHangRespond>
             {
@@ -252,6 +253,108 @@ public class NhaHangRepository : INhaHangRepository
             return new RespondAPI<string>(
                 ResultRespond.Error,
                 $"Đã xảy ra lỗi khi xóa nhà hàng: {ex.Message}"
+            );
+        }
+    }
+
+    public async Task<RespondAPI<GiaoDienNhaHang>> GetGiaoDienNhaHangById(string id)
+    {
+        try
+        {
+            var nhaHang = await _collection.Find(x => x.Id == id && x.isDelete == false).FirstOrDefaultAsync();
+            GiaoDienNhaHang giaoDienNhaHang = nhaHang.giaoDien;
+            if (giaoDienNhaHang == null) return new RespondAPI<GiaoDienNhaHang>(
+                ResultRespond.NotFound,
+                "Không tìm thấy giao diện nhà hàng với ID đã cung cấp."
+            );
+
+            var giaoDienNhaHangRespond = _mapper.Map<GiaoDienNhaHang>(giaoDienNhaHang);
+
+            return new RespondAPI<GiaoDienNhaHang>(
+                ResultRespond.Succeeded,
+                "Lấy giao diện nhà hàng thành công.",
+                giaoDienNhaHangRespond
+            );
+        }
+        catch (Exception ex)
+        {
+            return new RespondAPI<GiaoDienNhaHang>(
+                ResultRespond.Error,
+                $"{ex.Message}"
+            );
+        }
+    }
+
+    public async Task<RespondAPI<GiaoDienNhaHang>> CreateGiaoDienNhaHang(string id, RequestAddGiaoDienNhaHang request)
+    {
+        try
+        {
+            var filter = Builders<NhaHang>.Filter.Eq(x => x.Id, id);
+            filter &= Builders<NhaHang>.Filter.Eq(x => x.isDelete, false);
+            var nhaHang = await _collection.Find(filter).FirstOrDefaultAsync();
+
+            if (nhaHang == null)
+            {
+                return new RespondAPI<GiaoDienNhaHang>(
+                    ResultRespond.NotFound,
+                    "Không tìm thấy nhà hàng với ID đã cung cấp."
+                );
+            }
+
+            var giaoDienNhaHang = _mapper.Map<GiaoDienNhaHang>(request);
+
+            nhaHang.giaoDien = giaoDienNhaHang;
+
+            await _collection.ReplaceOneAsync(filter, nhaHang);
+
+            return new RespondAPI<GiaoDienNhaHang>(
+                ResultRespond.Succeeded,
+                "Tạo giao diện nhà hàng thành công.",
+                giaoDienNhaHang
+            );
+        }
+        catch (Exception ex)
+        {
+            return new RespondAPI<GiaoDienNhaHang>(
+                ResultRespond.Error,
+                $"{ex.Message}"
+            );
+        }
+    }
+
+    public async Task<RespondAPI<GiaoDienNhaHang>> UpdateGiaoDienNhaHang(string id, RequestUpdateGiaoDienNhaHang request)
+    {
+        try
+        {
+            var filter = Builders<NhaHang>.Filter.Eq(x => x.Id, id);
+            filter &= Builders<NhaHang>.Filter.Eq(x => x.isDelete, false);
+            var nhaHang = await _collection.Find(filter).FirstOrDefaultAsync();
+
+            if (nhaHang == null)
+            {
+                return new RespondAPI<GiaoDienNhaHang>(
+                    ResultRespond.NotFound,
+                    "Không tìm thấy nhà hàng với ID đã cung cấp."
+                );
+            }
+
+            var giaoDienNhaHang = _mapper.Map<GiaoDienNhaHang>(request);
+
+            nhaHang.giaoDien = giaoDienNhaHang;
+
+            await _collection.ReplaceOneAsync(filter, nhaHang);
+
+            return new RespondAPI<GiaoDienNhaHang>(
+                ResultRespond.Succeeded,
+                "Cập nhật giao diện nhà hàng thành công.",
+                giaoDienNhaHang
+            );
+        }
+        catch (Exception ex)
+        {
+            return new RespondAPI<GiaoDienNhaHang>(
+                ResultRespond.Error,
+                $"{ex.Message}"
             );
         }
     }

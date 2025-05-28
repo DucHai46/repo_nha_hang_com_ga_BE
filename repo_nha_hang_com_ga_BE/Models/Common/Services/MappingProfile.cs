@@ -210,7 +210,9 @@ public class MappingProfile : Profile
         //Nhà hàng
         CreateMap(typeof(NhaHang), typeof(NhaHangRespond));
         CreateMap(typeof(RequestAddNhaHang), typeof(NhaHang));
+        CreateMap(typeof(RequestAddGiaoDienNhaHang), typeof(GiaoDienNhaHang));
         CreateMap(typeof(RequestUpdateNhaHang), typeof(NhaHang));
+        CreateMap(typeof(RequestUpdateGiaoDienNhaHang), typeof(GiaoDienNhaHang));
 
         //Chức vụ
         CreateMap(typeof(ChucVu), typeof(ChucVuRespond));

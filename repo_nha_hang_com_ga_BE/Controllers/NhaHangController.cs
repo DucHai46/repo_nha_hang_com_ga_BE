@@ -50,4 +50,24 @@ public class NhaHangController : ControllerBase
     {
         return Ok(await _repository.DeleteNhaHang(id));
     }
+
+    [HttpGet("{id}/giao-dien")]
+    public async Task<IActionResult> GetGiaoDienNhaHangById(string id)
+    {
+        return Ok(await _repository.GetGiaoDienNhaHangById(id));
+    }
+
+    [Authorize]
+    [HttpPost("{id}/giao-dien")]
+    public async Task<IActionResult> CreateGiaoDienNhaHang(string id, RequestAddGiaoDienNhaHang request)
+    {
+        return Ok(await _repository.CreateGiaoDienNhaHang(id, request));
+    }
+
+    [Authorize]
+    [HttpPut("{id}/giao-dien")]
+    public async Task<IActionResult> UpdateGiaoDienNhaHang(string id, RequestUpdateGiaoDienNhaHang request)
+    {
+        return Ok(await _repository.UpdateGiaoDienNhaHang(id, request));
+    }
 }
