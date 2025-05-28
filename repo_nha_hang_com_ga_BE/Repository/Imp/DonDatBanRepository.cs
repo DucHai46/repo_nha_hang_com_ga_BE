@@ -275,6 +275,14 @@ public class DonDatBanRepository : IDonDatBanRepository
             newDonDatBan.createdDate = DateTimeOffset.UtcNow;
             newDonDatBan.updatedDate = DateTimeOffset.UtcNow;
             newDonDatBan.isDelete = false;
+            var Ban = await _collectionBan.Find(x => x.Id == newDonDatBan.ban).FirstOrDefaultAsync();
+            if (Ban != null)
+            {
+                await _collectionBan.UpdateOneAsync(
+                    x => x.Id == newDonDatBan.ban,
+                    Builders<Ban>.Update.Set(b => b.trangThai, 1)
+                );
+            }
 
             await _collection.InsertOneAsync(newDonDatBan);
 
