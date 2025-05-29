@@ -52,7 +52,7 @@ public class NhaHangController : ControllerBase
     }
 
     [HttpGet("{id}/giao-dien")]
-    public async Task<IActionResult> GetGiaoDienNhaHangById(string id, bool? isActive)
+    public async Task<IActionResult> GetGiaoDienNhaHangById(string? id, bool? isActive)
     {
         return Ok(await _repository.GetGiaoDienNhaHangById(id, isActive));
     }

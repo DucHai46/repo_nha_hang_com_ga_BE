@@ -257,13 +257,17 @@ public class NhaHangRepository : INhaHangRepository
         }
     }
 
-    public async Task<RespondAPI<GiaoDienNhaHang>> GetGiaoDienNhaHangById(string id, bool? isActive
+    public async Task<RespondAPI<GiaoDienNhaHang>> GetGiaoDienNhaHangById(string? id, bool? isActive
     )
     {
         try
         {
-            var filter = Builders<NhaHang>.Filter.Eq(x => x.Id, id);
+            var filter = Builders<NhaHang>.Filter.Empty;
             filter &= Builders<NhaHang>.Filter.Eq(x => x.isDelete, false);
+            if (id != null)
+            {
+                filter &= Builders<NhaHang>.Filter.Eq(x => x.Id, id);
+            }
             if (isActive != null)
             {
                 filter &= Builders<NhaHang>.Filter.Eq(x => x.isActive, isActive);
