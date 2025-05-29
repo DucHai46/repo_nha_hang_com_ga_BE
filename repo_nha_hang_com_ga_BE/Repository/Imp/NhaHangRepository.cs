@@ -257,11 +257,18 @@ public class NhaHangRepository : INhaHangRepository
         }
     }
 
-    public async Task<RespondAPI<GiaoDienNhaHang>> GetGiaoDienNhaHangById(string id)
+    public async Task<RespondAPI<GiaoDienNhaHang>> GetGiaoDienNhaHangById(string id, bool? isActive
+    )
     {
         try
         {
-            var nhaHang = await _collection.Find(x => x.Id == id && x.isDelete == false).FirstOrDefaultAsync();
+            var filter = Builders<NhaHang>.Filter.Eq(x => x.Id, id);
+            filter &= Builders<NhaHang>.Filter.Eq(x => x.isDelete, false);
+            if (isActive != null)
+            {
+                filter &= Builders<NhaHang>.Filter.Eq(x => x.isActive, isActive);
+            }
+            var nhaHang = await _collection.Find(filter).FirstOrDefaultAsync();
             GiaoDienNhaHang giaoDienNhaHang = nhaHang.giaoDien;
             if (giaoDienNhaHang == null) return new RespondAPI<GiaoDienNhaHang>(
                 ResultRespond.NotFound,
