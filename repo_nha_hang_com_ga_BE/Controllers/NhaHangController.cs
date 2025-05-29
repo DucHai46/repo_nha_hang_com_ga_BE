@@ -51,7 +51,7 @@ public class NhaHangController : ControllerBase
         return Ok(await _repository.DeleteNhaHang(id));
     }
 
-    [HttpGet("{id}/giao-dien")]
+    [HttpGet("giao-dien")]
     public async Task<IActionResult> GetGiaoDienNhaHangById(string? id, bool? isActive)
     {
         return Ok(await _repository.GetGiaoDienNhaHangById(id, isActive));
