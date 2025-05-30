@@ -25,5 +25,5 @@ public class ChiTietLichLamViecRespond
 public class NhanVienCaRespond
 {
     public IdName? nhanVien { get; set; }
-    public string? moTa { get; set; }
+    public IdName? chucVuId { get; set; }
 }

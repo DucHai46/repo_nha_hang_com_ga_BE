@@ -22,6 +22,7 @@ public class LichLamViecRepository : ILichLamViecRepository
     private readonly IMongoCollection<LichLamViec> _collection;
     private readonly IMongoCollection<CaLamViec> _collectionCaLamViec;
     private readonly IMongoCollection<NhanVien> _collectionNhanVien;
+    private readonly IMongoCollection<ChucVu> _collectionChucVu;
     private readonly IMapper _mapper;
 
 
@@ -33,6 +34,7 @@ public class LichLamViecRepository : ILichLamViecRepository
         _collection = database.GetCollection<LichLamViec>("LichLamViec");
         _collectionCaLamViec = database.GetCollection<CaLamViec>("CaLamViec");
         _collectionNhanVien = database.GetCollection<NhanVien>("NhanVien");
+        _collectionChucVu = database.GetCollection<ChucVu>("ChucVu");
         _mapper = mapper;
     }
 
@@ -78,6 +80,7 @@ public class LichLamViecRepository : ILichLamViecRepository
 
                 var caLamViecDict = new Dictionary<string, string>();
                 var nhanVienDict = new Dictionary<string, string>();
+                var chucVuDict = new Dictionary<string, string>();
 
                 List<CaLamViec> caLamViecs = new List<CaLamViec>();
                 foreach (var item in lichLamViecs)
@@ -143,6 +146,37 @@ public class LichLamViecRepository : ILichLamViecRepository
                     }
                 }
 
+                List<ChucVu> chucVus = new List<ChucVu>();
+                foreach (var item in lichLamViecs)
+                {
+                    var chucVuIds = item.chiTietLichLamViec
+                    .SelectMany(ct => ct.nhanVienCa)
+                    .Select(nv => nv.chucVuId)
+                   .Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
+                    var chucVuFilter = Builders<ChucVu>.Filter.In(x => x.Id, chucVuIds);
+
+                    var chucVuProjection = Builders<ChucVu>.Projection
+                       .Include(x => x.Id)
+                       .Include(x => x.tenChucVu);
+
+                    var newChucVus = await _collectionChucVu.Find(chucVuFilter)
+                      .Project<ChucVu>(chucVuProjection)
+                      .ToListAsync();
+
+                    var uniqueChucVus = newChucVus.Where(x => !chucVus.Any(y => y.Id == x.Id));
+                    chucVus.AddRange(uniqueChucVus);
+
+                    var newChucVuDict = chucVus.ToDictionary(x => x.Id, x => x.tenChucVu);
+                    foreach (var y in newChucVuDict)
+                    {
+                        if (!chucVuDict.ContainsKey(y.Key))
+                        {
+                            chucVuDict.Add(y.Key, y.Value);
+                        }
+                    }
+                }
+
                 // Map dữ liệu
                 var lichLamViecResponds = lichLamViecs.Select(lichLamViec => new LichLamViecRespond
                 {
@@ -162,7 +196,11 @@ public class LichLamViecRepository : ILichLamViecRepository
                                 Id = nv.nhanVien,
                                 Name = nv.nhanVien != null && nhanVienDict.ContainsKey(nv.nhanVien) ? nhanVienDict[nv.nhanVien] : null
                             },
-                            moTa = nv.moTa,
+                            chucVuId = new IdName
+                            {
+                                Id = nv.chucVuId,
+                                Name = nv.chucVuId != null && chucVuDict.ContainsKey(nv.chucVuId) ? chucVuDict[nv.chucVuId] : null
+                            },
                         }).ToList(),
                         moTa = ct.moTa,
                     }).ToList(),
@@ -187,6 +225,7 @@ public class LichLamViecRepository : ILichLamViecRepository
 
                 var caLamViecDict = new Dictionary<string, string>();
                 var nhanVienDict = new Dictionary<string, string>();
+                var chucVuDict = new Dictionary<string, string>();
 
                 List<CaLamViec> caLamViecs = new List<CaLamViec>();
                 foreach (var item in lichLamViecs)
@@ -252,6 +291,37 @@ public class LichLamViecRepository : ILichLamViecRepository
                     }
                 }
 
+                List<ChucVu> chucVus = new List<ChucVu>();
+                foreach (var item in lichLamViecs)
+                {
+                    var chucVuIds = item.chiTietLichLamViec
+                    .SelectMany(ct => ct.nhanVienCa)
+                    .Select(nv => nv.chucVuId)
+                   .Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
+                    var chucVuFilter = Builders<ChucVu>.Filter.In(x => x.Id, chucVuIds);
+
+                    var chucVuProjection = Builders<ChucVu>.Projection
+                       .Include(x => x.Id)
+                       .Include(x => x.tenChucVu);
+
+                    var newChucVus = await _collectionChucVu.Find(chucVuFilter)
+                      .Project<ChucVu>(chucVuProjection)
+                      .ToListAsync();
+
+                    var uniqueChucVus = newChucVus.Where(x => !chucVus.Any(y => y.Id == x.Id));
+                    chucVus.AddRange(uniqueChucVus);
+
+                    var newChucVuDict = chucVus.ToDictionary(x => x.Id, x => x.tenChucVu);
+                    foreach (var y in newChucVuDict)
+                    {
+                        if (!chucVuDict.ContainsKey(y.Key))
+                        {
+                            chucVuDict.Add(y.Key, y.Value);
+                        }
+                    }
+                }
+
                 // Map dữ liệu
                 var lichLamViecResponds = lichLamViecs.Select(lichLamViec => new LichLamViecRespond
                 {
@@ -271,7 +341,11 @@ public class LichLamViecRepository : ILichLamViecRepository
                                 Id = nv.nhanVien,
                                 Name = nv.nhanVien != null && nhanVienDict.ContainsKey(nv.nhanVien) ? nhanVienDict[nv.nhanVien] : null
                             },
-                            moTa = nv.moTa,
+                            chucVuId = new IdName
+                            {
+                                Id = nv.chucVuId,
+                                Name = nv.chucVuId != null && chucVuDict.ContainsKey(nv.chucVuId) ? chucVuDict[nv.chucVuId] : null
+                            },
                         }).ToList(),
                         moTa = ct.moTa,
                     }).ToList(),
@@ -315,6 +389,7 @@ public class LichLamViecRepository : ILichLamViecRepository
             // Tạo dictionary để map nhanh
             var caLamViecDict = new Dictionary<string, string>();
             var nhanVienDict = new Dictionary<string, string>();
+            var chucVuDict = new Dictionary<string, string>();
 
             List<CaLamViec> caLamViecs = new List<CaLamViec>();
             foreach (var item in lichLamViec.chiTietLichLamViec)
@@ -377,6 +452,35 @@ public class LichLamViecRepository : ILichLamViecRepository
                     }
                 }
             }
+            List<ChucVu> chucVus = new List<ChucVu>();
+            foreach (var item in lichLamViec.chiTietLichLamViec)
+            {
+                var chucVuIds = item.nhanVienCa
+               .Select(nv => nv.chucVuId)
+              .Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
+                var chucVuFilter = Builders<ChucVu>.Filter.In(x => x.Id, chucVuIds);
+
+                var chucVuProjection = Builders<ChucVu>.Projection
+                  .Include(x => x.Id)
+                  .Include(x => x.tenChucVu);
+
+                var newChucVus = await _collectionChucVu.Find(chucVuFilter)
+                 .Project<ChucVu>(chucVuProjection)
+                 .ToListAsync();
+
+                var uniqueChucVus = newChucVus.Where(x => !chucVus.Any(y => y.Id == x.Id));
+                chucVus.AddRange(uniqueChucVus);
+
+                var newChucVuDict = chucVus.ToDictionary(x => x.Id, x => x.tenChucVu);
+                foreach (var y in newChucVuDict)
+                {
+                    if (!chucVuDict.ContainsKey(y.Key))
+                    {
+                        chucVuDict.Add(y.Key, y.Value);
+                    }
+                }
+            }
 
             // Map dữ liệu
             var lichLamViecResponds = new LichLamViecRespond
@@ -397,7 +501,11 @@ public class LichLamViecRepository : ILichLamViecRepository
                             Id = nv.nhanVien,
                             Name = nv.nhanVien != null && nhanVienDict.ContainsKey(nv.nhanVien) ? nhanVienDict[nv.nhanVien] : null
                         },
-                        moTa = nv.moTa,
+                        chucVuId = new IdName
+                        {
+                            Id = nv.chucVuId,
+                            Name = nv.chucVuId != null && chucVuDict.ContainsKey(nv.chucVuId) ? chucVuDict[nv.chucVuId] : null
+                        },
                     }).ToList(),
                     moTa = ct.moTa,
                 }).ToList(),
@@ -439,6 +547,7 @@ public class LichLamViecRepository : ILichLamViecRepository
             // Tạo dictionary để map nhanh
             var caLamViecDict = new Dictionary<string, string>();
             var nhanVienDict = new Dictionary<string, string>();
+            var chucVuDict = new Dictionary<string, string>();
 
             List<CaLamViec> caLamViecs = new List<CaLamViec>();
             foreach (var item in newLichLamViec.chiTietLichLamViec)
@@ -501,6 +610,35 @@ public class LichLamViecRepository : ILichLamViecRepository
                     }
                 }
             }
+            List<ChucVu> chucVus = new List<ChucVu>();
+            foreach (var item in newLichLamViec.chiTietLichLamViec)
+            {
+                var chucVuIds = item.nhanVienCa
+              .Select(nv => nv.chucVuId)
+            .Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
+                var chucVuFilter = Builders<ChucVu>.Filter.In(x => x.Id, chucVuIds);
+
+                var chucVuProjection = Builders<ChucVu>.Projection
+                 .Include(x => x.Id)
+                 .Include(x => x.tenChucVu);
+
+                var newChucVus = await _collectionChucVu.Find(chucVuFilter)
+                .Project<ChucVu>(chucVuProjection)
+                .ToListAsync();
+
+                var uniqueChucVus = newChucVus.Where(x => !chucVus.Any(y => y.Id == x.Id));
+                chucVus.AddRange(uniqueChucVus);
+
+                var newChucVuDict = chucVus.ToDictionary(x => x.Id, x => x.tenChucVu);
+                foreach (var y in newChucVuDict)
+                {
+                    if (!chucVuDict.ContainsKey(y.Key))
+                    {
+                        chucVuDict.Add(y.Key, y.Value);
+                    }
+                }
+            }
 
             // Map dữ liệu
             var lichLamViecResponds = new LichLamViecRespond
@@ -521,20 +659,17 @@ public class LichLamViecRepository : ILichLamViecRepository
                             Id = nv.nhanVien,
                             Name = nv.nhanVien != null && nhanVienDict.ContainsKey(nv.nhanVien) ? nhanVienDict[nv.nhanVien] : null
                         },
-                        moTa = nv.moTa,
+                        chucVuId = new IdName
+                        {
+                            Id = nv.chucVuId,
+                            Name = nv.chucVuId != null && chucVuDict.ContainsKey(nv.chucVuId) ? chucVuDict[nv.chucVuId] : null
+                        },
                     }).ToList(),
                     moTa = ct.moTa,
                 }).ToList(),
                 moTa = newLichLamViec.moTa,
             };
 
-            // var loaiDon = await _collectionLoaiDon.Find(x => x.Id == newDonOrder.loaiDon).FirstOrDefaultAsync();
-            // var donOrderRespond = _mapper.Map<DonOrderRespond>(newDonOrder);
-            // donOrderRespond.loaiDon = new IdName
-            // {
-            //     Id = loaiDon.Id,
-            //     Name = loaiDon.tenLoaiDon
-            // };
             return new RespondAPI<LichLamViecRespond>(
                 ResultRespond.Succeeded,
                 "Tạo lịch làm việc thành công.",
@@ -586,6 +721,7 @@ public class LichLamViecRepository : ILichLamViecRepository
             // Tạo dictionary để map nhanh
             var caLamViecDict = new Dictionary<string, string>();
             var nhanVienDict = new Dictionary<string, string>();
+            var chucVuDict = new Dictionary<string, string>();
 
             List<CaLamViec> caLamViecs = new List<CaLamViec>();
             foreach (var item in lichLamViec.chiTietLichLamViec)
@@ -649,6 +785,35 @@ public class LichLamViecRepository : ILichLamViecRepository
                 }
             }
 
+            List<ChucVu> chucVus = new List<ChucVu>();
+            foreach (var item in lichLamViec.chiTietLichLamViec)
+            {
+                var chucVuIds = item.nhanVienCa
+             .Select(nv => nv.chucVuId).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
+                var chucVuFilter = Builders<ChucVu>.Filter.In(x => x.Id, chucVuIds);
+
+                var chucVuProjection = Builders<ChucVu>.Projection
+                .Include(x => x.Id)
+                .Include(x => x.tenChucVu);
+
+                var newChucVus = await _collectionChucVu.Find(chucVuFilter)
+               .Project<ChucVu>(chucVuProjection)
+               .ToListAsync();
+
+                var uniqueChucVus = newChucVus.Where(x => !chucVus.Any(y => y.Id == x.Id));
+                chucVus.AddRange(uniqueChucVus);
+
+                var newChucVuDict = chucVus.ToDictionary(x => x.Id, x => x.tenChucVu);
+                foreach (var y in newChucVuDict)
+                {
+                    if (!chucVuDict.ContainsKey(y.Key))
+                    {
+                        chucVuDict.Add(y.Key, y.Value);
+                    }
+                }
+            }
+
             // Map dữ liệu
             var lichLamViecResponds = new LichLamViecRespond
             {
@@ -668,7 +833,11 @@ public class LichLamViecRepository : ILichLamViecRepository
                             Id = nv.nhanVien,
                             Name = nv.nhanVien != null && nhanVienDict.ContainsKey(nv.nhanVien) ? nhanVienDict[nv.nhanVien] : null
                         },
-                        moTa = nv.moTa,
+                        chucVuId = new IdName
+                        {
+                            Id = nv.chucVuId,
+                            Name = nv.chucVuId != null && chucVuDict.ContainsKey(nv.chucVuId) ? chucVuDict[nv.chucVuId] : null
+                        },
                     }).ToList(),
                     moTa = ct.moTa,
                 }).ToList(),

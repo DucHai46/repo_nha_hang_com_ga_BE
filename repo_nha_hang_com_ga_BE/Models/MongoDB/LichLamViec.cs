@@ -23,5 +23,5 @@ public class ChiTietLichLamViec
 public class NhanVienCa
 {
     public string? nhanVien { get; set; }
-    public string? moTa { get; set; }
+    public string? chucVuId { get; set; }
 }
