@@ -7,7 +7,9 @@ namespace repo_nha_hang_com_ga_BE.Models.MongoDB
     public class CaLamViec : BaseMongoDb
     {
         public string? tenCaLamViec { get; set; }
-        public string? khungThoiGian { get; set; }
+        // public string? khungThoiGian { get; set; }
+        public TimeSpan? gioVao { get; set; }
+        public TimeSpan? gioRa { get; set; }
         public string? moTa { get; set; }
 
     }

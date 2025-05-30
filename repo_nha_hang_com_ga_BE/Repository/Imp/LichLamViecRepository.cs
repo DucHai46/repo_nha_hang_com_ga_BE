@@ -94,7 +94,8 @@ public class LichLamViecRepository : ILichLamViecRepository
                     var caLamViecProjection = Builders<CaLamViec>.Projection
                         .Include(x => x.Id)
                         .Include(x => x.tenCaLamViec)
-                        .Include(x => x.khungThoiGian)
+                        .Include(x => x.gioVao)
+                        .Include(x => x.gioRa)
                         .Include(x => x.moTa);
 
                     var newCaLamViecs = await _collectionCaLamViec.Find(caLamViecFilter)
@@ -239,7 +240,8 @@ public class LichLamViecRepository : ILichLamViecRepository
                     var caLamViecProjection = Builders<CaLamViec>.Projection
                         .Include(x => x.Id)
                         .Include(x => x.tenCaLamViec)
-                        .Include(x => x.khungThoiGian)
+                        .Include(x => x.gioVao)
+                        .Include(x => x.gioRa)
                         .Include(x => x.moTa);
 
                     var newCaLamViecs = await _collectionCaLamViec.Find(caLamViecFilter)
@@ -402,7 +404,8 @@ public class LichLamViecRepository : ILichLamViecRepository
                 var caLamViecProjection = Builders<CaLamViec>.Projection
                     .Include(x => x.Id)
                     .Include(x => x.tenCaLamViec)
-                    .Include(x => x.khungThoiGian)
+                    .Include(x => x.gioVao)
+                    .Include(x => x.gioRa)
                     .Include(x => x.moTa);
 
                 var newCaLamViecs = await _collectionCaLamViec.Find(caLamViecFilter)
@@ -560,7 +563,8 @@ public class LichLamViecRepository : ILichLamViecRepository
                 var caLamViecProjection = Builders<CaLamViec>.Projection
                     .Include(x => x.Id)
                     .Include(x => x.tenCaLamViec)
-                    .Include(x => x.khungThoiGian)
+                    .Include(x => x.gioVao)
+                    .Include(x => x.gioRa)
                     .Include(x => x.moTa);
 
                 var newCaLamViecs = await _collectionCaLamViec.Find(caLamViecFilter)
@@ -734,7 +738,8 @@ public class LichLamViecRepository : ILichLamViecRepository
                 var caLamViecProjection = Builders<CaLamViec>.Projection
                     .Include(x => x.Id)
                     .Include(x => x.tenCaLamViec)
-                    .Include(x => x.khungThoiGian)
+                    .Include(x => x.gioVao)
+                    .Include(x => x.gioRa)
                     .Include(x => x.moTa);
 
                 var newCaLamViecs = await _collectionCaLamViec.Find(caLamViecFilter)

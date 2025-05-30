@@ -39,15 +39,21 @@ public class CaLamViecRepository : ICaLamViecRepository
             {
                 filter &= Builders<CaLamViec>.Filter.Regex(x => x.tenCaLamViec, new BsonRegularExpression($".*{request.tenCaLamViec}.*"));
             }
-            if (!string.IsNullOrEmpty(request.khungThoiGian))
+            if (!string.IsNullOrEmpty(request.gioVao.ToString()))
             {
-                filter &= Builders<CaLamViec>.Filter.Eq(x => x.khungThoiGian, request.khungThoiGian);
+                filter &= Builders<CaLamViec>.Filter.Eq(x => x.gioVao, request.gioVao);
+            }
+
+            if (!string.IsNullOrEmpty(request.gioRa.ToString()))
+            {
+                filter &= Builders<CaLamViec>.Filter.Eq(x => x.gioRa, request.gioRa);
             }
 
             var projection = Builders<CaLamViec>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenCaLamViec)
-                .Include(x => x.khungThoiGian)
+                .Include(x => x.gioVao)
+                .Include(x => x.gioRa)
                 .Include(x => x.moTa);
 
 

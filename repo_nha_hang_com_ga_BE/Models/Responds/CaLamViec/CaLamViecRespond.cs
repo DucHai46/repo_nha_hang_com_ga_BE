@@ -9,7 +9,9 @@ public class CaLamViecRespond
     [BsonRepresentation(BsonType.ObjectId)]
     public string? id { get; set; }
     public string? tenCaLamViec { get; set; }
-    public string? khungThoiGian { get; set; }
+    // public string? khungThoiGian { get; set; }
+    public TimeSpan? gioVao { get; set; }
+    public TimeSpan? gioRa { get; set; }
     public string? moTa { get; set; }
 
 }
