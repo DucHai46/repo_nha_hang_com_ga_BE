@@ -51,6 +51,19 @@ public class LichLamViecRepository : ILichLamViecRepository
             {
                 filter &= Builders<LichLamViec>.Filter.Eq(x => x.ngay, request.ngay);
             }
+            else if (request.tuNgay.HasValue || request.denNgay.HasValue)
+            {
+
+                if (request.tuNgay.HasValue)
+                {
+                    filter &= Builders<LichLamViec>.Filter.Gte(x => x.ngay, request.tuNgay);
+                }
+
+                if (request.denNgay.HasValue)
+                {
+                    filter &= Builders<LichLamViec>.Filter.Lte(x => x.ngay, request.denNgay);
+                }
+            }
 
             var projection = Builders<LichLamViec>.Projection
                 .Include(x => x.Id)
