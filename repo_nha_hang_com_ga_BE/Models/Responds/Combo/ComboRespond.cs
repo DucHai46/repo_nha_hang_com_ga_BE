@@ -16,6 +16,8 @@ public class ComboRespond
     public string? hinhAnh { get; set; }
     public int? giaTien { get; set; }
     public string? moTa { get; set; }
+    public GiamGiaComboRespond? giamGia { get; set; }
+
 }
 
 public class LoaiMonAnMenuRespond : IdName
@@ -32,4 +34,10 @@ public class MonAnMenuRespond
     public string? hinhAnh { get; set; }
     public int? giaTien { get; set; }
     public string? moTa { get; set; }
+    public int? soLuong { get; set; }
+
 }
+    public class GiamGiaComboRespond : IdName
+    {
+        public int? giaTri { get; set; }
+    }

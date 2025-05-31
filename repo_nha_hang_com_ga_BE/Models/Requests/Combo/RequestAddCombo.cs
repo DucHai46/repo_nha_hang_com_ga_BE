@@ -7,4 +7,5 @@ public class RequestAddCombo
     public string? hinhAnh { get; set; }
     public int? giaTien { get; set; }
     public string? moTa { get; set; }
+    public string? giamGia { get; set; }
 }

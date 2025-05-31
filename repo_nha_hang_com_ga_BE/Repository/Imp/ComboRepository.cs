@@ -18,6 +18,7 @@ public class ComboRepository : IComboRepository
     private readonly IMapper _mapper;
     private readonly IMongoCollection<LoaiMonAn> _collectionLoaiMonAn;
     private readonly IMongoCollection<MonAn> _collectionMonAn;
+    private readonly IMongoCollection<GiamGia> _collectionGiamGia;
 
 
     public ComboRepository(IOptions<MongoDbSettings> settings, IMapper mapper)
@@ -28,6 +29,7 @@ public class ComboRepository : IComboRepository
         _collection = database.GetCollection<Combo>("Combo");
         _collectionLoaiMonAn = database.GetCollection<LoaiMonAn>("LoaiMonAn");
         _collectionMonAn = database.GetCollection<MonAn>("MonAn");
+        _collectionGiamGia = database.GetCollection<GiamGia>("GiamGia");
         _mapper = mapper;
     }
 
@@ -55,6 +57,7 @@ public class ComboRepository : IComboRepository
                 .Include(x => x.tenCombo)
                 .Include(x => x.loaiMonAns)
                 .Include(x => x.hinhAnh)
+                .Include(x => x.giamGia)
                 .Include(x => x.giaTien)
                 .Include(x => x.moTa);
 
@@ -81,6 +84,19 @@ public class ComboRepository : IComboRepository
 
                 var monAnDict = new Dictionary<string, string>();
                 var loaiMonAnDict = new Dictionary<string, string>();
+                var giamGiaDict = new Dictionary<string, string>();
+
+                var giamGiaIds = combos.Select(x => x.giamGia).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                var giamGiaFilter = Builders<GiamGia>.Filter.In(x => x.Id, giamGiaIds);
+                var giamGiaProjection = Builders<GiamGia>.Projection
+                    .Include(x => x.Id)
+                    .Include(x => x.tenGiamGia)
+                    .Include(x => x.giaTri);
+                var giamGias = await _collectionGiamGia.Find(giamGiaFilter)
+                    .Project<GiamGia>(giamGiaProjection)
+                    .ToListAsync();
+
+                giamGiaDict = giamGias.ToDictionary(x => x.Id, x => x.tenGiamGia);
 
                 var loaiMonAnIds = combos.SelectMany(x => x.loaiMonAns.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
@@ -143,6 +159,17 @@ public class ComboRepository : IComboRepository
                     }).ToList(),
                     hinhAnh = combo.hinhAnh,
                     giaTien = combo.giaTien,
+                    giamGia = combo.giamGia != null ? new GiamGiaComboRespond
+                    {
+                        Id = combo.giamGia,
+                        Name = giamGias.FirstOrDefault(y => y.Id == combo.giamGia)?.tenGiamGia,
+                        giaTri = giamGias.FirstOrDefault(y => y.Id == combo.giamGia)?.giaTri
+                    } : new GiamGiaComboRespond
+                    {
+                        Id = "",
+                        Name = "",
+                        giaTri = 0
+                    },
                     moTa = combo.moTa
                 }).ToList();
 
@@ -165,6 +192,19 @@ public class ComboRepository : IComboRepository
                 var combos = await cursor.ToListAsync();
 
                 var monAnDict = new Dictionary<string, string>();
+                var giamGiaDict = new Dictionary<string, string>();
+
+                var giamGiaIds = combos.Select(x => x.giamGia).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                var giamGiaFilter = Builders<GiamGia>.Filter.In(x => x.Id, giamGiaIds);
+                var giamGiaProjection = Builders<GiamGia>.Projection
+                    .Include(x => x.Id)
+                    .Include(x => x.tenGiamGia)
+                    .Include(x => x.giaTri);
+                var giamGias = await _collectionGiamGia.Find(giamGiaFilter)
+                    .Project<GiamGia>(giamGiaProjection)
+                    .ToListAsync();
+
+                giamGiaDict = giamGias.ToDictionary(x => x.Id, x => x.tenGiamGia);
                 var loaiMonAnDict = new Dictionary<string, string>();
 
                 var loaiMonAnIds = combos.SelectMany(x => x.loaiMonAns.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
@@ -228,6 +268,17 @@ public class ComboRepository : IComboRepository
                     }).ToList(),
                     hinhAnh = combo.hinhAnh,
                     giaTien = combo.giaTien,
+                    giamGia = combo.giamGia != null ? new GiamGiaComboRespond
+                    {
+                        Id = combo.giamGia,
+                        Name = giamGias.FirstOrDefault(y => y.Id == combo.giamGia)?.tenGiamGia,
+                        giaTri = giamGias.FirstOrDefault(y => y.Id == combo.giamGia)?.giaTri
+                    } : new GiamGiaComboRespond
+                    {
+                        Id = "",
+                        Name = "",
+                        giaTri = 0
+                    },
                     moTa = combo.moTa
                 }).ToList();
 
@@ -278,6 +329,7 @@ public class ComboRepository : IComboRepository
                 .ToListAsync();
 
             loaiMonAnDict = loaiMonAns.ToDictionary(x => x.Id, x => x.tenLoai);
+            var giamGia = await _collectionGiamGia.Find(x => x.Id == combo.giamGia).FirstOrDefaultAsync();
 
             List<MonAn> monAns = new List<MonAn>();
 
@@ -316,6 +368,17 @@ public class ComboRepository : IComboRepository
                 }).ToList(),
                 hinhAnh = combo.hinhAnh,
                 giaTien = combo.giaTien,
+                giamGia = combo.giamGia != null ? new GiamGiaComboRespond
+                {
+                    Id = giamGia.Id,
+                    Name = giamGia.tenGiamGia,
+                    giaTri = giamGia.giaTri
+                } : new GiamGiaComboRespond
+                {
+                    Id = "",
+                    Name = "",
+                    giaTri = 0
+                },
                 moTa = combo.moTa
             };
 
@@ -348,7 +411,7 @@ public class ComboRepository : IComboRepository
 
             var monAnDict = new Dictionary<string, string>();
             var loaiMonAnDict = new Dictionary<string, string>();
-
+            var giamGia = await _collectionGiamGia.Find(x => x.Id == newCombo.giamGia).FirstOrDefaultAsync();
             var loaiMonAnIds = newCombo.loaiMonAns.Select(x => x.id).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
             var loaiMonAnFilter = Builders<LoaiMonAn>.Filter.In(x => x.Id, loaiMonAnIds);
@@ -398,6 +461,17 @@ public class ComboRepository : IComboRepository
                 }).ToList(),
                 hinhAnh = newCombo.hinhAnh,
                 giaTien = newCombo.giaTien,
+                giamGia = newCombo.giamGia != null ? new GiamGiaComboRespond
+                {
+                    Id = giamGia.Id,
+                    Name = giamGia.tenGiamGia,
+                    giaTri = giamGia.giaTri
+                } : new GiamGiaComboRespond
+                {
+                    Id = "",
+                    Name = "",
+                    giaTri = 0
+                },
                 moTa = newCombo.moTa
             };
 
@@ -446,6 +520,7 @@ public class ComboRepository : IComboRepository
                     "Cập nhật combo không thành công."
                 );
             }
+            var giamGia = await _collectionGiamGia.Find(x => x.Id == combo.giamGia).FirstOrDefaultAsync();
 
             var monAnDict = new Dictionary<string, string>();
             var loaiMonAnDict = new Dictionary<string, string>();
@@ -499,6 +574,17 @@ public class ComboRepository : IComboRepository
                 }).ToList(),
                 hinhAnh = combo.hinhAnh,
                 giaTien = combo.giaTien,
+                giamGia = combo.giamGia != null ? new GiamGiaComboRespond
+                {
+                    Id = giamGia.Id,
+                    Name = giamGia.tenGiamGia,
+                    giaTri = giamGia.giaTri
+                } : new GiamGiaComboRespond
+                {
+                    Id = "",
+                    Name = "",
+                    giaTri = 0
+                },
                 moTa = combo.moTa
             };
 
