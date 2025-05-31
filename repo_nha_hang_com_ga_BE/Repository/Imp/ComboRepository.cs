@@ -153,7 +153,8 @@ public class ComboRepository : IComboRepository
                             tenMonAn = monAnDict.ContainsKey(y.id) ? monAnDict[y.id] : null,
                             hinhAnh = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.hinhAnh : null,
                             giaTien = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.giaTien : null,
-                            moTa = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.moTa : null
+                            moTa = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.moTa : null,
+                            soLuong = y.soLuong
                         }).ToList(),
                         moTa = x.moTa
                     }).ToList(),
@@ -262,7 +263,8 @@ public class ComboRepository : IComboRepository
                             tenMonAn = monAnDict.ContainsKey(y.id) ? monAnDict[y.id] : null,
                             hinhAnh = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.hinhAnh : null,
                             giaTien = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.giaTien : null,
-                            moTa = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.moTa : null
+                            moTa = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.moTa : null,
+                            soLuong=y.soLuong
                         }).ToList(),
                         moTa = x.moTa
                     }).ToList(),
@@ -362,7 +364,8 @@ public class ComboRepository : IComboRepository
                         tenMonAn = monAnDict.ContainsKey(y.id) ? monAnDict[y.id] : null,
                         hinhAnh = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.hinhAnh : null,
                         giaTien = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.giaTien : null,
-                        moTa = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.moTa : null
+                        moTa = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.moTa : null,
+                        soLuong = y.soLuong
                     }).ToList(),
                     moTa = x.moTa
                 }).ToList(),
@@ -455,7 +458,8 @@ public class ComboRepository : IComboRepository
                         tenMonAn = monAnDict.ContainsKey(y.id) ? monAnDict[y.id] : null,
                         hinhAnh = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.hinhAnh : null,
                         giaTien = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.giaTien : null,
-                        moTa = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.moTa : null
+                        moTa = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.moTa : null,
+                        soLuong = y.soLuong
                     }).ToList(),
                     moTa = x.moTa
                 }).ToList(),
@@ -568,7 +572,8 @@ public class ComboRepository : IComboRepository
                         tenMonAn = monAnDict.ContainsKey(y.id) ? monAnDict[y.id] : null,
                         hinhAnh = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.hinhAnh : null,
                         giaTien = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.giaTien : null,
-                        moTa = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.moTa : null
+                        moTa = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.moTa : null,
+                        soLuong = y.soLuong
                     }).ToList(),
                     moTa = x.moTa
                 }).ToList(),
