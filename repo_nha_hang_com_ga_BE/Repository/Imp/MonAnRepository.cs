@@ -57,6 +57,10 @@ public class MonAnRepository : IMonAnRepository
             {
                 filter &= Builders<MonAn>.Filter.Eq(x => x.congThuc, request.idCongThuc);
             }
+            if (request.giaTien.HasValue)
+            {
+                filter &= Builders<MonAn>.Filter.Eq(x => x.giaTien, request.giaTien.Value);
+            }
 
             var projection = Builders<MonAn>.Projection
                 .Include(x => x.Id)

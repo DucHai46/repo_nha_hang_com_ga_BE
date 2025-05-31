@@ -47,7 +47,7 @@ public class ComboRepository : IComboRepository
 
             if (request.giaTien.HasValue)
             {
-                filter &= Builders<Combo>.Filter.Regex(x => x.giaTien, new BsonRegularExpression($".*{request.giaTien}.*"));
+                filter &= Builders<Combo>.Filter.Eq(x => x.giaTien, request.giaTien.Value);
             }
 
             var projection = Builders<Combo>.Projection
