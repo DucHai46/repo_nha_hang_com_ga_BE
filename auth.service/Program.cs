@@ -22,8 +22,8 @@ var mongoDbConfig = new MongoDbIdentityConfiguration
 {
     MongoDbSettings = new MongoDbSettings
     {
-        ConnectionString = "mongodb://admin:admin123@3.24.10.252:27017",
-        DatabaseName = "Users"
+        ConnectionString = builder.Configuration["MongoDbSettings:Connection"],
+        DatabaseName = builder.Configuration["MongoDbSettings:DatabaseName"]
     },
     IdentityOptionsAction = options =>
     {
