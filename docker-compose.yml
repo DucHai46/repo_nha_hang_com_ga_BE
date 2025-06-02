@@ -56,7 +56,7 @@ services:
       - "8082:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - MongoDbSettings__Connection=${MONGO_CONNECTION}
+      - MongoDbSettings__ConnectionString=${MONGO_CONNECTION}
       - Jwt__Key=${JWT_KEY}
     env_file:
       - .env
