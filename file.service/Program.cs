@@ -15,6 +15,7 @@ var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
+Console.WriteLine(">>> MongoDbSettings__ConnectionString from env: " + builder.Configuration["MongoDbSettings:ConnectionString"]);
 builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IFileService, FileService>();
