@@ -73,7 +73,7 @@ public class DonOrderController : ControllerBase
     {
         return Ok(await _repository.UpdateStatusDonOrder(id, request));
     }
-    [HttpGet("{nhac-don-order}")]
+    [HttpGet("nhac-don-order")]
     public async Task<IActionResult> GetNhacDonOrder(string id)
     {
         await _hubContext.Clients.All.SendAsync("ReceiveNhacDon", $"{id}");
