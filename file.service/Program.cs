@@ -11,8 +11,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
+builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 Console.WriteLine(">>> MongoDbSettings__ConnectionString from env: " + builder.Configuration["MongoDbSettings:ConnectionString"]);
