@@ -31,6 +31,7 @@ public class MonAnMenu
     public int? giaTien { get; set; }
     public string? moTa { get; set; }
     public int? soLuong { get; set; }
+    public string? giamGia { get; set; }
 }
 
 

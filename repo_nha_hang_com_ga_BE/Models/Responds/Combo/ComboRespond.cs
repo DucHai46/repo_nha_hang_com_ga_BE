@@ -35,7 +35,7 @@ public class MonAnMenuRespond
     public int? giaTien { get; set; }
     public string? moTa { get; set; }
     public int? soLuong { get; set; }
-
+    public string? giamGia { get; set; }
 }
     public class GiamGiaComboRespond : IdName
     {

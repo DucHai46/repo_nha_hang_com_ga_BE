@@ -19,6 +19,7 @@ public class ThucDonRepository : IThucDonRepository
     private readonly IMongoCollection<Combo> _collectionCombo;
     private readonly IMongoCollection<LoaiMonAn> _collectionLoaiMonAn;
     private readonly IMongoCollection<MonAn> _collectionMonAn;
+    private readonly IMongoCollection<GiamGia> _collectionGiamGia;
     private readonly IMapper _mapper;
 
     public ThucDonRepository(IOptions<MongoDbSettings> settings, IMapper mapper)
@@ -30,6 +31,7 @@ public class ThucDonRepository : IThucDonRepository
         _collectionCombo = database.GetCollection<Combo>("Combo");
         _collectionLoaiMonAn = database.GetCollection<LoaiMonAn>("LoaiMonAn");
         _collectionMonAn = database.GetCollection<MonAn>("MonAn");
+        _collectionGiamGia = database.GetCollection<GiamGia>("GiamGia");
         _mapper = mapper;
     }
 
@@ -107,6 +109,7 @@ public class ThucDonRepository : IThucDonRepository
                 loaiMonAnDict = loaiMonAns.ToDictionary(x => x.Id, x => x.tenLoai);
 
                 List<MonAn> monAns = new List<MonAn>();
+                List<GiamGia> giamGias = new List<GiamGia>();
                 foreach (var thucDon in thucDons)
                 {
                     var monAnIds = thucDon.loaiMonAns.SelectMany(x => x.monAns.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
@@ -117,6 +120,7 @@ public class ThucDonRepository : IThucDonRepository
                         .Include(x => x.tenMonAn)
                         .Include(x => x.hinhAnh)
                         .Include(x => x.giaTien)
+                        .Include(x => x.giamGia)
                         .Include(x => x.moTa);
                     var newMonAns = await _collectionMonAn.Find(monAnFilter)
                         .Project<MonAn>(monAnProjection)
@@ -134,6 +138,18 @@ public class ThucDonRepository : IThucDonRepository
                         }
                     }
                 }
+
+                var giamGiaIds = monAns.Select(x => x.giamGia).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
+                var giamGiaFilter = Builders<GiamGia>.Filter.In(x => x.Id, giamGiaIds);
+                var giamGiaProjection = Builders<GiamGia>.Projection
+                    .Include(x => x.Id)
+                    .Include(x => x.giaTri);
+                giamGias = await _collectionGiamGia.Find(giamGiaFilter)
+                    .Project<GiamGia>(giamGiaProjection)
+                    .ToListAsync();
+
+                var giamGiaDict = giamGias.ToDictionary(x => x.Id, x => x.giaTri);
 
                 var comboIds = thucDons.SelectMany(x => x.combos.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
@@ -164,7 +180,8 @@ public class ThucDonRepository : IThucDonRepository
                             tenMonAn = monAnDict.ContainsKey(z.id) ? monAnDict[z.id] : null,
                             hinhAnh = monAnDict.ContainsKey(z.id) ? monAns.FirstOrDefault(m => m.Id == z.id)?.hinhAnh : null,
                             giaTien = monAnDict.ContainsKey(z.id) ? monAns.FirstOrDefault(m => m.Id == z.id)?.giaTien : null,
-                            moTa = monAnDict.ContainsKey(z.id) ? monAns.FirstOrDefault(m => m.Id == z.id)?.moTa : null
+                            moTa = monAnDict.ContainsKey(z.id) ? monAns.FirstOrDefault(m => m.Id == z.id)?.moTa : null,
+                            giamGia = monAnDict.ContainsKey(z.id) ? giamGiaDict[monAns.FirstOrDefault(m => m.Id == z.id)?.giamGia].ToString() : null
                         }).ToList(),
                         moTa = y.moTa
                     }).ToList(),
@@ -213,6 +230,7 @@ public class ThucDonRepository : IThucDonRepository
                 loaiMonAnDict = loaiMonAns.ToDictionary(x => x.Id, x => x.tenLoai);
 
                 List<MonAn> monAns = new List<MonAn>();
+                List<GiamGia> giamGias = new List<GiamGia>();
                 foreach (var thucDon in thucDons)
                 {
                     var monAnIds = thucDon.loaiMonAns.SelectMany(x => x.monAns.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
@@ -223,6 +241,7 @@ public class ThucDonRepository : IThucDonRepository
                         .Include(x => x.tenMonAn)
                         .Include(x => x.hinhAnh)
                         .Include(x => x.giaTien)
+                        .Include(x => x.giamGia)
                         .Include(x => x.moTa);
                     var newMonAns = await _collectionMonAn.Find(monAnFilter)
                         .Project<MonAn>(monAnProjection)
@@ -240,6 +259,18 @@ public class ThucDonRepository : IThucDonRepository
                         }
                     }
                 }
+
+                var giamGiaIds = monAns.Select(x => x.giamGia).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
+                var giamGiaFilter = Builders<GiamGia>.Filter.In(x => x.Id, giamGiaIds);
+                var giamGiaProjection = Builders<GiamGia>.Projection
+                    .Include(x => x.Id)
+                    .Include(x => x.giaTri);
+                giamGias = await _collectionGiamGia.Find(giamGiaFilter)
+                    .Project<GiamGia>(giamGiaProjection)
+                    .ToListAsync();
+
+                var giamGiaDict = giamGias.ToDictionary(x => x.Id, x => x.giaTri);
 
                 var comboIds = thucDons.SelectMany(x => x.combos.Select(y => y.id)).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
@@ -270,7 +301,8 @@ public class ThucDonRepository : IThucDonRepository
                             tenMonAn = monAnDict.ContainsKey(z.id) ? monAnDict[z.id] : null,
                             hinhAnh = monAnDict.ContainsKey(z.id) ? monAns.FirstOrDefault(m => m.Id == z.id)?.hinhAnh : null,
                             giaTien = monAnDict.ContainsKey(z.id) ? monAns.FirstOrDefault(m => m.Id == z.id)?.giaTien : null,
-                            moTa = monAnDict.ContainsKey(z.id) ? monAns.FirstOrDefault(m => m.Id == z.id)?.moTa : null
+                            moTa = monAnDict.ContainsKey(z.id) ? monAns.FirstOrDefault(m => m.Id == z.id)?.moTa : null,
+                            giamGia = monAnDict.ContainsKey(z.id) ? giamGiaDict[monAns.FirstOrDefault(m => m.Id == z.id)?.giamGia].ToString() : null
                         }).ToList(),
                         moTa = y.moTa
                     }).ToList(),
