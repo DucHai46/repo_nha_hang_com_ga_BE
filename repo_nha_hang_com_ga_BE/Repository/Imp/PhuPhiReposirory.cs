@@ -43,7 +43,10 @@ public class PhuPhiRepository : IPhuPhiRepository
                 filter &= Builders<PhuPhi>.Filter.Regex(x => x.tenPhuPhi, new BsonRegularExpression($".*{request.tenPhuPhi}.*"));
 
             }
-
+            if (request.trangThai != null)
+            {
+                filter &= Builders<PhuPhi>.Filter.Eq(x => x.trangThai, request.trangThai);
+            }
 
             var projection = Builders<PhuPhi>.Projection
                 .Include(x => x.tenPhuPhi)
