@@ -667,6 +667,12 @@ public class DonOrderRepository : IDonOrderRepository
             newDonOrder.createdDate = DateTimeOffset.UtcNow;
             newDonOrder.updatedDate = DateTimeOffset.UtcNow;
             newDonOrder.isDelete = false;
+            var Ban = await _collectionBan.Find(x => x.Id == newDonOrder.ban).FirstOrDefaultAsync();
+            if (Ban != null)
+            {
+                Ban.trangThai = TrangThaiBan.CoKhach;
+                await _collectionBan.ReplaceOneAsync(x => x.Id == newDonOrder.ban, Ban);
+            }
 
             await _collection.InsertOneAsync(newDonOrder);
 
