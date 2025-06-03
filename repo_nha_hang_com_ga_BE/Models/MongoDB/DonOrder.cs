@@ -28,6 +28,22 @@ public enum TrangThaiDonOrder
     ChuaThanhToan = 0,
     [Description("Đã thanh toán")]
     DaThanhToan = 1,
+    [Description("Đã hủy")]
+    DaHuy = 2,
+    [Description("Chờ xác nhận")]
+    ChoXacNhan = 3,
+    [Description("Đã xác nhận")]
+    DaXacNhan = 4,
+    [Description("Đang chế biến")]
+    DangCheBien = 5,
+    [Description("Đang giao hàng")]
+    DangGiaoHang = 6,
+    [Description("Hoàn thành")]
+    HoanThanh = 7,
+
+
+
+
 
 }
 
