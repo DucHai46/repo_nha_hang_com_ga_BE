@@ -667,7 +667,7 @@ public class DonOrderRepository : IDonOrderRepository
             newDonOrder.createdDate = DateTimeOffset.UtcNow;
             newDonOrder.updatedDate = DateTimeOffset.UtcNow;
             newDonOrder.isDelete = false;
-            if (newDonOrder.ban != null)
+            if (newDonOrder.ban != null || newDonOrder.ban != "")
             {
                 var Ban = await _collectionBan.Find(x => x.Id == newDonOrder.ban).FirstOrDefaultAsync();
                 if (Ban != null)
