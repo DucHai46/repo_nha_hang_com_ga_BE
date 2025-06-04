@@ -640,6 +640,7 @@ public class DonOrderRepository : IDonOrderRepository
                 trangThai = donOrder.trangThai,
                 tongTien = donOrder.tongTien,
                 createdDate = donOrder.createdDate?.Date,
+                ngayTao = donOrder.createdDate,
             };
 
             return new RespondAPI<DonOrderRespond>(
