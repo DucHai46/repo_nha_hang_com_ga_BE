@@ -54,6 +54,10 @@ public class GiamGiaRepository : IGiamGiaRepository
             {
                 filter &= Builders<GiamGia>.Filter.Eq(x => x.giaTri, request.giaTri);
             }
+            if (request.trangThai != null)
+            {
+                filter &= Builders<GiamGia>.Filter.Eq(x => x.trangThai, request.trangThai);
+            }
 
             var projection = Builders<GiamGia>.Projection
                 .Include(x => x.Id)
@@ -215,7 +219,7 @@ public class GiamGiaRepository : IGiamGiaRepository
             _mapper.Map(request, giamGia);
 
             giamGia.updatedDate = DateTimeOffset.UtcNow;
-            giamGia.trangThai= giamGia.ngayKetThuc >= DateTime.UtcNow
+            giamGia.trangThai = giamGia.ngayKetThuc >= DateTime.UtcNow
                 ? TrangThaiGiamGia.ConHan
                 : TrangThaiGiamGia.HetHan;
             var updateResult = await _collection.ReplaceOneAsync(filter, giamGia);
