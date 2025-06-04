@@ -667,6 +667,7 @@ public class DonOrderRepository : IDonOrderRepository
             newDonOrder.createdDate = DateTimeOffset.UtcNow;
             newDonOrder.updatedDate = DateTimeOffset.UtcNow;
             newDonOrder.isDelete = false;
+            var banDict = new Dictionary<string, string>();
             if (newDonOrder.ban != null || newDonOrder.ban != "")
             {
                 var Ban = await _collectionBan.Find(x => x.Id == newDonOrder.ban).FirstOrDefaultAsync();
@@ -675,6 +676,15 @@ public class DonOrderRepository : IDonOrderRepository
                     Ban.trangThai = TrangThaiBan.CoKhach;
                     await _collectionBan.ReplaceOneAsync(x => x.Id == newDonOrder.ban, Ban);
                 }
+                var banIds = new List<string> { newDonOrder.ban }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                var banFilter = Builders<Ban>.Filter.In(x => x.Id, banIds);
+                var banProjection = Builders<Ban>.Projection
+                    .Include(x => x.Id)
+                .Include(x => x.tenBan);
+                var bans = await _collectionBan.Find(banFilter)
+                .Project<Ban>(banProjection)
+                .ToListAsync();
+                banDict = bans.ToDictionary(x => x.Id, x => x.tenBan);
             }
 
             await _collection.InsertOneAsync(newDonOrder);
@@ -683,12 +693,10 @@ public class DonOrderRepository : IDonOrderRepository
 
             var monAnDict = new Dictionary<string, string>();
             var loaiDonDict = new Dictionary<string, string>();
-            var banDict = new Dictionary<string, string>();
             var khachHangDict = new Dictionary<string, string>();
             var comBoDict = new Dictionary<string, string>();
 
             var loaiDonIds = new List<string> { newDonOrder.loaiDon }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-            var banIds = new List<string> { newDonOrder.ban }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var khachHangIds = new List<string> { newDonOrder.khachHang }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
             var khachHangFilter = Builders<KhachHang>.Filter.In(x => x.Id, khachHangIds);
@@ -709,14 +717,8 @@ public class DonOrderRepository : IDonOrderRepository
              .ToListAsync();
             loaiDonDict = loaiDons.ToDictionary(x => x.Id, x => x.tenLoaiDon);
 
-            var banFilter = Builders<Ban>.Filter.In(x => x.Id, banIds);
-            var banProjection = Builders<Ban>.Projection
-             .Include(x => x.Id)
-            .Include(x => x.tenBan);
-            var bans = await _collectionBan.Find(banFilter)
-            .Project<Ban>(banProjection)
-            .ToListAsync();
-            banDict = bans.ToDictionary(x => x.Id, x => x.tenBan);
+
+
 
             List<Combo> comBos = new List<Combo>();
             List<MonAn> monAns = new List<MonAn>();
@@ -760,7 +762,7 @@ public class DonOrderRepository : IDonOrderRepository
                 ban = new IdName
                 {
                     Id = newDonOrder.ban,
-                    Name = banDict.ContainsKey(newDonOrder.ban) ? banDict[newDonOrder.ban] : null
+                    Name = (newDonOrder.ban != null || newDonOrder.ban != "") && banDict.ContainsKey(newDonOrder.ban) ? banDict[newDonOrder.ban] : null
                 },
                 khachHang = new IdName
                 {
