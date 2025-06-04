@@ -55,11 +55,17 @@ public class KhuyenMaiRepository : IKhuyenMaiRepository
                 filter &= Builders<KhuyenMai>.Filter.Eq(x => x.giaTri, request.giaTri);
             }
 
+            if (request.trangThai != null)
+            {
+                filter &= Builders<KhuyenMai>.Filter.Eq(x => x.trangThai, request.trangThai);
+            }
+
             var projection = Builders<KhuyenMai>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenKhuyenMai)
                 .Include(x => x.ngayBatDau)
                 .Include(x => x.ngayKetThuc)
+                .Include(x => x.trangThai)
                 .Include(x => x.giaTri);
 
             var findOptions = new FindOptions<KhuyenMai, KhuyenMaiRespond>
@@ -82,6 +88,12 @@ public class KhuyenMaiRepository : IKhuyenMaiRepository
 
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var khuyenMais = await cursor.ToListAsync();
+                foreach (var item in khuyenMais)
+                {
+                    item.trangThai = item.ngayKetThuc >= DateTime.Now && item.ngayBatDau <= DateTime.Now
+                        ? TrangThaiGiamGia.ConHan
+                        : TrangThaiGiamGia.HetHan;
+                }
 
                 var pagingDetail = new PagingDetail(currentPage, request.PageSize, totalRecords);
                 var pagingResponse = new PagingResponse<List<KhuyenMaiRespond>>
@@ -99,6 +111,12 @@ public class KhuyenMaiRepository : IKhuyenMaiRepository
             {
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var khuyenMais = await cursor.ToListAsync();
+                foreach (var item in khuyenMais)
+                {
+                    item.trangThai = item.ngayKetThuc >= DateTime.Now && item.ngayBatDau <= DateTime.Now
+                        ? TrangThaiGiamGia.ConHan
+                        : TrangThaiGiamGia.HetHan;
+                }
 
                 return new RespondAPIPaging<List<KhuyenMaiRespond>>(
                     ResultRespond.Succeeded,
@@ -159,6 +177,9 @@ public class KhuyenMaiRepository : IKhuyenMaiRepository
             newKhuyenMai.createdDate = DateTimeOffset.UtcNow;
             newKhuyenMai.updatedDate = DateTimeOffset.UtcNow;
             newKhuyenMai.isDelete = false;
+            newKhuyenMai.trangThai = newKhuyenMai.ngayKetThuc >= DateTime.UtcNow && newKhuyenMai.ngayBatDau <= DateTime.UtcNow
+                ? TrangThaiGiamGia.ConHan
+                : TrangThaiGiamGia.HetHan;
 
             await _collection.InsertOneAsync(newKhuyenMai);
 
@@ -198,6 +219,9 @@ public class KhuyenMaiRepository : IKhuyenMaiRepository
             _mapper.Map(request, khuyenMai);
 
             khuyenMai.updatedDate = DateTimeOffset.UtcNow;
+            khuyenMai.trangThai = khuyenMai.ngayKetThuc >= DateTime.UtcNow && khuyenMai.ngayBatDau <= DateTime.UtcNow
+            ? TrangThaiGiamGia.ConHan
+            : TrangThaiGiamGia.HetHan;
 
             var updateResult = await _collection.ReplaceOneAsync(filter, khuyenMai);
 

@@ -91,7 +91,7 @@ public class GiamGiaRepository : IGiamGiaRepository
                 var giamGias = await cursor.ToListAsync();
                 foreach (var item in giamGias)
                 {
-                    item.trangThai = item.ngayKetThuc >= DateTime.Now
+                    item.trangThai = item.ngayKetThuc >= DateTime.Now && item.ngayBatDau <= DateTime.Now
                         ? TrangThaiGiamGia.ConHan
                         : TrangThaiGiamGia.HetHan;
                 }
@@ -113,7 +113,7 @@ public class GiamGiaRepository : IGiamGiaRepository
                 var giamGias = await cursor.ToListAsync();
                 foreach (var item in giamGias)
                 {
-                    item.trangThai = item.ngayKetThuc >= DateTime.Now
+                    item.trangThai = item.ngayKetThuc >= DateTime.Now && item.ngayBatDau <= DateTime.Now
                         ? TrangThaiGiamGia.ConHan
                         : TrangThaiGiamGia.HetHan;
                 }
@@ -177,7 +177,7 @@ public class GiamGiaRepository : IGiamGiaRepository
             newGiamGia.createdDate = DateTimeOffset.UtcNow;
             newGiamGia.updatedDate = DateTimeOffset.UtcNow;
             newGiamGia.isDelete = false;
-            newGiamGia.trangThai = newGiamGia.ngayKetThuc >= DateTime.UtcNow
+            newGiamGia.trangThai = newGiamGia.ngayKetThuc >= DateTime.UtcNow && newGiamGia.ngayBatDau <= DateTime.UtcNow
                 ? TrangThaiGiamGia.ConHan
                 : TrangThaiGiamGia.HetHan;
 
@@ -219,7 +219,7 @@ public class GiamGiaRepository : IGiamGiaRepository
             _mapper.Map(request, giamGia);
 
             giamGia.updatedDate = DateTimeOffset.UtcNow;
-            giamGia.trangThai = giamGia.ngayKetThuc >= DateTime.UtcNow
+            giamGia.trangThai = giamGia.ngayKetThuc >= DateTime.UtcNow && giamGia.ngayBatDau <= DateTime.UtcNow
                 ? TrangThaiGiamGia.ConHan
                 : TrangThaiGiamGia.HetHan;
             var updateResult = await _collection.ReplaceOneAsync(filter, giamGia);
