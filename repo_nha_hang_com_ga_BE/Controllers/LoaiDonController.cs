@@ -7,7 +7,7 @@ using repo_nha_hang_com_ga_BE.Repository;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
-[Authorize]
+// [Authorize]
 [ApiController]
 [Route("api/loai-don")]
 
@@ -32,18 +32,21 @@ public class LoaiDonController : ControllerBase
         return Ok(await _repository.GetLoaiDonById(id));
     }
 
+    [Authorize]
     [HttpPost("")]
     public async Task<IActionResult> CreateLoaiDon(RequestAddLoaiDon request)
     {
         return Ok(await _repository.CreateLoaiDon(request));
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateLoaiDon(string id, RequestUpdateLoaiDon request)
     {
         return Ok(await _repository.UpdateLoaiDon(id, request));
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteLoaiDon(string id)
     {
