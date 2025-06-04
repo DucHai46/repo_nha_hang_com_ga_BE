@@ -30,6 +30,8 @@ public class nguyenLieuKiemKeRespond
     public string? id { get; set; }
     public string? tenNguyenLieu { get; set; }
     public int? soLuong { get; set; }
+    public int? soLuongNhap { get; set; }
+    public int? soLuongXuat { get; set; }
     public int? soLuongThucTe { get; set; }
     public int? chenhLech { get; set; }
     public string? ghiChu { get; set; }
