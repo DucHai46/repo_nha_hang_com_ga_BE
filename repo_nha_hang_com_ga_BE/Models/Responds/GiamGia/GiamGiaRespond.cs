@@ -2,6 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using repo_nha_hang_com_ga_BE.Models.Common;
 using repo_nha_hang_com_ga_BE.Models.Common.Models;
+using repo_nha_hang_com_ga_BE.Models.MongoDB;
 
 namespace repo_nha_hang_com_ga_BE.Models.Responds.GiamGia;
 
@@ -15,4 +16,5 @@ public class GiamGiaRespond
     public DateTimeOffset ngayBatDau { get; set; }
     public DateTimeOffset ngayKetThuc { get; set; }
     public int? giaTri { get; set; }
+    public TrangThaiGiamGia? trangThai { get; set; }
 }

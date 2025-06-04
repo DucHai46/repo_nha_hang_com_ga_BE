@@ -61,6 +61,7 @@ public class GiamGiaRepository : IGiamGiaRepository
                 .Include(x => x.ngayBatDau)
                 .Include(x => x.ngayKetThuc)
                 .Include(x => x.giaTri)
+                .Include(x => x.trangThai)
                 .Include(x => x.moTa);
 
 
@@ -84,7 +85,12 @@ public class GiamGiaRepository : IGiamGiaRepository
 
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var giamGias = await cursor.ToListAsync();
-
+                foreach (var item in giamGias)
+                {
+                    item.trangThai = item.ngayKetThuc >= DateTime.Now
+                        ? TrangThaiGiamGia.ConHan
+                        : TrangThaiGiamGia.HetHan;
+                }
                 var pagingDetail = new PagingDetail(currentPage, request.PageSize, totalRecords);
                 var pagingResponse = new PagingResponse<List<GiamGiaRespond>>
                 {
@@ -101,6 +107,12 @@ public class GiamGiaRepository : IGiamGiaRepository
             {
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var giamGias = await cursor.ToListAsync();
+                foreach (var item in giamGias)
+                {
+                    item.trangThai = item.ngayKetThuc >= DateTime.Now
+                        ? TrangThaiGiamGia.ConHan
+                        : TrangThaiGiamGia.HetHan;
+                }
 
                 return new RespondAPIPaging<List<GiamGiaRespond>>(
                     ResultRespond.Succeeded,
@@ -161,6 +173,9 @@ public class GiamGiaRepository : IGiamGiaRepository
             newGiamGia.createdDate = DateTimeOffset.UtcNow;
             newGiamGia.updatedDate = DateTimeOffset.UtcNow;
             newGiamGia.isDelete = false;
+            newGiamGia.trangThai = newGiamGia.ngayKetThuc >= DateTime.UtcNow
+                ? TrangThaiGiamGia.ConHan
+                : TrangThaiGiamGia.HetHan;
 
             await _collection.InsertOneAsync(newGiamGia);
 
@@ -200,7 +215,9 @@ public class GiamGiaRepository : IGiamGiaRepository
             _mapper.Map(request, giamGia);
 
             giamGia.updatedDate = DateTimeOffset.UtcNow;
-
+            giamGia.trangThai= giamGia.ngayKetThuc >= DateTime.UtcNow
+                ? TrangThaiGiamGia.ConHan
+                : TrangThaiGiamGia.HetHan;
             var updateResult = await _collection.ReplaceOneAsync(filter, giamGia);
 
             if (!updateResult.IsAcknowledged || updateResult.ModifiedCount == 0)
