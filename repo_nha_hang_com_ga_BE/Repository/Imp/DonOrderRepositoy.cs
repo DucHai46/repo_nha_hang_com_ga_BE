@@ -759,10 +759,14 @@ public class DonOrderRepository : IDonOrderRepository
                     Id = newDonOrder.loaiDon,
                     Name = loaiDonDict.ContainsKey(newDonOrder.loaiDon) ? loaiDonDict[newDonOrder.loaiDon] : null
                 },
-                ban = new IdName
+                ban = newDonOrder.ban != null || newDonOrder.ban != "" ? new IdName
                 {
                     Id = newDonOrder.ban,
-                    Name = (newDonOrder.ban != null || newDonOrder.ban != "") && banDict.ContainsKey(newDonOrder.ban) ? banDict[newDonOrder.ban] : null
+                    Name = banDict.ContainsKey(newDonOrder.ban) ? banDict[newDonOrder.ban] : null
+                } : new IdName
+                {
+                    Id = "",
+                    Name = "Không có bàn"
                 },
                 khachHang = new IdName
                 {
