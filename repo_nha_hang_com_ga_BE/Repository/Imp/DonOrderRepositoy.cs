@@ -1,4 +1,3 @@
-
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -668,7 +667,7 @@ public class DonOrderRepository : IDonOrderRepository
             newDonOrder.updatedDate = DateTimeOffset.UtcNow;
             newDonOrder.isDelete = false;
             var banDict = new Dictionary<string, string>();
-            if (newDonOrder.ban != null || newDonOrder.ban != "")
+            if (!string.IsNullOrEmpty(newDonOrder.ban))
             {
                 var Ban = await _collectionBan.Find(x => x.Id == newDonOrder.ban).FirstOrDefaultAsync();
                 if (Ban != null)
@@ -759,7 +758,7 @@ public class DonOrderRepository : IDonOrderRepository
                     Id = newDonOrder.loaiDon,
                     Name = loaiDonDict.ContainsKey(newDonOrder.loaiDon) ? loaiDonDict[newDonOrder.loaiDon] : null
                 },
-                ban = newDonOrder.ban != null || newDonOrder.ban != "" ? new IdName
+                ban = !string.IsNullOrEmpty(newDonOrder.ban) ? new IdName
                 {
                     Id = newDonOrder.ban,
                     Name = banDict.ContainsKey(newDonOrder.ban) ? banDict[newDonOrder.ban] : null
