@@ -19,13 +19,13 @@ public class KhachHangController : ControllerBase
         _khachHangRepository = khachHangRepository;
     }
 
-
+    [Authorize]
     [HttpGet("")]
     public async Task<IActionResult> GetAllKhachHangs([FromQuery] RequestSearchKhachHang request)
     {
         return Ok(await _khachHangRepository.GetAllKhachHangs(request));
     }
-
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetKhachHangById(string id)
     {
@@ -37,13 +37,13 @@ public class KhachHangController : ControllerBase
     {
         return Ok(await _khachHangRepository.CreateKhachHang(request));
     }
-
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateKhachHang(string id, RequestUpdateKhachHang request)
     {
         return Ok(await _khachHangRepository.UpdateKhachHang(id, request));
     }
-
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteKhachHang(string id)
     {

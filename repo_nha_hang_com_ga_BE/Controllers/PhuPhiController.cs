@@ -6,7 +6,7 @@ using repo_nha_hang_com_ga_BE.Models.Requests;
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
 
-[Authorize]
+
 [ApiController]
 [Route("api/phu-phi")]
 
@@ -31,19 +31,21 @@ public class PhuPhiController : ControllerBase
     {
         return Ok(await _PhuPhiRepository.GetPhuPhiById(id));
     }
-
+    [Authorize]
     [HttpPost("")]
     public async Task<IActionResult> CreatePhuPhi(RequestAddPhuPhi request)
     {
         return Ok(await _PhuPhiRepository.CreatePhuPhi(request));
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdatePhuPhi(string id, RequestUpdatePhuPhi request)
     {
         return Ok(await _PhuPhiRepository.UpdatePhuPhi(id, request));
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePhuPhi(string id)
     {

@@ -4,10 +4,14 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using repo_nha_hang_com_ga_BE.Models.Common.Services;
 using repo_nha_hang_com_ga_BE.Models.SignalR;
+using repo_nha_hang_com_ga_BE.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
+// Add Email Service
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddSignalR();
 builder.Services.AddMongoDbServices(builder.Configuration);

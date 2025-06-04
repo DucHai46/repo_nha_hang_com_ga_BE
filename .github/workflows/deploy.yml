@@ -51,17 +51,17 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd /home/ubuntu/repo_nha_hang_com_ga_BE
-      
+
             git pull origin main
-      
+
             echo "MONGO_CONNECTION=${{ secrets.MONGO_CONNECTION }}" > .env
             echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> .env
-      
+            echo "EMAIL_HOST=${{ secrets.EMAILSETTINGS }}" >> .env
+
             docker-compose down
             docker images | grep haibui040623 | awk '{print $3}' | xargs -r docker rmi -f || true
             docker system prune -f
-      
-            docker-compose pull
-      
-            docker-compose up -d
 
+            docker-compose pull
+
+            docker-compose up -d
