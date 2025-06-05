@@ -160,6 +160,8 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
                             id = z.id,
                             tenNguyenLieu = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieuDict[z.id] : null,
                             soLuong = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.soLuong : null,
+                            soLuongNhap = z.soLuongNhap,
+                            soLuongXuat = z.soLuongXuat,
                             soLuongThucTe = z.soLuongThucTe,
                             chenhLech = z.chenhLech,
                             ghiChu = z.ghiChu,
@@ -257,6 +259,8 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
                             tenNguyenLieu = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieuDict[z.id] : null,
                             soLuong = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieus.FirstOrDefault(m => m.Id == z.id)?.soLuong : null,
                             soLuongThucTe = z.soLuongThucTe,
+                            soLuongNhap = z.soLuongNhap,
+                            soLuongXuat = z.soLuongXuat,
                             chenhLech = z.chenhLech,
                             ghiChu = z.ghiChu,
                         }).ToList()
@@ -346,6 +350,8 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
                         tenNguyenLieu = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieuDict[z.id] : null,
                         soLuong = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.soLuong : null,
                         soLuongThucTe = z.soLuongThucTe,
+                        soLuongNhap = z.soLuongNhap,
+                        soLuongXuat = z.soLuongXuat,
                         chenhLech = z.chenhLech,
                         ghiChu = z.ghiChu,
                     }).ToList()
@@ -436,6 +442,8 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
                         tenNguyenLieu = nguyenLieuDict.ContainsKey(z.id) ? nguyenLieuDict[z.id] : null,
                         soLuong = nguyenLieuDict.ContainsKey(y.id) ? nguyenLieus.FirstOrDefault(m => m.Id == y.id)?.soLuong : null,
                         soLuongThucTe = z.soLuongThucTe,
+                        soLuongNhap = z.soLuongNhap,
+                        soLuongXuat = z.soLuongXuat,
                         chenhLech = z.chenhLech,
                         ghiChu = z.ghiChu,
                     }).ToList()

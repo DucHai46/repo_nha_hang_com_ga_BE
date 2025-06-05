@@ -10,4 +10,10 @@ public class GiamGia : BaseMongoDb
     public DateTimeOffset ngayBatDau { get; set; }
     public DateTimeOffset ngayKetThuc { get; set; }
     public int? giaTri { get; set; }
+    public TrangThaiGiamGia? trangThai { get; set; }
+}
+public enum TrangThaiGiamGia
+{
+    ConHan,
+    HetHan,
 }

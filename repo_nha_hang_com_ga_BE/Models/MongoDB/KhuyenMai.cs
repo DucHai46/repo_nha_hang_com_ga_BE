@@ -9,4 +9,5 @@ public class KhuyenMai : BaseMongoDb
     public DateTimeOffset ngayBatDau { get; set; }
     public DateTimeOffset ngayKetThuc { get; set; }
     public double giaTri { get; set; }
+    public TrangThaiGiamGia trangThai { get; set; }
 }

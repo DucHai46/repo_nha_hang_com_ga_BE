@@ -79,4 +79,11 @@ public class DonOrderController : ControllerBase
         await _hubContext.Clients.All.SendAsync("ReceiveNhacDon", $"{id}");
         return Ok();
     }
+
+    [HttpPut("huy-don-order/{id}")]
+    public async Task<IActionResult> HuyDonOrder(string id, string message)
+    {
+        await _hubContext.Clients.All.SendAsync("CancelOrder", $"{message}");
+        return Ok(await _repository.HuyDonOrder(id));
+    }
 }

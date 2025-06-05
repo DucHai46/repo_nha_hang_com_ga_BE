@@ -1,4 +1,3 @@
-
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -645,6 +644,7 @@ public class DonOrderRepository : IDonOrderRepository
                 trangThai = donOrder.trangThai,
                 tongTien = donOrder.tongTien,
                 createdDate = donOrder.createdDate?.Date,
+                ngayTao = donOrder.createdDate,
             };
 
             return new RespondAPI<DonOrderRespond>(
@@ -671,6 +671,25 @@ public class DonOrderRepository : IDonOrderRepository
             newDonOrder.createdDate = DateTimeOffset.UtcNow;
             newDonOrder.updatedDate = DateTimeOffset.UtcNow;
             newDonOrder.isDelete = false;
+            var banDict = new Dictionary<string, string>();
+            if (!string.IsNullOrEmpty(newDonOrder.ban))
+            {
+                var Ban = await _collectionBan.Find(x => x.Id == newDonOrder.ban).FirstOrDefaultAsync();
+                if (Ban != null)
+                {
+                    Ban.trangThai = TrangThaiBan.CoKhach;
+                    await _collectionBan.ReplaceOneAsync(x => x.Id == newDonOrder.ban, Ban);
+                }
+                var banIds = new List<string> { newDonOrder.ban }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                var banFilter = Builders<Ban>.Filter.In(x => x.Id, banIds);
+                var banProjection = Builders<Ban>.Projection
+                    .Include(x => x.Id)
+                .Include(x => x.tenBan);
+                var bans = await _collectionBan.Find(banFilter)
+                .Project<Ban>(banProjection)
+                .ToListAsync();
+                banDict = bans.ToDictionary(x => x.Id, x => x.tenBan);
+            }
 
             await _collection.InsertOneAsync(newDonOrder);
 
@@ -678,12 +697,10 @@ public class DonOrderRepository : IDonOrderRepository
 
             var monAnDict = new Dictionary<string, string>();
             var loaiDonDict = new Dictionary<string, string>();
-            var banDict = new Dictionary<string, string>();
             var khachHangDict = new Dictionary<string, string>();
             var comBoDict = new Dictionary<string, string>();
 
             var loaiDonIds = new List<string> { newDonOrder.loaiDon }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-            var banIds = new List<string> { newDonOrder.ban }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             var khachHangIds = new List<string> { newDonOrder.khachHang }.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
 
             var khachHangFilter = Builders<KhachHang>.Filter.In(x => x.Id, khachHangIds);
@@ -704,14 +721,8 @@ public class DonOrderRepository : IDonOrderRepository
              .ToListAsync();
             loaiDonDict = loaiDons.ToDictionary(x => x.Id, x => x.tenLoaiDon);
 
-            var banFilter = Builders<Ban>.Filter.In(x => x.Id, banIds);
-            var banProjection = Builders<Ban>.Projection
-             .Include(x => x.Id)
-            .Include(x => x.tenBan);
-            var bans = await _collectionBan.Find(banFilter)
-            .Project<Ban>(banProjection)
-            .ToListAsync();
-            banDict = bans.ToDictionary(x => x.Id, x => x.tenBan);
+
+
 
             List<Combo> comBos = new List<Combo>();
             List<MonAn> monAns = new List<MonAn>();
@@ -752,10 +763,14 @@ public class DonOrderRepository : IDonOrderRepository
                     Id = newDonOrder.loaiDon,
                     Name = loaiDonDict.ContainsKey(newDonOrder.loaiDon) ? loaiDonDict[newDonOrder.loaiDon] : null
                 },
-                ban = new IdName
+                ban = !string.IsNullOrEmpty(newDonOrder.ban) ? new IdName
                 {
                     Id = newDonOrder.ban,
                     Name = banDict.ContainsKey(newDonOrder.ban) ? banDict[newDonOrder.ban] : null
+                } : new IdName
+                {
+                    Id = "",
+                    Name = "Không có bàn"
                 },
                 khachHang = new IdName
                 {
@@ -1187,6 +1202,50 @@ public class DonOrderRepository : IDonOrderRepository
             return new RespondAPI<DonOrderRespond>(
                 ResultRespond.Error,
                 $"Đã xảy ra lỗi khi cập nhật đơn order: {ex.Message}"
+            );
+        }
+    }
+
+
+
+    public async Task<RespondAPI<string>> HuyDonOrder(string id)
+    {
+        try
+        {
+            var filter = Builders<DonOrder>.Filter.Eq(x => x.Id, id);
+            filter &= Builders<DonOrder>.Filter.Eq(x => x.isDelete, false);
+            var donOrder = await _collection.Find(filter).FirstOrDefaultAsync();
+            if (donOrder == null)
+            {
+                return new RespondAPI<string>(
+                    ResultRespond.NotFound,
+                    "Không tìm thấy đơn order với ID đã cung cấp."
+                );
+            }
+
+            donOrder.trangThai = TrangThaiDonOrder.DaHuy;
+            donOrder.updatedDate = DateTimeOffset.UtcNow;
+
+            var updateResult = await _collection.ReplaceOneAsync(filter, donOrder);
+
+            if (!updateResult.IsAcknowledged || updateResult.ModifiedCount == 0)
+            {
+                return new RespondAPI<string>(
+                    ResultRespond.Error,
+                    "Hủy đơn order không thành công."
+                );
+            }
+
+            return new RespondAPI<string>(
+                ResultRespond.Succeeded,
+                "Hủy đơn order thành công."
+            );
+        }
+        catch (Exception ex)
+        {
+            return new RespondAPI<string>(
+                ResultRespond.Error,
+                $"Đã xảy ra lỗi khi hủy đơn order: {ex.Message}"
             );
         }
     }
