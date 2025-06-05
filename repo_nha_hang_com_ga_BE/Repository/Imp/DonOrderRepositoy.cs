@@ -1249,4 +1249,46 @@ public class DonOrderRepository : IDonOrderRepository
             );
         }
     }
+
+    public async Task<RespondAPI<string>> XacNhanDonOrder(string id)
+    {
+        try
+        {
+            var filter = Builders<DonOrder>.Filter.Eq(x => x.Id, id);
+            filter &= Builders<DonOrder>.Filter.Eq(x => x.isDelete, false);
+            var donOrder = await _collection.Find(filter).FirstOrDefaultAsync();
+            if (donOrder == null)
+            {
+                return new RespondAPI<string>(
+                    ResultRespond.NotFound,
+                    "Không tìm thấy đơn order với ID đã cung cấp."
+                );
+            }
+
+            donOrder.trangThai = TrangThaiDonOrder.DangGiaoHang;
+            donOrder.updatedDate = DateTimeOffset.UtcNow;
+
+            var updateResult = await _collection.ReplaceOneAsync(filter, donOrder);
+
+            if (!updateResult.IsAcknowledged || updateResult.ModifiedCount == 0)
+            {
+                return new RespondAPI<string>(
+                    ResultRespond.Error,
+                    "Xác nhận đơn order không thành công."
+                );
+            }
+
+            return new RespondAPI<string>(
+                ResultRespond.Succeeded,
+                "Xác nhận đơn order thành công."
+            );
+        }
+        catch (Exception ex)
+        {
+            return new RespondAPI<string>(
+                ResultRespond.Error,
+                $"Đã xảy ra lỗi khi xác nhận đơn order: {ex.Message}"
+            );
+        }
+    }
 }
