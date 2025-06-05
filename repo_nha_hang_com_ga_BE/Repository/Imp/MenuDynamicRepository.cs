@@ -372,7 +372,7 @@ public class MenuDynamicRepository : IMenuDynamicRepository
             var filter = Builders<MenuDynamic>.Filter.In(x => x.Id, danhSachPhanQuyen);
             filter &= Builders<MenuDynamic>.Filter.Eq(x => x.isActive, true);
             filter &= Builders<MenuDynamic>.Filter.Eq(x => x.isDelete, false);
-            filter |= Builders<MenuDynamic>.Filter.In(x => x.parent, danhSachPhanQuyen);
+            // filter |= Builders<MenuDynamic>.Filter.In(x => x.parent, danhSachPhanQuyen);
 
             var projection = Builders<MenuDynamic>.Projection
                 .Include(x => x.Id)
