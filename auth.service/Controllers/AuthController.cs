@@ -46,6 +46,13 @@ public class AuthController : Controller
         return Ok(new { UserId = user.Id.ToString() });
     }
 
+    [HttpGet("check-username")]
+    public IActionResult CheckUsername([FromQuery] string username)
+    {
+        var exists = _userManager.Users.Any(u => u.UserName == username);
+        return Ok(new { message = "Tên người dùng đã tồn tại", isSuccess = exists });
+    }
+
     [HttpPost("token")]
     public async Task<IActionResult> GetToken([FromBody] LoginModel model)
     {
