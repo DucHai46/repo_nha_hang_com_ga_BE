@@ -57,7 +57,7 @@ public class DonOrderController : ControllerBase
     [HttpPut("update/{id}")]
     public async Task<IActionResult> UpdateDonOrders(string id, RequestUpdateDonOrder request)
     {
-        // await _hubContext.Clients.All.SendAsync("ReceiveOrder", $"{request.tenDon}");
+        await _hubContext.Clients.All.SendAsync("ChangeStatusOrder", $"{request.tenDon}");
         return Ok(await _repository.UpdateDonOrder(id, request));
     }
 
@@ -73,6 +73,7 @@ public class DonOrderController : ControllerBase
     {
         return Ok(await _repository.UpdateStatusDonOrder(id, request));
     }
+
     [HttpGet("nhac-don-order")]
     public async Task<IActionResult> GetNhacDonOrder(string id)
     {
