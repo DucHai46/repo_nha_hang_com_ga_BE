@@ -129,6 +129,11 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
 
                 findOptions.Skip = (currentPage - 1) * request.PageSize;
                 findOptions.Limit = request.PageSize;
+                findOptions.Sort = Builders<HoaDonThanhToan>.Sort.Combine(
+                   Builders<HoaDonThanhToan>.Sort.Ascending(x => x.trangthai),
+                   Builders<HoaDonThanhToan>.Sort.Descending(x => x.createdDate)
+               );
+
 
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var hoadons = await cursor.ToListAsync();
