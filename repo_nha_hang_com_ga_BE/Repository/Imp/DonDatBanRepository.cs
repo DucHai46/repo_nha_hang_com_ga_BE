@@ -355,9 +355,22 @@ public class DonDatBanRepository : IDonDatBanRepository
                 );
             }
 
+            var Ban = await _collectionBan.Find(x => x.Id == donDatBan.ban).FirstOrDefaultAsync();
+            if (Ban != null)
+            {
+                Ban.trangThai = TrangThaiBan.Trong;
+                await _collectionBan.ReplaceOneAsync(x => x.Id == donDatBan.ban, Ban);
+            }
+
             _mapper.Map(request, donDatBan);
 
             donDatBan.updatedDate = DateTimeOffset.UtcNow;
+            Ban = await _collectionBan.Find(x => x.Id == donDatBan.ban).FirstOrDefaultAsync();
+            if (Ban != null)
+            {
+                Ban.trangThai = TrangThaiBan.DaDat;
+                await _collectionBan.ReplaceOneAsync(x => x.Id == donDatBan.ban, Ban);
+            }
 
 
             var updateResult = await _collection.ReplaceOneAsync(filter, donDatBan);
@@ -435,6 +448,13 @@ public class DonDatBanRepository : IDonDatBanRepository
                     "Không tìm thấy đơn đặt bàn để xóa."
                 );
             }
+            var Ban = await _collectionBan.Find(x => x.Id == existingDonDatBan.ban).FirstOrDefaultAsync();
+            if (Ban != null)
+            {
+                Ban.trangThai = TrangThaiBan.Trong;
+                await _collectionBan.ReplaceOneAsync(x => x.Id == existingDonDatBan.ban, Ban);
+            }
+            await _collectionkhachHang.DeleteOneAsync(x => x.Id == existingDonDatBan.khachHang);
 
             var deleteResult = await _collection.DeleteOneAsync(x => x.Id == id);
 
