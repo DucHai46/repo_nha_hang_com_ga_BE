@@ -24,26 +24,18 @@ public class DonOrder : BaseMongoDb
 
 public enum TrangThaiDonOrder
 {
-    [Description("Chưa thanh toán")]
-    ChuaThanhToan = 0,
-    [Description("Đã thanh toán")]
-    DaThanhToan = 1,
-    [Description("Đã hủy")]
-    DaHuy = 2,
     [Description("Chờ xác nhận")]
-    ChoXacNhan = 3,
+    ChoXacNhan = 0,
     [Description("Đã xác nhận")]
-    DaXacNhan = 4,
-    [Description("Đang chế biến")]
-    DangCheBien = 5,
-    [Description("Đang giao hàng")]
-    DangGiaoHang = 6,
+    DaXacNhan = 1,
+    [Description("Chưa thanh toán")]
+    ChuaThanhToan = 2,
+    [Description("Đã thanh toán")]
+    DaThanhToan = 3,
     [Description("Hoàn thành")]
-    HoanThanh = 7,
-
-
-
-
+    DangGiaoHang = 4,
+    [Description("Đã hủy")]
+    DaHuy = 5,
 
 }
 

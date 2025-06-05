@@ -103,6 +103,10 @@ public class DonOrderRepository : IDonOrderRepository
 
                 findOptions.Skip = (currentPage - 1) * request.PageSize;
                 findOptions.Limit = request.PageSize;
+                findOptions.Sort = Builders<DonOrder>.Sort.Combine(
+                    Builders<DonOrder>.Sort.Ascending(x => x.trangThai),
+                    Builders<DonOrder>.Sort.Descending(x => x.createdDate)
+                );
 
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var dons = await cursor.ToListAsync();
@@ -216,8 +220,6 @@ public class DonOrderRepository : IDonOrderRepository
                     }
                 }
 
-
-
                 var donOrderResponds = dons.Select(donOrder => new DonOrderRespond
                 {
                     id = donOrder.Id,
@@ -271,7 +273,8 @@ public class DonOrderRepository : IDonOrderRepository
                     createdDate = donOrder.createdDate?.Date,
                     ngayTao = donOrder.createdDate,
                 }).OrderBy(x => x.trangThai)
-                    .ThenByDescending(x => x.ngayTao).ToList();
+                    .ThenByDescending(x => x.ngayTao)
+                    .ToList();
                 var pagingDetail = new PagingDetail(currentPage, request.PageSize, totalRecords);
                 var pagingResponse = new PagingResponse<List<DonOrderRespond>>
                 {
@@ -451,8 +454,9 @@ public class DonOrderRepository : IDonOrderRepository
                     tongTien = donOrder.tongTien,
                     createdDate = donOrder.createdDate?.Date,
                     ngayTao = donOrder.createdDate,
-                }).OrderBy(x => x.trangThai)
-                    .ThenByDescending(x => x.ngayTao).ToList();
+                }).OrderBy(x => (int)x.trangThai)
+                    .ThenByDescending(x => x.ngayTao)
+                    .ToList();
 
                 return new RespondAPIPaging<List<DonOrderRespond>>(
                     ResultRespond.Succeeded,
@@ -1186,5 +1190,4 @@ public class DonOrderRepository : IDonOrderRepository
             );
         }
     }
-
 }
