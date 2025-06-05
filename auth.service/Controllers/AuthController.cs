@@ -288,6 +288,18 @@ public class AuthController : Controller
         await _userManager.DeleteAsync(user);
         return Ok(new { Message = "Xóa người dùng thành công" });
     }
+
+    // [Authorize]
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword(string username)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null)
+            return Ok(new { Message = "Tài khoản không tồn tại", code = 404 });
+        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, "123456");
+        await _userManager.UpdateAsync(user);
+        return Ok(new { Message = "Đặt lại mật khẩu thành công (mật khẩu mặc định là 123456)", code = 200 });
+    }
 }
 
 public class UpdateUserModel
