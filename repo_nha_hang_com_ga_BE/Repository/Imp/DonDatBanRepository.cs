@@ -72,6 +72,17 @@ public class DonDatBanRepository : IDonDatBanRepository
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
+                if (totalRecords <= 0)
+                {
+                    return new RespondAPIPaging<List<DonDatBanRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<DonDatBanRespond>>
+                        {
+                            Data = new List<DonDatBanRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecords)
+                        }
+                    );
+                }
 
                 int totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
 

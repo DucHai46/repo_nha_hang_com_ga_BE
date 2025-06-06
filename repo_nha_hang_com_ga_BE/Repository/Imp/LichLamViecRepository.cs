@@ -79,6 +79,18 @@ public class LichLamViecRepository : ILichLamViecRepository
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
+                if (totalRecords <= 0)
+                {
+                    return new RespondAPIPaging<List<LichLamViecRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<LichLamViecRespond>>
+                        {
+                            Data = new List<LichLamViecRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecords)
+                        }
+                    );
+                }
+
 
                 int totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
                 int currentPage = request.PageNumber;

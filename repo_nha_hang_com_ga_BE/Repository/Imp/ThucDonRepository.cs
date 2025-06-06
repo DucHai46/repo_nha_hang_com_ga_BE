@@ -80,6 +80,18 @@ public class ThucDonRepository : IThucDonRepository
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
 
+                if (totalRecords <= 0)
+                {
+                    return new RespondAPIPaging<List<ThucDonRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<ThucDonRespond>>
+                        {
+                            Data = new List<ThucDonRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecords)
+                        }
+                    );
+                }
+
                 int totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
 
                 int currentPage = request.PageNumber;

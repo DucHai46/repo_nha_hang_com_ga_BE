@@ -69,6 +69,17 @@ public class ComboRepository : IComboRepository
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
+                if (totalRecords <= 0)
+                {
+                    return new RespondAPIPaging<List<ComboRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<ComboRespond>>
+                        {
+                            Data = new List<ComboRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecords)
+                        }
+                    );
+                }
 
                 int totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
 

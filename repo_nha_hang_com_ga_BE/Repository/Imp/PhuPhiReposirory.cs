@@ -62,6 +62,19 @@ public class PhuPhiRepository : IPhuPhiRepository
             if (request.IsPaging)
             {
                 long totalRecord = await collection.CountDocumentsAsync(filter);
+
+                if (totalRecord <= 0)
+                {
+                    return new RespondAPIPaging<List<PhuPhiRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<PhuPhiRespond>>
+                        {
+                            Data = new List<PhuPhiRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecord)
+                        }
+                    );
+                }
+
                 int totalPages = (int)Math.Ceiling((double)totalRecord / request.PageSize);
 
                 int currentPage = request.PageNumber;

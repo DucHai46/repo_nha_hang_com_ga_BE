@@ -63,6 +63,18 @@ public class LoaiNguyenLieuRepository : ILoaiNguyenLieuRepository
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
 
+                if (totalRecords <= 0)
+                {
+                    return new RespondAPIPaging<List<LoaiNguyenLieuRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<LoaiNguyenLieuRespond>>
+                        {
+                            Data = new List<LoaiNguyenLieuRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecords)
+                        }
+                    );
+                }
+
                 int totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
 
                 int currentPage = request.PageNumber;

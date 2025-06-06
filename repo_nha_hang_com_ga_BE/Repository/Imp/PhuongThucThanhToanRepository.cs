@@ -58,6 +58,19 @@ public class PhuongThucThanhToanRepository : IPhuongThucThanhToanRepository
             if (request.IsPaging)
             {
                 long totalRecord = await collection.CountDocumentsAsync(filter);
+
+                if (totalRecord <= 0)
+                {
+                    return new RespondAPIPaging<List<PhuongThucThanhToanRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<PhuongThucThanhToanRespond>>
+                        {
+                            Data = new List<PhuongThucThanhToanRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecord)
+                        }
+                    );
+                }
+
                 int totalPages = (int)Math.Ceiling((double)totalRecord / request.PageSize);
 
                 int currentPage = request.PageNumber;

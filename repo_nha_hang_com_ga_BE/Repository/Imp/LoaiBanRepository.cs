@@ -54,6 +54,18 @@ public class LoaiBanRepository : ILoaiBanRepository
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
+                if (totalRecords <= 0)
+                {
+                    return new RespondAPIPaging<List<LoaiBanRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<LoaiBanRespond>>
+                        {
+                            Data = new List<LoaiBanRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecords)
+                        }
+                    );
+                }
+
 
                 int totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
 
