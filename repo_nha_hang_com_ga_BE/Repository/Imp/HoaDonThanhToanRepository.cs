@@ -130,8 +130,9 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 findOptions.Skip = (currentPage - 1) * request.PageSize;
                 findOptions.Limit = request.PageSize;
                 findOptions.Sort = Builders<HoaDonThanhToan>.Sort.Combine(
-                   Builders<HoaDonThanhToan>.Sort.Ascending(x => x.trangthai),
-                   Builders<HoaDonThanhToan>.Sort.Descending(x => x.createdDate)
+                    Builders<HoaDonThanhToan>.Sort.Descending(x => x.createdDate),
+                   Builders<HoaDonThanhToan>.Sort.Ascending(x => x.trangthai)
+
                );
 
 
@@ -238,8 +239,8 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                     trangthai = x.trangthai,
                     createdDate = x.createdDate?.Date,
                     ngayTao = x.createdDate,
-                }).OrderBy(x => x.trangthai)
-                    .ThenByDescending(x => x.ngayTao)
+                }).OrderByDescending(x => x.ngayTao)
+                    .ThenBy(x => x.trangthai)
                     .ToList();
 
 
@@ -359,8 +360,8 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                     trangthai = x.trangthai,
                     createdDate = x.createdDate?.Date,
                     ngayTao = x.createdDate,
-                }).OrderBy(x => x.trangthai)
-                    .ThenByDescending(x => x.ngayTao)
+                }).OrderByDescending(x => x.ngayTao)
+                    .ThenBy(x => x.trangthai)
                     .ToList();
 
                 return new RespondAPIPaging<List<HoaDonThanhToanRespond>>(
