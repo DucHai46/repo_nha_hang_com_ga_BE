@@ -77,6 +77,18 @@ public class PhieuXuatRepository : IPhieuXuatRepository
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
+                if (totalRecords <= 0)
+                {
+                    return new RespondAPIPaging<List<PhieuXuatRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<PhieuXuatRespond>>
+                        {
+                            Data = new List<PhieuXuatRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecords)
+                        }
+                    );
+                }
+
 
                 int totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
 

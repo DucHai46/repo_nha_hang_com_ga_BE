@@ -58,6 +58,19 @@ public class PhanQuyenRepository : IPhanQuyenRepository
             if (request.IsPaging)
             {
                 long totalRecord = await collection.CountDocumentsAsync(filter);
+
+                if (totalRecord <= 0)
+                {
+                    return new RespondAPIPaging<List<PhanQuyenRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<PhanQuyenRespond>>
+                        {
+                            Data = new List<PhanQuyenRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecord)
+                        }
+                    );
+                }
+
                 int totalPages = (int)Math.Ceiling((double)totalRecord / request.PageSize);
 
                 int currentPage = request.PageNumber;

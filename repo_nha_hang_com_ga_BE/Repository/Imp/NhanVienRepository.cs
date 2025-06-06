@@ -48,6 +48,11 @@ public class NhanVienRepository : INhanVienRepository
                 filter &= Builders<NhanVien>.Filter.Eq(x => x.chucVu, request.chucVuId);
             }
 
+            if (!string.IsNullOrEmpty(request.soDienThoai))
+            {
+                filter &= Builders<NhanVien>.Filter.Regex(x => x.soDienThoai, new BsonRegularExpression($".*{request.soDienThoai}.*"));
+            }
+
             var projection = Builders<NhanVien>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenNhanVien)
@@ -65,6 +70,18 @@ public class NhanVienRepository : INhanVienRepository
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
+
+                if (totalRecords <= 0)
+                {
+                    return new RespondAPIPaging<List<NhanVienRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<NhanVienRespond>>
+                        {
+                            Data = new List<NhanVienRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecords)
+                        }
+                    );
+                }
 
                 int totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
 

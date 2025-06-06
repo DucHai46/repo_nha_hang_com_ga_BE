@@ -40,6 +40,11 @@ public class NhaHangRepository : INhaHangRepository
                 filter &= Builders<NhaHang>.Filter.Regex(x => x.tenNhaHang, new BsonRegularExpression($".*{request.tenNhaHang}.*"));
             }
 
+            if (request.isActive != null)
+            {
+                filter &= Builders<NhaHang>.Filter.Eq(x => x.isActive, request.isActive);
+            }
+
             var projection = Builders<NhaHang>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenNhaHang)
@@ -61,6 +66,18 @@ public class NhaHangRepository : INhaHangRepository
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
+
+                if (totalRecords <= 0)
+                {
+                    return new RespondAPIPaging<List<NhaHangRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<NhaHangRespond>>
+                        {
+                            Data = new List<NhaHangRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecords)
+                        }
+                    );
+                }
 
                 int totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
 

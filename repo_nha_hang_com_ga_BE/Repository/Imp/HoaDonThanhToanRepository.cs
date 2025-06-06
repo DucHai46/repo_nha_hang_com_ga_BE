@@ -121,6 +121,17 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
+                if (totalRecords <= 0)
+                {
+                    return new RespondAPIPaging<List<HoaDonThanhToanRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<HoaDonThanhToanRespond>>
+                        {
+                            Data = new List<HoaDonThanhToanRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecords)
+                        }
+                    );
+                }
 
                 int totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
                 int currentPage = request.PageNumber;

@@ -81,6 +81,18 @@ public class MonAnRepository : IMonAnRepository
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
 
+                if (totalRecords <= 0)
+                {
+                    return new RespondAPIPaging<List<MonAnRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<MonAnRespond>>
+                        {
+                            Data = new List<MonAnRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecords)
+                        }
+                    );
+                }
+
                 int totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
 
                 int currentPage = request.PageNumber;

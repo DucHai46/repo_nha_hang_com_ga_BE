@@ -77,6 +77,17 @@ public class GiamGiaRepository : IGiamGiaRepository
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
+                if (totalRecords <= 0)
+                {
+                    return new RespondAPIPaging<List<GiamGiaRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<GiamGiaRespond>>
+                        {
+                            Data = new List<GiamGiaRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecords)
+                        }
+                    );
+                }
 
                 int totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
 

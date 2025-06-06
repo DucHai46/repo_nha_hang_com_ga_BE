@@ -43,7 +43,12 @@ public class NhaCungCapRepository : INhaCungCapRepository
                 filter &= Builders<NhaCungCap>.Filter.Regex(x => x.tenNhaCungCap, new BsonRegularExpression($".*{request.tenNhaCungCap}.*"));
 
             }
-            
+
+            if (!string.IsNullOrEmpty(request.soDienThoai))
+            {
+                filter &= Builders<NhaCungCap>.Filter.Regex(x => x.soDienThoai, new BsonRegularExpression($".*{request.soDienThoai}.*"));
+            }
+
             if (!string.IsNullOrEmpty(request.diaChi))
             {
                 filter &= Builders<NhaCungCap>.Filter.Regex(x => x.diaChi, new BsonRegularExpression($".*{request.diaChi}.*"));
@@ -64,6 +69,19 @@ public class NhaCungCapRepository : INhaCungCapRepository
             if (request.IsPaging)
             {
                 long totalRecord = await collection.CountDocumentsAsync(filter);
+
+                if (totalRecord <= 0)
+                {
+                    return new RespondAPIPaging<List<NhaCungCapRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<NhaCungCapRespond>>
+                        {
+                            Data = new List<NhaCungCapRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecord)
+                        }
+                    );
+                }
+
                 int totalPages = (int)Math.Ceiling((double)totalRecord / request.PageSize);
 
                 int currentPage = request.PageNumber;

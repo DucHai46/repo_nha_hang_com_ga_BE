@@ -50,7 +50,17 @@ public class MenuDynamicRepository : IMenuDynamicRepository
             {
                 filter &= Builders<MenuDynamic>.Filter.Eq(x => x.isActive, request.isActive);
             }
-
+            if (request.isParent != null)
+            {
+                if (request.isParent == true)
+                {
+                    filter &= Builders<MenuDynamic>.Filter.Eq(x => x.parent, null);
+                }
+                else
+                {
+                    filter &= Builders<MenuDynamic>.Filter.Ne(x => x.parent, null);
+                }
+            }
 
             var projection = Builders<MenuDynamic>.Projection
                 .Include(x => x.Id)
@@ -70,7 +80,20 @@ public class MenuDynamicRepository : IMenuDynamicRepository
 
             if (request.IsPaging)
             {
+
                 long totalRecords = await collection.CountDocumentsAsync(filter);
+
+                if (totalRecords <= 0)
+                {
+                    return new RespondAPIPaging<List<MenuDynamicRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<MenuDynamicRespond>>
+                        {
+                            Data = new List<MenuDynamicRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecords)
+                        }
+                    );
+                }
 
                 int totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
 

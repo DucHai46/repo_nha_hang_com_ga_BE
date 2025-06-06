@@ -68,6 +68,18 @@ public class BangGiaRepository : IBangGiaRepository
             if (request.IsPaging)
             {
                 long totalRecord = await collection.CountDocumentsAsync(filter);
+
+                if (totalRecord <= 0)
+                {
+                    return new RespondAPIPaging<List<BangGiaRespond>>(
+                        ResultRespond.Succeeded,
+                        data: new PagingResponse<List<BangGiaRespond>>
+                        {
+                            Data = new List<BangGiaRespond>(),
+                            Paging = new PagingDetail(1, request.PageSize, totalRecord)
+                        }
+                    );
+                }
                 int totalPages = (int)Math.Ceiling((double)totalRecord / request.PageSize);
 
                 int currentPage = request.PageNumber;

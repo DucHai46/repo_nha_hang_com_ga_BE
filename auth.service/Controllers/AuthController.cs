@@ -82,6 +82,8 @@ public class AuthController : Controller
                 message = "Mật khẩu không chính xác"
             });
         }
+        user.SoLanSaiMatKhau = 0;
+        await _userManager.UpdateAsync(user);
 
         var claims = new List<Claim>
         {
