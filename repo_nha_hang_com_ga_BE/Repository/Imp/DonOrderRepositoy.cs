@@ -114,8 +114,8 @@ public class DonOrderRepository : IDonOrderRepository
                 findOptions.Skip = (currentPage - 1) * request.PageSize;
                 findOptions.Limit = request.PageSize;
                 findOptions.Sort = Builders<DonOrder>.Sort.Combine(
-                    Builders<DonOrder>.Sort.Ascending(x => x.trangThai),
-                    Builders<DonOrder>.Sort.Descending(x => x.createdDate)
+                    Builders<DonOrder>.Sort.Descending(x => x.createdDate),
+                    Builders<DonOrder>.Sort.Ascending(x => x.trangThai)
                 );
 
                 var cursor = await collection.FindAsync(filter, findOptions);
@@ -282,8 +282,8 @@ public class DonOrderRepository : IDonOrderRepository
                     tongTien = donOrder.tongTien,
                     createdDate = donOrder.createdDate?.Date,
                     ngayTao = donOrder.createdDate,
-                }).OrderBy(x => x.trangThai)
-                    .ThenByDescending(x => x.ngayTao)
+                }).OrderByDescending(x => x.ngayTao)
+                    .ThenBy(x => (int)x.trangThai)
                     .ToList();
                 var pagingDetail = new PagingDetail(currentPage, request.PageSize, totalRecords);
                 var pagingResponse = new PagingResponse<List<DonOrderRespond>>
@@ -464,8 +464,8 @@ public class DonOrderRepository : IDonOrderRepository
                     tongTien = donOrder.tongTien,
                     createdDate = donOrder.createdDate?.Date,
                     ngayTao = donOrder.createdDate,
-                }).OrderBy(x => (int)x.trangThai)
-                    .ThenByDescending(x => x.ngayTao)
+                }).OrderByDescending(x => x.ngayTao)
+                    .ThenBy(x => (int)x.trangThai)
                     .ToList();
 
                 return new RespondAPIPaging<List<DonOrderRespond>>(
