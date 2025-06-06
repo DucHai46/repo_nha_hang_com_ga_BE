@@ -57,6 +57,10 @@ public class PhieuNhapRepository : IPhieuNhapRepository
             {
                 filter &= Builders<PhieuNhap>.Filter.Gte(x => x.ngayLap, request.tuNgay.Value);
             }
+            if(request.nhanVienId != null)
+            {
+                filter &= Builders<PhieuNhap>.Filter.Eq(x => x.nhanVien, request.nhanVienId);
+            }
 
 
             if (request.denNgay != null)

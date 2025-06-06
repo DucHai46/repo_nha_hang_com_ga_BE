@@ -52,6 +52,10 @@ public class PhieuThanhLyRepository : IPhieuThanhLyRepository
             {
                 filter &= Builders<PhieuThanhLy>.Filter.Gte(x => x.ngayLap, request.tuNgay.Value);
             }
+            if (request.nhanVienId != null)
+            {
+                filter &= Builders<PhieuThanhLy>.Filter.Eq(x => x.nhanVien, request.nhanVienId);
+            }
 
 
             if (request.denNgay != null)
@@ -461,7 +465,7 @@ public class PhieuThanhLyRepository : IPhieuThanhLyRepository
             newPhieuThanhLy.createdDate = DateTimeOffset.UtcNow;
             newPhieuThanhLy.updatedDate = DateTimeOffset.UtcNow;
             newPhieuThanhLy.isDelete = false;
-            newPhieuThanhLy.ngayLap = newPhieuThanhLy.createdDate; 
+            newPhieuThanhLy.ngayLap = newPhieuThanhLy.createdDate;
             var nguyenLieuDict = new Dictionary<string, string>();
             var loaiNguyenLieuDict = new Dictionary<string, string>();
             var donViTinhDict = new Dictionary<string, string>();

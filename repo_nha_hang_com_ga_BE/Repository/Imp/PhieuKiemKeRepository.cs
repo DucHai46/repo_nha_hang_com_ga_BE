@@ -55,6 +55,10 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
             {
                 filter &= Builders<PhieuKiemKe>.Filter.Lte(x => x.ngayKiemKe, request.denNgay.Value);
             }
+            if (request.nhanVienId != null)
+            {
+                filter &= Builders<PhieuKiemKe>.Filter.Eq(x => x.nhanVien, request.nhanVienId);
+            }
 
             var projection = Builders<PhieuKiemKe>.Projection
                .Include(x => x.Id)

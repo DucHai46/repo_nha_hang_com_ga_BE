@@ -9,5 +9,7 @@ public class RequestSearchPhieuThanhLy : PagingParameterModel
     public string? tenPhieu { get; set; }
     public DateTime? tuNgay { get; set; }
     public DateTime? denNgay { get; set; }
+    public string? nhanVienId { get; set; }
+
 
 }
