@@ -41,12 +41,12 @@ public class CaLamViecRepository : ICaLamViecRepository
             }
             if (!string.IsNullOrEmpty(request.gioVao.ToString()))
             {
-                filter &= Builders<CaLamViec>.Filter.Eq(x => x.gioVao, request.gioVao);
+                filter &= Builders<CaLamViec>.Filter.Gte(x => x.gioVao, request.gioVao);
             }
 
             if (!string.IsNullOrEmpty(request.gioRa.ToString()))
             {
-                filter &= Builders<CaLamViec>.Filter.Eq(x => x.gioRa, request.gioRa);
+                filter &= Builders<CaLamViec>.Filter.Lte(x => x.gioRa, request.gioRa);
             }
 
             var projection = Builders<CaLamViec>.Projection

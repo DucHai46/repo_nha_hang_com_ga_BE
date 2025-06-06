@@ -43,7 +43,12 @@ public class NhaCungCapRepository : INhaCungCapRepository
                 filter &= Builders<NhaCungCap>.Filter.Regex(x => x.tenNhaCungCap, new BsonRegularExpression($".*{request.tenNhaCungCap}.*"));
 
             }
-            
+
+            if (!string.IsNullOrEmpty(request.soDienThoai))
+            {
+                filter &= Builders<NhaCungCap>.Filter.Regex(x => x.soDienThoai, new BsonRegularExpression($".*{request.soDienThoai}.*"));
+            }
+
             if (!string.IsNullOrEmpty(request.diaChi))
             {
                 filter &= Builders<NhaCungCap>.Filter.Regex(x => x.diaChi, new BsonRegularExpression($".*{request.diaChi}.*"));

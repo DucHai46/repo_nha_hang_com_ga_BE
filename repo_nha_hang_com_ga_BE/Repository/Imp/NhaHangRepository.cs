@@ -40,6 +40,11 @@ public class NhaHangRepository : INhaHangRepository
                 filter &= Builders<NhaHang>.Filter.Regex(x => x.tenNhaHang, new BsonRegularExpression($".*{request.tenNhaHang}.*"));
             }
 
+            if (request.isActive != null)
+            {
+                filter &= Builders<NhaHang>.Filter.Eq(x => x.isActive, request.isActive);
+            }
+
             var projection = Builders<NhaHang>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.tenNhaHang)

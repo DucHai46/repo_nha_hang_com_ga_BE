@@ -50,7 +50,17 @@ public class MenuDynamicRepository : IMenuDynamicRepository
             {
                 filter &= Builders<MenuDynamic>.Filter.Eq(x => x.isActive, request.isActive);
             }
-
+            if (request.isParent != null)
+            {
+                if (request.isParent == true)
+                {
+                    filter &= Builders<MenuDynamic>.Filter.Eq(x => x.parent, null);
+                }
+                else
+                {
+                    filter &= Builders<MenuDynamic>.Filter.Ne(x => x.parent, null);
+                }
+            }
 
             var projection = Builders<MenuDynamic>.Projection
                 .Include(x => x.Id)
