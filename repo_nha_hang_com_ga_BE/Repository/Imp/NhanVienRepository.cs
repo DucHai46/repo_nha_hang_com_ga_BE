@@ -52,6 +52,10 @@ public class NhanVienRepository : INhanVienRepository
             {
                 filter &= Builders<NhanVien>.Filter.Regex(x => x.soDienThoai, new BsonRegularExpression($".*{request.soDienThoai}.*"));
             }
+            if (!string.IsNullOrEmpty(request.diaChi))
+            {
+                filter &= Builders<NhanVien>.Filter.Regex(x => x.diaChi, new BsonRegularExpression($".*{request.diaChi}.*"));
+            }
 
             var projection = Builders<NhanVien>.Projection
                 .Include(x => x.Id)

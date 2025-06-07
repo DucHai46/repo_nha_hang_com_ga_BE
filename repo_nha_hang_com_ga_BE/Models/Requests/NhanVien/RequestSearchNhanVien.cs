@@ -8,4 +8,5 @@ public class RequestSearchNhanVien : PagingParameterModel
 
     public string? chucVuId { get; set; }
     public string? soDienThoai { get; set; }
+    public string? diaChi { get; set; }
 }
