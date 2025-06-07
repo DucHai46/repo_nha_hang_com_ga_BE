@@ -14,6 +14,7 @@ public class DonDatBanRespond
 
     public IdName? khachHang { get; set; }
 
-    public string? khungGio { get; set; }
+    public DateTimeOffset? ngayDat { get; set; }
+    public TimeSpan? gioDat { get; set; }
 
 }

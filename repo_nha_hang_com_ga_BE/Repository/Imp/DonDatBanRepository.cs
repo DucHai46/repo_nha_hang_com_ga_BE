@@ -51,18 +51,32 @@ public class DonDatBanRepository : IDonDatBanRepository
             {
                 filter &= Builders<DonDatBan>.Filter.Regex(x => x.khachHang, request.khachHang);
             }
-
-            if (!string.IsNullOrEmpty(request.khungGio))
+            if (request.tuNgay != null)
             {
-                filter &= Builders<DonDatBan>.Filter.Regex(x => x.khungGio, request.khungGio);
+                filter &= Builders<DonDatBan>.Filter.Gte(x => x.ngayDat, request.tuNgay.Value);
             }
+            if (request.denNgay != null)
+            {
+                filter &= Builders<DonDatBan>.Filter.Lte(x => x.ngayDat, request.denNgay.Value);
+            }
+            if (request.tuGio != null)
+            {
+                filter &= Builders<DonDatBan>.Filter.Gte(x => x.gioDat, request.tuGio.Value);
+            }
+            if (request.denGio != null)
+            {
+                filter &= Builders<DonDatBan>.Filter.Lte(x => x.gioDat, request.denGio.Value);
+            }
+
+
 
 
             var projection = Builders<DonDatBan>.Projection
                 .Include(x => x.Id)
                 .Include(x => x.ban)
                 .Include(x => x.khachHang)
-                .Include(x => x.khungGio);
+                .Include(x => x.ngayDat)
+                .Include(x => x.gioDat);
 
             var findOptions = new FindOptions<DonDatBan, DonDatBan>
             {
@@ -131,7 +145,8 @@ public class DonDatBanRepository : IDonDatBanRepository
                         Id = donDatBan.khachHang,
                         Name = khachHangDict.ContainsKey(donDatBan.khachHang) ? khachHangDict[donDatBan.khachHang] : null
                     },
-                    khungGio = donDatBan.khungGio
+                    ngayDat = donDatBan.ngayDat,
+                    gioDat = donDatBan.gioDat
                 }).ToList();
 
 
@@ -187,7 +202,8 @@ public class DonDatBanRepository : IDonDatBanRepository
                         Id = donDatBan.khachHang,
                         Name = khachHangDict.ContainsKey(donDatBan.khachHang) ? khachHangDict[donDatBan.khachHang] : null
                     },
-                    khungGio = donDatBan.khungGio
+                    ngayDat = donDatBan.ngayDat,
+                    gioDat = donDatBan.gioDat
                 }).ToList();
 
                 return new RespondAPIPaging<List<DonDatBanRespond>>(
@@ -259,7 +275,8 @@ public class DonDatBanRepository : IDonDatBanRepository
                     Id = donDatBan.khachHang,
                     Name = khachHangDict.ContainsKey(donDatBan.khachHang) ? khachHangDict[donDatBan.khachHang] : null
                 },
-                khungGio = donDatBan.khungGio
+                ngayDat = donDatBan.ngayDat,
+                gioDat= donDatBan.gioDat
             };
 
             return new RespondAPI<DonDatBanRespond>(
@@ -332,7 +349,8 @@ public class DonDatBanRepository : IDonDatBanRepository
                     Id = newDonDatBan.khachHang,
                     Name = khachHangDict.ContainsKey(newDonDatBan.khachHang) ? khachHangDict[newDonDatBan.khachHang] : null
                 },
-                khungGio = newDonDatBan.khungGio
+                ngayDat = newDonDatBan.ngayDat,
+                gioDat = newDonDatBan.gioDat
             };
 
             return new RespondAPI<DonDatBanRespond>(
@@ -429,7 +447,8 @@ public class DonDatBanRepository : IDonDatBanRepository
                     Id = donDatBan.khachHang,
                     Name = khachHangDict.ContainsKey(donDatBan.khachHang) ? khachHangDict[donDatBan.khachHang] : null
                 },
-                khungGio = donDatBan.khungGio
+                ngayDat = donDatBan.ngayDat,
+                gioDat = donDatBan.gioDat
             };
 
             return new RespondAPI<DonDatBanRespond>(

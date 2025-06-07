@@ -1,3 +1,4 @@
+using Org.BouncyCastle.Asn1.Cms;
 using repo_nha_hang_com_ga_BE.Models.Common;
 using repo_nha_hang_com_ga_BE.Models.Common.Models;
 
@@ -9,7 +10,8 @@ namespace repo_nha_hang_com_ga_BE.Models.MongoDB
 
         public string? khachHang { get; set; }
 
-        public string? khungGio { get; set; }
+        public DateTimeOffset? ngayDat { get; set; }
+        public TimeSpan? gioDat { get; set; }
 
     }
 }
