@@ -5,7 +5,7 @@ namespace repo_nha_hang_com_ga_BE.Models.Common.Models.Request;
 
 public class PagingParameterModel
 {
-    const int MaxPageSize = 100;
+    const int MaxPageSize = 1000;
 
     public bool IsPaging { get; set; } = true;
 
@@ -13,7 +13,7 @@ public class PagingParameterModel
 
     public int PageNumber { get; set; } = 1;
 
-    private int _pageSize { get; set; } = 20;
+    private int _pageSize { get; set; } = 1000;
 
     [Range(1, MaxPageSize)]
     public int PageSize
