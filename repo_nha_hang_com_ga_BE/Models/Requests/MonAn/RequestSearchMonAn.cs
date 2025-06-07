@@ -11,4 +11,5 @@ public class RequestSearchMonAn : PagingParameterModel
     public string? idCongThuc { get; set; }
 
     public int? giaTien { get; set; }
+    public int? giaTienCaoNhat { get; set; }
 }

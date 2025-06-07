@@ -47,9 +47,13 @@ public class ComboRepository : IComboRepository
                 filter &= Builders<Combo>.Filter.Regex(x => x.tenCombo, new BsonRegularExpression($".*{request.tenCombo}.*"));
             }
 
-            if (request.giaTien.HasValue)
+            if (request.giaTien != null)
             {
-                filter &= Builders<Combo>.Filter.Eq(x => x.giaTien, request.giaTien.Value);
+                filter &= Builders<Combo>.Filter.Gte(x => x.giaTien, request.giaTien.Value);
+            }
+            if (request.giaTienCaoNhat != null)
+            {
+                filter &= Builders<Combo>.Filter.Lte(x => x.giaTien, request.giaTienCaoNhat.Value);
             }
 
             var projection = Builders<Combo>.Projection

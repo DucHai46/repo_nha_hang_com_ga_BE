@@ -59,7 +59,11 @@ public class MonAnRepository : IMonAnRepository
             }
             if (request.giaTien.HasValue)
             {
-                filter &= Builders<MonAn>.Filter.Eq(x => x.giaTien, request.giaTien.Value);
+                filter &= Builders<MonAn>.Filter.Gte(x => x.giaTien, request.giaTien.Value);
+            }
+            if (request.giaTienCaoNhat != null)
+            {
+                filter &= Builders<MonAn>.Filter.Lte(x => x.giaTien, request.giaTienCaoNhat.Value);
             }
 
             var projection = Builders<MonAn>.Projection

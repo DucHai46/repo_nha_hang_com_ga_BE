@@ -6,4 +6,5 @@ public class RequestSearchCombo : PagingParameterModel
 {
     public string? tenCombo { get; set; }
     public int? giaTien { get; set; }
+    public int? giaTienCaoNhat { get; set; }
 }
