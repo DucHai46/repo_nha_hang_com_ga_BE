@@ -76,7 +76,7 @@ public class DonOrderRepository : IDonOrderRepository
             }
             if (request.ngayTaoDon.HasValue)
             {
-                filter &= Builders<DonOrder>.Filter.Eq(x => x.ngayTaoDon, request.ngayTaoDon);
+                filter &= Builders<DonOrder>.Filter.Eq(x => x.ngayTaoDon, request.ngayTaoDon.Value);
             }
 
             var projection = Builders<DonOrder>.Projection
