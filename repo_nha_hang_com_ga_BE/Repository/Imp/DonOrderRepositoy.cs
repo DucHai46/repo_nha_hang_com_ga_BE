@@ -90,6 +90,10 @@ public class DonOrderRepository : IDonOrderRepository
             {
                 Projection = projection
             };
+            findOptions.Sort = Builders<DonOrder>.Sort.Combine(
+                Builders<DonOrder>.Sort.Descending(x => x.createdDate),
+                Builders<DonOrder>.Sort.Ascending(x => x.trangThai)
+            );
 
             if (request.IsPaging)
             {
@@ -113,10 +117,7 @@ public class DonOrderRepository : IDonOrderRepository
 
                 findOptions.Skip = (currentPage - 1) * request.PageSize;
                 findOptions.Limit = request.PageSize;
-                findOptions.Sort = Builders<DonOrder>.Sort.Combine(
-                    Builders<DonOrder>.Sort.Descending(x => x.createdDate),
-                    Builders<DonOrder>.Sort.Ascending(x => x.trangThai)
-                );
+
 
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var dons = await cursor.ToListAsync();
