@@ -7,7 +7,6 @@ using repo_nha_hang_com_ga_BE.Repository;
 
 namespace repo_nha_hang_com_ga_BE.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/ban")]
 public class BanController : ControllerBase
