@@ -77,6 +77,9 @@ public class PhieuThanhLyRepository : IPhieuThanhLyRepository
             {
                 Projection = projection
             };
+            findOptions.Sort = Builders<PhieuThanhLy>.Sort.Combine(
+                Builders<PhieuThanhLy>.Sort.Descending(x => x.createdDate)
+            );
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
