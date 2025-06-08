@@ -74,6 +74,10 @@ public class DonOrderRepository : IDonOrderRepository
             {
                 filter &= Builders<DonOrder>.Filter.Eq(x => x.trangThai, request.trangThai);
             }
+            if (request.ngayTaoDon.HasValue)
+            {
+                filter &= Builders<DonOrder>.Filter.Eq(x => x.ngayTaoDon, request.ngayTaoDon);
+            }
 
             var projection = Builders<DonOrder>.Projection
                 .Include(x => x.Id)
@@ -84,7 +88,8 @@ public class DonOrderRepository : IDonOrderRepository
                 .Include(x => x.trangThai)
                 .Include(x => x.chiTietDonOrder)
                 .Include(x => x.tongTien)
-                .Include(x => x.createdDate);
+                .Include(x => x.createdDate)
+                .Include(x => x.ngayTaoDon);
 
             var findOptions = new FindOptions<DonOrder, DonOrder>
             {
@@ -113,8 +118,11 @@ public class DonOrderRepository : IDonOrderRepository
 
                 findOptions.Skip = (currentPage - 1) * request.PageSize;
                 findOptions.Limit = request.PageSize;
-                findOptions.Sort = Builders<DonOrder>.Sort
-                                .Descending(x => x.createdDate);
+                findOptions.Sort = Builders<DonOrder>.Sort.Combine(
+                            Builders<DonOrder>.Sort.Descending(x => x.ngayTaoDon),
+                            Builders<DonOrder>.Sort.Ascending(x => x.trangThai)
+
+                        );
 
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var dons = await cursor.ToListAsync();
@@ -280,9 +288,8 @@ public class DonOrderRepository : IDonOrderRepository
                     tongTien = donOrder.tongTien,
                     createdDate = donOrder.createdDate?.Date,
                     ngayTao = donOrder.createdDate,
-                }).OrderByDescending(x => x.ngayTao)
-                    .ThenBy(x => (int)x.trangThai)
-                    .ToList();
+                    ngayTaoDon = donOrder.ngayTaoDon,
+                }).ToList();
                 var pagingDetail = new PagingDetail(currentPage, request.PageSize, totalRecords);
                 var pagingResponse = new PagingResponse<List<DonOrderRespond>>
                 {
@@ -462,9 +469,8 @@ public class DonOrderRepository : IDonOrderRepository
                     tongTien = donOrder.tongTien,
                     createdDate = donOrder.createdDate?.Date,
                     ngayTao = donOrder.createdDate,
-                }).OrderByDescending(x => x.ngayTao)
-                    .ThenBy(x => (int)x.trangThai)
-                    .ToList();
+                    ngayTaoDon = donOrder.ngayTaoDon,
+                }).ToList();
 
                 return new RespondAPIPaging<List<DonOrderRespond>>(
                     ResultRespond.Succeeded,

@@ -19,6 +19,7 @@ public class DonOrderRespond
     public int? tongTien { get; set; }
     public DateTime? createdDate { get; set; }
     public DateTimeOffset? ngayTao { get; set; }
+    public DateTime? ngayTaoDon { get; set; }
 
 
 }

@@ -19,6 +19,8 @@ public class DonOrder : BaseMongoDb
 
     public List<ChiTietDonOrder>? chiTietDonOrder { get; set; }
     public int? tongTien { get; set; }
+    public DateTime? ngayTaoDon { get; set; } = DateTime.UtcNow.Date;
+
 }
 
 

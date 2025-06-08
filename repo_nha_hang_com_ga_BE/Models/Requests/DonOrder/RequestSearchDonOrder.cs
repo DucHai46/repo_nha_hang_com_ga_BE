@@ -10,5 +10,6 @@ public class RequestSearchDonOrder : PagingParameterModel
     public string? ban { get; set; }
     public List<string>? khachHang { get; set; }
     public TrangThaiDonOrder? trangThai { get; set; }
+    public DateTime? ngayTaoDon { get; set; }
 
 }
