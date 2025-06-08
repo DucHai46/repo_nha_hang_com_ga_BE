@@ -74,6 +74,9 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
             {
                 Projection = projection
             };
+            findOptions.Sort = Builders<PhieuKiemKe>.Sort.Combine(
+                Builders<PhieuKiemKe>.Sort.Descending(x => x.createdDate)
+            );
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

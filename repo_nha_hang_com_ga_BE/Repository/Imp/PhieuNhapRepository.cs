@@ -57,7 +57,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
             {
                 filter &= Builders<PhieuNhap>.Filter.Gte(x => x.ngayLap, request.tuNgay.Value);
             }
-            if(request.nhanVienId != null)
+            if (request.nhanVienId != null)
             {
                 filter &= Builders<PhieuNhap>.Filter.Eq(x => x.nhanVien, request.nhanVienId);
             }
@@ -86,6 +86,9 @@ public class PhieuNhapRepository : IPhieuNhapRepository
             {
                 Projection = projection
             };
+            findOptions.Sort = Builders<PhieuNhap>.Sort.Combine(
+                Builders<PhieuNhap>.Sort.Descending(x => x.createdDate)
+            );
 
             if (request.IsPaging)
             {
@@ -111,6 +114,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
 
                 findOptions.Skip = (currentPage - 1) * request.PageSize;
                 findOptions.Limit = request.PageSize;
+
 
                 var cursor = await collection.FindAsync(filter, findOptions);
                 var PhieuNhaps = await cursor.ToListAsync();
@@ -552,7 +556,7 @@ public class PhieuNhapRepository : IPhieuNhapRepository
             {
                 id = newPhieuNhap.Id,
                 tenPhieu = newPhieuNhap.tenPhieu,
-                ngayLap=newPhieuNhap.ngayLap,
+                ngayLap = newPhieuNhap.ngayLap,
                 tenNguoiGiao = newPhieuNhap.tenNguoiGiao,
                 nhaCungCap = newPhieuNhap.nhaCungCap != null ? new IdName
                 {

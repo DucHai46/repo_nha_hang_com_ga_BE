@@ -78,6 +78,9 @@ public class PhieuXuatRepository : IPhieuXuatRepository
             {
                 Projection = projection
             };
+            findOptions.Sort = Builders<PhieuXuat>.Sort.Combine(
+                Builders<PhieuXuat>.Sort.Descending(x => x.createdDate)
+            );
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
