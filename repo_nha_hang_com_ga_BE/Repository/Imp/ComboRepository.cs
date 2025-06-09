@@ -45,10 +45,11 @@ public class ComboRepository : IComboRepository
 
             if (!string.IsNullOrEmpty(request.tenCombo))
             {
+                var tenComboClean = Regex.Replace(request.tenCombo.Trim(), @"\s+", " ");
                 filter &= Builders<Combo>.Filter.Regex(
                     x => x.tenCombo,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenCombo)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenComboClean)}.*", "i")
+                );
             }
 
             if (request.giaTien != null)
@@ -283,7 +284,7 @@ public class ComboRepository : IComboRepository
                             hinhAnh = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.hinhAnh : null,
                             giaTien = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.giaTien : null,
                             moTa = monAnDict.ContainsKey(y.id) ? monAns.FirstOrDefault(m => m.Id == y.id)?.moTa : null,
-                            soLuong=y.soLuong
+                            soLuong = y.soLuong
                         }).ToList(),
                         moTa = x.moTa
                     }).ToList(),

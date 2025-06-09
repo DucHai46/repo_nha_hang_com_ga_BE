@@ -47,10 +47,11 @@ public class ThucDonRepository : IThucDonRepository
 
             if (!string.IsNullOrEmpty(request.tenThucDon))
             {
+                var tenThucDonClean = Regex.Replace(request.tenThucDon.Trim(), @"\s+", " ");
                 filter &= Builders<ThucDon>.Filter.Regex(
                     x => x.tenThucDon,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenThucDon)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenThucDonClean)}.*", "i")
+                );
             }
 
             if (!string.IsNullOrEmpty(request.loaiMonAnId))

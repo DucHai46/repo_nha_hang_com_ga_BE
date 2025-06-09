@@ -41,10 +41,11 @@ public class TuDoRepository : ITuDoRepository
 
             if (!string.IsNullOrEmpty(request.tenTuDo))
             {
+                var tenTuDoClean = Regex.Replace(request.tenTuDo.Trim(), @"\s+", " ");
                 filter &= Builders<TuDo>.Filter.Regex(
                     x => x.tenTuDo,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenTuDo)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenTuDoClean)}.*", "i")
+                );
             }
 
             if (!string.IsNullOrEmpty(request.loaiTuDoId))

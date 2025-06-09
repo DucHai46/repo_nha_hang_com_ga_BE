@@ -41,10 +41,11 @@ public class PhuongThucThanhToanRepository : IPhuongThucThanhToanRepository
 
             if (!string.IsNullOrEmpty(request.tenPhuongThuc))
             {
+                var tenPhuongThucClean = Regex.Replace(request.tenPhuongThuc.Trim(), @"\s+", " ");
                 filter &= Builders<PhuongThucThanhToan>.Filter.Regex(
                     x => x.tenPhuongThuc,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenPhuongThuc)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenPhuongThucClean)}.*", "i")
+                );
             }
 
 

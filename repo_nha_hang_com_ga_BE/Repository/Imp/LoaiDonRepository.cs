@@ -39,11 +39,12 @@ public class LoaiDonRepository : ILoaiDonRepository
 
             if (!string.IsNullOrEmpty(request.tenLoaiDon))
             {
+                var tenLoaiDonClean = Regex.Replace(request.tenLoaiDon.Trim(), @"\s+", " ");
                 filter &= Builders<LoaiDon>.Filter.Regex(
                     x => x.tenLoaiDon,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenLoaiDon)}.*", "i")
-                );    
-            
+                    new BsonRegularExpression($".*{Regex.Escape(tenLoaiDonClean)}.*", "i")
+                );
+
             }
 
             var projection = Builders<LoaiDon>.Projection

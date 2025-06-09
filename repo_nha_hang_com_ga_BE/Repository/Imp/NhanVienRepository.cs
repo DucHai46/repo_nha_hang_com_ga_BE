@@ -41,10 +41,11 @@ public class NhanVienRepository : INhanVienRepository
 
             if (!string.IsNullOrEmpty(request.tenNhanVien))
             {
+                var tenNhanVienClean = Regex.Replace(request.tenNhanVien.Trim(), @"\s+", " ");
                 filter &= Builders<NhanVien>.Filter.Regex(
                     x => x.tenNhanVien,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenNhanVien)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenNhanVienClean)}.*", "i")
+                );
             }
 
             if (!string.IsNullOrEmpty(request.chucVuId))
@@ -54,17 +55,19 @@ public class NhanVienRepository : INhanVienRepository
 
             if (!string.IsNullOrEmpty(request.soDienThoai))
             {
+                var soDienThoaiClean = Regex.Replace(request.soDienThoai.Trim(), @"\s+", " ");
                 filter &= Builders<NhanVien>.Filter.Regex(
                     x => x.soDienThoai,
-                    new BsonRegularExpression($".*{Regex.Escape(request.soDienThoai)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(soDienThoaiClean)}.*", "i")
+                );
             }
             if (!string.IsNullOrEmpty(request.diaChi))
             {
+                var diaChiClean = Regex.Replace(request.diaChi.Trim(), @"\s+", " ");
                 filter &= Builders<NhanVien>.Filter.Regex(
                     x => x.diaChi,
-                    new BsonRegularExpression($".*{Regex.Escape(request.diaChi)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(diaChiClean)}.*", "i")
+                );
             }
 
             var projection = Builders<NhanVien>.Projection

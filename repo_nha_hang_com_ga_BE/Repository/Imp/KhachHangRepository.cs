@@ -39,35 +39,38 @@ public class KhachHangRepository : IKhachHangRepository
 
             if (!string.IsNullOrEmpty(request.tenKhachHang))
             {
+                var tenKhachHangClean = Regex.Replace(request.tenKhachHang.Trim(), @"\s+", " ");
                 filter &= Builders<KhachHang>.Filter.Regex(
                     x => x.tenKhachHang,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenKhachHang)}.*", "i")
-                );    
-            
+                    new BsonRegularExpression($".*{Regex.Escape(tenKhachHangClean)}.*", "i")
+                );
             }
             if (!string.IsNullOrEmpty(request.diaChi))
             {
+                var diaChiClean = Regex.Replace(request.diaChi.Trim(), @"\s+", " ");
                 filter &= Builders<KhachHang>.Filter.Regex(
                     x => x.diaChi,
-                    new BsonRegularExpression($".*{Regex.Escape(request.diaChi)}.*", "i")
-                );    
-            
+                    new BsonRegularExpression($".*{Regex.Escape(diaChiClean)}.*", "i")
+                );
+
             }
             if (!string.IsNullOrEmpty(request.email))
             {
+                var emailClean = Regex.Replace(request.email.Trim(), @"\s+", " ");
                 filter &= Builders<KhachHang>.Filter.Regex(
                     x => x.email,
-                    new BsonRegularExpression($".*{Regex.Escape(request.email)}.*", "i")
-                );    
-            
+                    new BsonRegularExpression($".*{Regex.Escape(emailClean)}.*", "i")
+                );
+
             }
             if (!string.IsNullOrEmpty(request.soDienThoai))
             {
+                var soDienThoaiClean = Regex.Replace(request.soDienThoai.Trim(), @"\s+", " ");
                 filter &= Builders<KhachHang>.Filter.Regex(
                     x => x.soDienThoai,
-                    new BsonRegularExpression($".*{Regex.Escape(request.soDienThoai)}.*", "i")
-                );    
-            
+                    new BsonRegularExpression($".*{Regex.Escape(soDienThoaiClean)}.*", "i")
+                );
+
             }
 
             var projection = Builders<KhachHang>.Projection

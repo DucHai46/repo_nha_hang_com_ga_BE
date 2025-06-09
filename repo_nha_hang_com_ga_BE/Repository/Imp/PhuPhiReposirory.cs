@@ -41,10 +41,11 @@ public class PhuPhiRepository : IPhuPhiRepository
 
             if (!string.IsNullOrEmpty(request.tenPhuPhi))
             {
+                var tenPhuPhiClean = Regex.Replace(request.tenPhuPhi.Trim(), @"\s+", " ");
                 filter &= Builders<PhuPhi>.Filter.Regex(
                     x => x.tenPhuPhi,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenPhuPhi)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenPhuPhiClean)}.*", "i")
+                );
             }
             if (request.trangThai != null)
             {

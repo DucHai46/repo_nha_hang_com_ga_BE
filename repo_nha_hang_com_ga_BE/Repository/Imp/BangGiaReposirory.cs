@@ -42,13 +42,15 @@ public class BangGiaRepository : IBangGiaRepository
             var filter = Builders<BangGia>.Filter.Empty;
             filter &= Builders<BangGia>.Filter.Eq(x => x.isDelete, false);
 
-            if (!string.IsNullOrEmpty(request.tenGia))
+            if (!string.IsNullOrWhiteSpace(request.tenGia))
             {
+                var tenGiaClean = Regex.Replace(request.tenGia.Trim(), @"\s+", " ");
                 filter &= Builders<BangGia>.Filter.Regex(
                     x => x.tenGia,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenGia)}.*", "i")
+                    new BsonRegularExpression($".*{Regex.Escape(tenGiaClean)}.*", "i")
                 );
             }
+
 
             if (!string.IsNullOrEmpty(request.idMonAn))
             {

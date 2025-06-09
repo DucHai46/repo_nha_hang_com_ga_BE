@@ -38,11 +38,12 @@ public class KhuyenMaiRepository : IKhuyenMaiRepository
 
             if (!string.IsNullOrEmpty(request.tenKhuyenMai))
             {
+                var tenKhuyenMaiClean = Regex.Replace(request.tenKhuyenMai.Trim(), @"\s+", " ");
                 filter &= Builders<KhuyenMai>.Filter.Regex(
                     x => x.tenKhuyenMai,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenKhuyenMai)}.*", "i")
-                );    
-            
+                    new BsonRegularExpression($".*{Regex.Escape(tenKhuyenMaiClean)}.*", "i")
+                );
+
             }
 
             if (request.ngayBatDau != null)

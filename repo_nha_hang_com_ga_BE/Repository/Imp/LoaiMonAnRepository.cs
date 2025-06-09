@@ -46,10 +46,11 @@ public class LoaiMonAnRepository : ILoaiMonAnRepository
 
             if (!string.IsNullOrEmpty(request.tenLoai))
             {
+                var tenLoaiClean = Regex.Replace(request.tenLoai.Trim(), @"\s+", " ");
                 filter &= Builders<LoaiMonAn>.Filter.Regex(
                     x => x.tenLoai,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenLoai)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenLoaiClean)}.*", "i")
+                );
             }
 
             var projection = Builders<LoaiMonAn>.Projection

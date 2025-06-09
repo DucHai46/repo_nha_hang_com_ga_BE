@@ -44,10 +44,11 @@ public class CongThucRepository : ICongThucRepository
 
             if (!string.IsNullOrEmpty(request.tenCongThuc))
             {
+                var tenCongThucClean = Regex.Replace(request.tenCongThuc.Trim(), @"\s+", " ");
                 filter &= Builders<CongThuc>.Filter.Regex(
                     x => x.tenCongThuc,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenCongThuc)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenCongThucClean)}.*", "i")
+                );
             }
 
             var projection = Builders<CongThuc>.Projection

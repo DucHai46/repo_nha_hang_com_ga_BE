@@ -41,26 +41,29 @@ public class NhaCungCapRepository : INhaCungCapRepository
 
             if (!string.IsNullOrEmpty(request.tenNhaCungCap))
             {
+                var tenNhaCungCapClean = Regex.Replace(request.tenNhaCungCap.Trim(), @"\s+", " ");
                 filter &= Builders<NhaCungCap>.Filter.Regex(
                     x => x.tenNhaCungCap,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenNhaCungCap)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenNhaCungCapClean)}.*", "i")
+                );
             }
 
             if (!string.IsNullOrEmpty(request.soDienThoai))
             {
+                var soDienThoaiClean = Regex.Replace(request.soDienThoai.Trim(), @"\s+", " ");
                 filter &= Builders<NhaCungCap>.Filter.Regex(
                     x => x.soDienThoai,
-                    new BsonRegularExpression($".*{Regex.Escape(request.soDienThoai)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(soDienThoaiClean)}.*", "i")
+                );
             }
 
             if (!string.IsNullOrEmpty(request.diaChi))
             {
+                var diaChiClean = Regex.Replace(request.diaChi.Trim(), @"\s+", " ");
                 filter &= Builders<NhaCungCap>.Filter.Regex(
                     x => x.diaChi,
-                    new BsonRegularExpression($".*{Regex.Escape(request.diaChi)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(diaChiClean)}.*", "i")
+                );
             }
 
 

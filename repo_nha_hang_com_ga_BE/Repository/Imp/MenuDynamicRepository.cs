@@ -39,10 +39,11 @@ public class MenuDynamicRepository : IMenuDynamicRepository
 
             if (!string.IsNullOrEmpty(request.label))
             {
+                var labelClean = Regex.Replace(request.label.Trim(), @"\s+", " ");
                 filter &= Builders<MenuDynamic>.Filter.Regex(
                     x => x.label,
-                    new BsonRegularExpression($".*{Regex.Escape(request.label)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(labelClean)}.*", "i")
+                );
             }
 
             if (!string.IsNullOrEmpty(request.parentId))

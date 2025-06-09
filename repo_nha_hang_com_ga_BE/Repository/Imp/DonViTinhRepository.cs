@@ -38,10 +38,11 @@ public class DonViTinhRepository : IDonViTinhRepository
 
             if (!string.IsNullOrEmpty(request.tenDonViTinh))
             {
+                var tenDonViTinhClean = Regex.Replace(request.tenDonViTinh.Trim(), @"\s+", " ");
                 filter &= Builders<DonViTinh>.Filter.Regex(
                     x => x.tenDonViTinh,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenDonViTinh)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenDonViTinhClean)}.*", "i")
+                );
             }
 
             var projection = Builders<DonViTinh>.Projection

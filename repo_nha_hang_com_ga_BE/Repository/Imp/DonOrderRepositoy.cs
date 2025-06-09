@@ -52,10 +52,11 @@ public class DonOrderRepository : IDonOrderRepository
 
             if (!string.IsNullOrEmpty(request.tenDon))
             {
+                var tenDonClean = Regex.Replace(request.tenDon.Trim(), @"\s+", " ");
                 filter &= Builders<DonOrder>.Filter.Regex(
                     x => x.tenDon,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenDon)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenDonClean)}.*", "i")
+                );
             }
 
             if (!string.IsNullOrEmpty(request.loaiDon))

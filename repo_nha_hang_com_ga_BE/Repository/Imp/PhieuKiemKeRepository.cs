@@ -43,10 +43,11 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
 
             if (!string.IsNullOrEmpty(request.tenPhieu))
             {
+                var tenPhieuClean = Regex.Replace(request.tenPhieu.Trim(), @"\s+", " ");
                 filter &= Builders<PhieuKiemKe>.Filter.Regex(
                     x => x.tenPhieu,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenPhieu)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenPhieuClean)}.*", "i")
+                );
             }
 
             if (request.tuNgay != null)

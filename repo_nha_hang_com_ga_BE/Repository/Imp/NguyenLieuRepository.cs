@@ -55,10 +55,11 @@ public class NguyenLieuRepository : INguyenLieuRepository
 
             if (!string.IsNullOrEmpty(request.tenNguyenLieu))
             {
+                var tenNguyenLieuClean = Regex.Replace(request.tenNguyenLieu.Trim(), @"\s+", " ");
                 filter &= Builders<NguyenLieu>.Filter.Regex(
                     x => x.tenNguyenLieu,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenNguyenLieu)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenNguyenLieuClean)}.*", "i")
+                );
             }
 
 

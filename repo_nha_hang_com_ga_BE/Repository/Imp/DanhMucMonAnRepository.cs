@@ -38,10 +38,11 @@ public class DanhMucMonAnRepository : IDanhMucMonAnRepository
 
             if (!string.IsNullOrEmpty(request.tenDanhMuc))
             {
+                var tenDanhMucClean = Regex.Replace(request.tenDanhMuc.Trim(), @"\s+", " ");
                 filter &= Builders<DanhMucMonAn>.Filter.Regex(
                     x => x.tenDanhMuc,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenDanhMuc)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenDanhMucClean)}.*", "i")
+                );
             }
 
             var projection = Builders<DanhMucMonAn>.Projection

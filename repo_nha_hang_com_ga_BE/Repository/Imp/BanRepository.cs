@@ -41,9 +41,10 @@ public class BanRepository : IBanRepository
 
             if (!string.IsNullOrEmpty(request.tenBan))
             {
+                var tenBanClean = Regex.Replace(request.tenBan.Trim(), @"\s+", " ");
                 filter &= Builders<Ban>.Filter.Regex(
                     x => x.tenBan,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenBan)}.*", "i")
+                    new BsonRegularExpression($".*{Regex.Escape(tenBanClean)}.*", "i")
                 );
             }
 

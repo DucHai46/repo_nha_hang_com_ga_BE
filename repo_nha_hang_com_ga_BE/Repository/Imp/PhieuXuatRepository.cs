@@ -46,10 +46,11 @@ public class PhieuXuatRepository : IPhieuXuatRepository
 
             if (!string.IsNullOrEmpty(request.tenPhieu))
             {
+                var tenPhieuClean = Regex.Replace(request.tenPhieu.Trim(), @"\s+", " ");
                 filter &= Builders<PhieuXuat>.Filter.Regex(
                     x => x.tenPhieu,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenPhieu)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenPhieuClean)}.*", "i")
+                );
             }
 
             if (request.tuNgay != null)

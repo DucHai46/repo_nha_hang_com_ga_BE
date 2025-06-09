@@ -46,10 +46,11 @@ public class MonAnRepository : IMonAnRepository
 
             if (!string.IsNullOrEmpty(request.tenMonAn))
             {
+                var tenMonAnClean = Regex.Replace(request.tenMonAn.Trim(), @"\s+", " ");
                 filter &= Builders<MonAn>.Filter.Regex(
                     x => x.tenMonAn,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenMonAn)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenMonAnClean)}.*", "i")
+                );
             }
 
             if (!string.IsNullOrEmpty(request.idLoaiMonAn))
@@ -385,7 +386,7 @@ public class MonAnRepository : IMonAnRepository
                     Id = giamGia.Id,
                     Name = giamGia.tenGiamGia,
                     giaTri = giamGia.giaTri
-                }: new GiamGiaMonAnRespond
+                } : new GiamGiaMonAnRespond
                 {
                     Id = "",
                     Name = "",
@@ -465,7 +466,7 @@ public class MonAnRepository : IMonAnRepository
                     Id = giamGia.Id,
                     Name = giamGia.tenGiamGia,
                     giaTri = giamGia.giaTri
-                }: new GiamGiaMonAnRespond
+                } : new GiamGiaMonAnRespond
                 {
                     Id = "",
                     Name = "",

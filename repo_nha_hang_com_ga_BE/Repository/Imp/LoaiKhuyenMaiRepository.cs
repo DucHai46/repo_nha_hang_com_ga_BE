@@ -39,10 +39,12 @@ public class LoaiKhuyenMaiRepository : ILoaiKhuyenMaiRepository
 
             if (!string.IsNullOrEmpty(request.tenLoai))
             {
+                var tenLoaiClean = Regex.Replace(request.tenLoai.Trim(), @"\s+", " ");
                 filter &= Builders<LoaiKhuyenMai>.Filter.Regex(
                     x => x.tenLoai,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenLoai)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenLoaiClean)}.*", "i")
+                );
+
             }
 
             var projection = Builders<LoaiKhuyenMai>.Projection

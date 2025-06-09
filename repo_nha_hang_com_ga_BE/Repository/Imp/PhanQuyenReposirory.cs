@@ -41,10 +41,11 @@ public class PhanQuyenRepository : IPhanQuyenRepository
 
             if (!string.IsNullOrEmpty(request.tenPhanQuyen))
             {
+                var tenPhanQuyenClean = Regex.Replace(request.tenPhanQuyen.Trim(), @"\s+", " ");
                 filter &= Builders<PhanQuyen>.Filter.Regex(
                     x => x.tenPhanQuyen,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenPhanQuyen)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenPhanQuyenClean)}.*", "i")
+                );
             }
 
 

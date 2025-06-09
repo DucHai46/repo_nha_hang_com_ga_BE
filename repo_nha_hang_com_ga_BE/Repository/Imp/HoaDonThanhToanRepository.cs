@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -73,7 +74,8 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
 
             if (!string.IsNullOrEmpty(request.tenHoaDon))
             {
-                filter &= Builders<HoaDonThanhToan>.Filter.Regex(x => x.tenHoaDon, request.tenHoaDon);
+                var tenHoaDonClean = Regex.Replace(request.tenHoaDon.Trim(), @"\s+", " ");
+                filter &= Builders<HoaDonThanhToan>.Filter.Regex(x => x.tenHoaDon, new BsonRegularExpression($".*{Regex.Escape(tenHoaDonClean)}.*", "i"));
             }
 
             if (request.gioVao.HasValue)

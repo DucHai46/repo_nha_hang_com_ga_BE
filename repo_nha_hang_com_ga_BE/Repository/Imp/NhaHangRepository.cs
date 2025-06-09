@@ -38,10 +38,11 @@ public class NhaHangRepository : INhaHangRepository
 
             if (!string.IsNullOrEmpty(request.tenNhaHang))
             {
+                var tenNhaHangClean = Regex.Replace(request.tenNhaHang.Trim(), @"\s+", " ");
                 filter &= Builders<NhaHang>.Filter.Regex(
                     x => x.tenNhaHang,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenNhaHang)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenNhaHangClean)}.*", "i")
+                );
             }
 
             if (request.isActive != null)

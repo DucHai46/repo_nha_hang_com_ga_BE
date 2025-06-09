@@ -38,10 +38,11 @@ public class GiamGiaRepository : IGiamGiaRepository
 
             if (!string.IsNullOrEmpty(request.tenGiamGia))
             {
+                var tenGiamGiaClean = Regex.Replace(request.tenGiamGia.Trim(), @"\s+", " ");
                 filter &= Builders<GiamGia>.Filter.Regex(
                     x => x.tenGiamGia,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenGiamGia)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenGiamGiaClean)}.*", "i")
+                );
             }
 
             if (request.ngayBatDau != null)

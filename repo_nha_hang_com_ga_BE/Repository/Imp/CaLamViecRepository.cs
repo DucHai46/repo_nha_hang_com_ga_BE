@@ -38,10 +38,11 @@ public class CaLamViecRepository : ICaLamViecRepository
 
             if (!string.IsNullOrEmpty(request.tenCaLamViec))
             {
+                var tenCaLamViecClean = Regex.Replace(request.tenCaLamViec.Trim(), @"\s+", " ");
                 filter &= Builders<CaLamViec>.Filter.Regex(
                     x => x.tenCaLamViec,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenCaLamViec)}.*", "i")
-                );          
+                    new BsonRegularExpression($".*{Regex.Escape(tenCaLamViecClean)}.*", "i")
+                );
             }
             if (!string.IsNullOrEmpty(request.gioVao.ToString()))
             {

@@ -39,10 +39,11 @@ public class LoaiTuDoRepository : ILoaiTuDoRepository
 
             if (!string.IsNullOrEmpty(request.tenLoai))
             {
+                var tenLoaiClean = Regex.Replace(request.tenLoai.Trim(), @"\s+", " ");
                 filter &= Builders<LoaiTuDo>.Filter.Regex(
                     x => x.tenLoai,
-                    new BsonRegularExpression($".*{Regex.Escape(request.tenLoai)}.*", "i")
-                );    
+                    new BsonRegularExpression($".*{Regex.Escape(tenLoaiClean)}.*", "i")
+                );
             }
 
             var projection = Builders<LoaiTuDo>.Projection
