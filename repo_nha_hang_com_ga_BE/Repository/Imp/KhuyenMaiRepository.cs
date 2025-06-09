@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -37,7 +38,11 @@ public class KhuyenMaiRepository : IKhuyenMaiRepository
 
             if (!string.IsNullOrEmpty(request.tenKhuyenMai))
             {
-                filter &= Builders<KhuyenMai>.Filter.Regex(x => x.tenKhuyenMai, new BsonRegularExpression($".*{request.tenKhuyenMai}.*"));
+                filter &= Builders<KhuyenMai>.Filter.Regex(
+                    x => x.tenKhuyenMai,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenKhuyenMai)}.*", "i")
+                );    
+            
             }
 
             if (request.ngayBatDau != null)

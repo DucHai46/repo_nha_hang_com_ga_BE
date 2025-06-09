@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -38,7 +39,10 @@ public class LoaiKhuyenMaiRepository : ILoaiKhuyenMaiRepository
 
             if (!string.IsNullOrEmpty(request.tenLoai))
             {
-                filter &= Builders<LoaiKhuyenMai>.Filter.Regex(x => x.tenLoai, new BsonRegularExpression($".*{request.tenLoai}.*"));
+                filter &= Builders<LoaiKhuyenMai>.Filter.Regex(
+                    x => x.tenLoai,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenLoai)}.*", "i")
+                );    
             }
 
             var projection = Builders<LoaiKhuyenMai>.Projection

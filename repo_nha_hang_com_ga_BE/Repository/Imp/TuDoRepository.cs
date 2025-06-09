@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -40,7 +41,10 @@ public class TuDoRepository : ITuDoRepository
 
             if (!string.IsNullOrEmpty(request.tenTuDo))
             {
-                filter &= Builders<TuDo>.Filter.Regex(x => x.tenTuDo, new BsonRegularExpression($".*{request.tenTuDo}.*"));
+                filter &= Builders<TuDo>.Filter.Regex(
+                    x => x.tenTuDo,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenTuDo)}.*", "i")
+                );    
             }
 
             if (!string.IsNullOrEmpty(request.loaiTuDoId))

@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -38,7 +39,11 @@ public class LoaiDonRepository : ILoaiDonRepository
 
             if (!string.IsNullOrEmpty(request.tenLoaiDon))
             {
-                filter &= Builders<LoaiDon>.Filter.Regex(x => x.tenLoaiDon, new BsonRegularExpression($".*{request.tenLoaiDon}.*"));
+                filter &= Builders<LoaiDon>.Filter.Regex(
+                    x => x.tenLoaiDon,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenLoaiDon)}.*", "i")
+                );    
+            
             }
 
             var projection = Builders<LoaiDon>.Projection

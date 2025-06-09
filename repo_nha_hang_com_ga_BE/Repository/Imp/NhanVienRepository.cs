@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -40,7 +41,10 @@ public class NhanVienRepository : INhanVienRepository
 
             if (!string.IsNullOrEmpty(request.tenNhanVien))
             {
-                filter &= Builders<NhanVien>.Filter.Regex(x => x.tenNhanVien, new BsonRegularExpression($".*{request.tenNhanVien}.*"));
+                filter &= Builders<NhanVien>.Filter.Regex(
+                    x => x.tenNhanVien,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenNhanVien)}.*", "i")
+                );    
             }
 
             if (!string.IsNullOrEmpty(request.chucVuId))
@@ -50,11 +54,17 @@ public class NhanVienRepository : INhanVienRepository
 
             if (!string.IsNullOrEmpty(request.soDienThoai))
             {
-                filter &= Builders<NhanVien>.Filter.Regex(x => x.soDienThoai, new BsonRegularExpression($".*{request.soDienThoai}.*"));
+                filter &= Builders<NhanVien>.Filter.Regex(
+                    x => x.soDienThoai,
+                    new BsonRegularExpression($".*{Regex.Escape(request.soDienThoai)}.*", "i")
+                );    
             }
             if (!string.IsNullOrEmpty(request.diaChi))
             {
-                filter &= Builders<NhanVien>.Filter.Regex(x => x.diaChi, new BsonRegularExpression($".*{request.diaChi}.*"));
+                filter &= Builders<NhanVien>.Filter.Regex(
+                    x => x.diaChi,
+                    new BsonRegularExpression($".*{Regex.Escape(request.diaChi)}.*", "i")
+                );    
             }
 
             var projection = Builders<NhanVien>.Projection

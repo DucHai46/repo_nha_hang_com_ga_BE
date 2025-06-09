@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -44,7 +45,10 @@ public class ComboRepository : IComboRepository
 
             if (!string.IsNullOrEmpty(request.tenCombo))
             {
-                filter &= Builders<Combo>.Filter.Regex(x => x.tenCombo, new BsonRegularExpression($".*{request.tenCombo}.*"));
+                filter &= Builders<Combo>.Filter.Regex(
+                    x => x.tenCombo,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenCombo)}.*", "i")
+                );    
             }
 
             if (request.giaTien != null)

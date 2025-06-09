@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -37,7 +38,10 @@ public class CaLamViecRepository : ICaLamViecRepository
 
             if (!string.IsNullOrEmpty(request.tenCaLamViec))
             {
-                filter &= Builders<CaLamViec>.Filter.Regex(x => x.tenCaLamViec, new BsonRegularExpression($".*{request.tenCaLamViec}.*"));
+                filter &= Builders<CaLamViec>.Filter.Regex(
+                    x => x.tenCaLamViec,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenCaLamViec)}.*", "i")
+                );          
             }
             if (!string.IsNullOrEmpty(request.gioVao.ToString()))
             {

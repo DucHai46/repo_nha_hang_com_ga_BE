@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -40,7 +41,10 @@ public class BanRepository : IBanRepository
 
             if (!string.IsNullOrEmpty(request.tenBan))
             {
-                filter &= Builders<Ban>.Filter.Regex(x => x.tenBan, new BsonRegularExpression($".*{request.tenBan}.*"));
+                filter &= Builders<Ban>.Filter.Regex(
+                    x => x.tenBan,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenBan)}.*", "i")
+                );
             }
 
             if (!string.IsNullOrEmpty(request.idLoaiBan))

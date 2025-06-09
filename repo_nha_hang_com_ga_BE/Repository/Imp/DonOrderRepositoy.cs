@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -51,7 +52,10 @@ public class DonOrderRepository : IDonOrderRepository
 
             if (!string.IsNullOrEmpty(request.tenDon))
             {
-                filter &= Builders<DonOrder>.Filter.Regex(x => x.tenDon, request.tenDon);
+                filter &= Builders<DonOrder>.Filter.Regex(
+                    x => x.tenDon,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenDon)}.*", "i")
+                );    
             }
 
             if (!string.IsNullOrEmpty(request.loaiDon))

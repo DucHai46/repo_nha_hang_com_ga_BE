@@ -12,6 +12,7 @@ using repo_nha_hang_com_ga_BE.Models.Common.Paging;
 using System.ComponentModel;
 using repo_nha_hang_com_ga_BE.Models.Responds.PhuongThucThanhToan;
 using repo_nha_hang_com_ga_BE.Models.Requests;
+using System.Text.RegularExpressions;
 
 namespace repo_nha_hang_com_ga_BE.Repository.Imp;
 
@@ -40,8 +41,10 @@ public class PhuongThucThanhToanRepository : IPhuongThucThanhToanRepository
 
             if (!string.IsNullOrEmpty(request.tenPhuongThuc))
             {
-                filter &= Builders<PhuongThucThanhToan>.Filter.Regex(x => x.tenPhuongThuc, new BsonRegularExpression($".*{request.tenPhuongThuc}.*"));
-
+                filter &= Builders<PhuongThucThanhToan>.Filter.Regex(
+                    x => x.tenPhuongThuc,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenPhuongThuc)}.*", "i")
+                );    
             }
 
 

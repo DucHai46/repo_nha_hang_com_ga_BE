@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -51,7 +52,10 @@ public class PhieuNhapRepository : IPhieuNhapRepository
 
             if (!string.IsNullOrEmpty(request.tenPhieu))
             {
-                filter &= Builders<PhieuNhap>.Filter.Regex(x => x.tenPhieu, new BsonRegularExpression($".*{request.tenPhieu}.*"));
+                filter &= Builders<PhieuNhap>.Filter.Regex(
+                    x => x.tenPhieu,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenPhieu)}.*", "i")
+                );    
             }
             if (request.tuNgay != null)
             {

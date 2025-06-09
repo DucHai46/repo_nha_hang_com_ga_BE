@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -43,7 +44,10 @@ public class CongThucRepository : ICongThucRepository
 
             if (!string.IsNullOrEmpty(request.tenCongThuc))
             {
-                filter &= Builders<CongThuc>.Filter.Regex(x => x.tenCongThuc, new BsonRegularExpression($".*{request.tenCongThuc}.*"));
+                filter &= Builders<CongThuc>.Filter.Regex(
+                    x => x.tenCongThuc,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenCongThuc)}.*", "i")
+                );    
             }
 
             var projection = Builders<CongThuc>.Projection

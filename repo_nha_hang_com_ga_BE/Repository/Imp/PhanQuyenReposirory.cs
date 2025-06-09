@@ -12,6 +12,7 @@ using repo_nha_hang_com_ga_BE.Models.Common.Paging;
 using System.ComponentModel;
 using repo_nha_hang_com_ga_BE.Models.Responds.PhanQuyen;
 using repo_nha_hang_com_ga_BE.Models.Requests;
+using System.Text.RegularExpressions;
 
 namespace repo_nha_hang_com_ga_BE.Repository.Imp;
 
@@ -40,8 +41,10 @@ public class PhanQuyenRepository : IPhanQuyenRepository
 
             if (!string.IsNullOrEmpty(request.tenPhanQuyen))
             {
-                filter &= Builders<PhanQuyen>.Filter.Regex(x => x.tenPhanQuyen, new BsonRegularExpression($".*{request.tenPhanQuyen}.*"));
-
+                filter &= Builders<PhanQuyen>.Filter.Regex(
+                    x => x.tenPhanQuyen,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenPhanQuyen)}.*", "i")
+                );    
             }
 
 

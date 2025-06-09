@@ -12,6 +12,7 @@ using repo_nha_hang_com_ga_BE.Models.Common.Paging;
 using System.ComponentModel;
 using repo_nha_hang_com_ga_BE.Models.Responds.NhaCungCap;
 using repo_nha_hang_com_ga_BE.Models.Requests;
+using System.Text.RegularExpressions;
 
 namespace repo_nha_hang_com_ga_BE.Repository.Imp;
 
@@ -40,19 +41,26 @@ public class NhaCungCapRepository : INhaCungCapRepository
 
             if (!string.IsNullOrEmpty(request.tenNhaCungCap))
             {
-                filter &= Builders<NhaCungCap>.Filter.Regex(x => x.tenNhaCungCap, new BsonRegularExpression($".*{request.tenNhaCungCap}.*"));
-
+                filter &= Builders<NhaCungCap>.Filter.Regex(
+                    x => x.tenNhaCungCap,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenNhaCungCap)}.*", "i")
+                );    
             }
 
             if (!string.IsNullOrEmpty(request.soDienThoai))
             {
-                filter &= Builders<NhaCungCap>.Filter.Regex(x => x.soDienThoai, new BsonRegularExpression($".*{request.soDienThoai}.*"));
+                filter &= Builders<NhaCungCap>.Filter.Regex(
+                    x => x.soDienThoai,
+                    new BsonRegularExpression($".*{Regex.Escape(request.soDienThoai)}.*", "i")
+                );    
             }
 
             if (!string.IsNullOrEmpty(request.diaChi))
             {
-                filter &= Builders<NhaCungCap>.Filter.Regex(x => x.diaChi, new BsonRegularExpression($".*{request.diaChi}.*"));
-
+                filter &= Builders<NhaCungCap>.Filter.Regex(
+                    x => x.diaChi,
+                    new BsonRegularExpression($".*{Regex.Escape(request.diaChi)}.*", "i")
+                );    
             }
 
 

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -37,7 +38,10 @@ public class DanhMucMonAnRepository : IDanhMucMonAnRepository
 
             if (!string.IsNullOrEmpty(request.tenDanhMuc))
             {
-                filter &= Builders<DanhMucMonAn>.Filter.Regex(x => x.tenDanhMuc, new BsonRegularExpression($".*{request.tenDanhMuc}.*"));
+                filter &= Builders<DanhMucMonAn>.Filter.Regex(
+                    x => x.tenDanhMuc,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenDanhMuc)}.*", "i")
+                );    
             }
 
             var projection = Builders<DanhMucMonAn>.Projection

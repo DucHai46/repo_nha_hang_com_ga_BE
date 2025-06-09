@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -37,7 +38,10 @@ public class ChucVuRepository : IChucVuRepository
 
             if (!string.IsNullOrEmpty(request.tenChucVu))
             {
-                filter &= Builders<ChucVu>.Filter.Regex(x => x.tenChucVu, new BsonRegularExpression($".*{request.tenChucVu}.*"));
+                filter &= Builders<ChucVu>.Filter.Regex(
+                    x => x.tenChucVu,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenChucVu)}.*", "i")
+                );    
             }
 
             var projection = Builders<ChucVu>.Projection

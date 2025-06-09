@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -37,7 +38,10 @@ public class GiamGiaRepository : IGiamGiaRepository
 
             if (!string.IsNullOrEmpty(request.tenGiamGia))
             {
-                filter &= Builders<GiamGia>.Filter.Regex(x => x.tenGiamGia, new BsonRegularExpression($".*{request.tenGiamGia}.*"));
+                filter &= Builders<GiamGia>.Filter.Regex(
+                    x => x.tenGiamGia,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenGiamGia)}.*", "i")
+                );    
             }
 
             if (request.ngayBatDau != null)

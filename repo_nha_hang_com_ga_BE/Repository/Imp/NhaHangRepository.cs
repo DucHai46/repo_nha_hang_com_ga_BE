@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -37,7 +38,10 @@ public class NhaHangRepository : INhaHangRepository
 
             if (!string.IsNullOrEmpty(request.tenNhaHang))
             {
-                filter &= Builders<NhaHang>.Filter.Regex(x => x.tenNhaHang, new BsonRegularExpression($".*{request.tenNhaHang}.*"));
+                filter &= Builders<NhaHang>.Filter.Regex(
+                    x => x.tenNhaHang,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenNhaHang)}.*", "i")
+                );    
             }
 
             if (request.isActive != null)

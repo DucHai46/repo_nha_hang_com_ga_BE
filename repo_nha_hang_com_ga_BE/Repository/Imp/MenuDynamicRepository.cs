@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -38,7 +39,10 @@ public class MenuDynamicRepository : IMenuDynamicRepository
 
             if (!string.IsNullOrEmpty(request.label))
             {
-                filter &= Builders<MenuDynamic>.Filter.Regex(x => x.label, new BsonRegularExpression($".*{request.label}.*"));
+                filter &= Builders<MenuDynamic>.Filter.Regex(
+                    x => x.label,
+                    new BsonRegularExpression($".*{Regex.Escape(request.label)}.*", "i")
+                );    
             }
 
             if (!string.IsNullOrEmpty(request.parentId))

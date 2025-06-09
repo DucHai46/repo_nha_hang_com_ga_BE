@@ -14,6 +14,7 @@ using repo_nha_hang_com_ga_BE.Models.Responds.BangGia;
 using repo_nha_hang_com_ga_BE.Models.Requests;
 using repo_nha_hang_com_ga_BE.Models.Requests.BangGia;
 using repo_nha_hang_com_ga_BE.Models.Common.Models;
+using System.Text.RegularExpressions;
 
 namespace repo_nha_hang_com_ga_BE.Repository.Imp;
 
@@ -43,8 +44,10 @@ public class BangGiaRepository : IBangGiaRepository
 
             if (!string.IsNullOrEmpty(request.tenGia))
             {
-                filter &= Builders<BangGia>.Filter.Regex(x => x.tenGia, new BsonRegularExpression($".*{request.tenGia}.*"));
-
+                filter &= Builders<BangGia>.Filter.Regex(
+                    x => x.tenGia,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenGia)}.*", "i")
+                );
             }
 
             if (!string.IsNullOrEmpty(request.idMonAn))

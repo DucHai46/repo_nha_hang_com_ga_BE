@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -37,7 +38,10 @@ public class DonViTinhRepository : IDonViTinhRepository
 
             if (!string.IsNullOrEmpty(request.tenDonViTinh))
             {
-                filter &= Builders<DonViTinh>.Filter.Regex(x => x.tenDonViTinh, new BsonRegularExpression($".*{request.tenDonViTinh}.*"));
+                filter &= Builders<DonViTinh>.Filter.Regex(
+                    x => x.tenDonViTinh,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenDonViTinh)}.*", "i")
+                );    
             }
 
             var projection = Builders<DonViTinh>.Projection

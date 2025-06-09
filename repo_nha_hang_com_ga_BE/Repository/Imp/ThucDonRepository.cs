@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -46,7 +47,10 @@ public class ThucDonRepository : IThucDonRepository
 
             if (!string.IsNullOrEmpty(request.tenThucDon))
             {
-                filter &= Builders<ThucDon>.Filter.Regex(x => x.tenThucDon, new BsonRegularExpression($".*{request.tenThucDon}.*"));
+                filter &= Builders<ThucDon>.Filter.Regex(
+                    x => x.tenThucDon,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenThucDon)}.*", "i")
+                );    
             }
 
             if (!string.IsNullOrEmpty(request.loaiMonAnId))

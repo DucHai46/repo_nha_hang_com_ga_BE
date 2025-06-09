@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -45,7 +46,10 @@ public class MonAnRepository : IMonAnRepository
 
             if (!string.IsNullOrEmpty(request.tenMonAn))
             {
-                filter &= Builders<MonAn>.Filter.Regex(x => x.tenMonAn, new BsonRegularExpression($".*{request.tenMonAn}.*"));
+                filter &= Builders<MonAn>.Filter.Regex(
+                    x => x.tenMonAn,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenMonAn)}.*", "i")
+                );    
             }
 
             if (!string.IsNullOrEmpty(request.idLoaiMonAn))

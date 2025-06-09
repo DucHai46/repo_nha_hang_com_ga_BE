@@ -12,6 +12,7 @@ using repo_nha_hang_com_ga_BE.Models.Common.Paging;
 using System.ComponentModel;
 using repo_nha_hang_com_ga_BE.Models.Responds.PhuPhi;
 using repo_nha_hang_com_ga_BE.Models.Requests;
+using System.Text.RegularExpressions;
 
 namespace repo_nha_hang_com_ga_BE.Repository.Imp;
 
@@ -40,8 +41,10 @@ public class PhuPhiRepository : IPhuPhiRepository
 
             if (!string.IsNullOrEmpty(request.tenPhuPhi))
             {
-                filter &= Builders<PhuPhi>.Filter.Regex(x => x.tenPhuPhi, new BsonRegularExpression($".*{request.tenPhuPhi}.*"));
-
+                filter &= Builders<PhuPhi>.Filter.Regex(
+                    x => x.tenPhuPhi,
+                    new BsonRegularExpression($".*{Regex.Escape(request.tenPhuPhi)}.*", "i")
+                );    
             }
             if (request.trangThai != null)
             {
