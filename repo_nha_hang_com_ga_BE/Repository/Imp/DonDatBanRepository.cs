@@ -47,9 +47,11 @@ public class DonDatBanRepository : IDonDatBanRepository
                 filter &= Builders<DonDatBan>.Filter.Eq(x => x.ban, request.ban);
             }
 
-            if (!string.IsNullOrEmpty(request.khachHang))
+            if (request.khachHang != null && request.khachHang.Any())
             {
-                filter &= Builders<DonDatBan>.Filter.Regex(x => x.khachHang, request.khachHang);
+                var khachHangFilters = request.khachHang.Select(kh =>
+                    Builders<DonDatBan>.Filter.Eq(x => x.khachHang, kh));
+                filter &= Builders<DonDatBan>.Filter.Or(khachHangFilters);
             }
             if (request.tuNgay != null)
             {

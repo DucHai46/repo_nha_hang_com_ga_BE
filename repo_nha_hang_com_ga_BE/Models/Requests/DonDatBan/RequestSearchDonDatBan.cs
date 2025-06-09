@@ -6,7 +6,7 @@ namespace repo_nha_hang_com_ga_BE.Models.Requests.DonDatBan;
 public class RequestSearchDonDatBan : PagingParameterModel
 {
     public string? ban { get; set; }
-    public string? khachHang { get; set; }
+    public List<string>? khachHang { get; set; }
     public DateTimeOffset? tuNgay { get; set; }
     public DateTimeOffset? denNgay { get; set; }
     public TimeSpan? tuGio { get; set; }
