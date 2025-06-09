@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -527,5 +528,24 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
         }
     }
 
+    public async Task<string> GenerateRandomName()
+    {
+        string tenPhieu;
+        bool isUnique = false;
 
+        do
+        {
+            tenPhieu = $"KK-{DateTime.Now.ToString("yyyyMMdd")}-{Guid.NewGuid().ToString("N").Substring(0, 4)}";
+            var existingPhieuKiemKe = await _collection.Find(x => x.tenPhieu == tenPhieu && x.isDelete == false).FirstOrDefaultAsync();
+            isUnique = existingPhieuKiemKe == null;
+        } while (!isUnique);
+
+        return tenPhieu;
+    }
+
+    public async Task<IActionResult> CheckTenPhieuKiemKe()
+    {
+        var tenPhieu = await GenerateRandomName();
+        return new OkObjectResult(tenPhieu);
+    }
 }

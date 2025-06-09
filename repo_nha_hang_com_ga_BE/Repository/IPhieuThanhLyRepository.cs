@@ -1,4 +1,5 @@
-﻿using repo_nha_hang_com_ga_BE.Models.Common.Models.Respond;
+﻿using Microsoft.AspNetCore.Mvc;
+using repo_nha_hang_com_ga_BE.Models.Common.Models.Respond;
 using repo_nha_hang_com_ga_BE.Models.Common.Respond;
 using repo_nha_hang_com_ga_BE.Models.MongoDB;
 using repo_nha_hang_com_ga_BE.Models.Requests.PhieuThanhLy;
@@ -12,4 +13,5 @@ public interface IPhieuThanhLyRepository
     Task<RespondAPI<PhieuThanhLyRespond>> GetPhieuThanhLyById(string id);
     Task<RespondAPI<PhieuThanhLyRespond>> CreatePhieuThanhLy(RequestAddPhieuThanhLy product);
     Task<RespondAPI<string>> DeletePhieuThanhLy(string id);
+    Task<IActionResult> CheckTenPhieuThanhLy();
 }

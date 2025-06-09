@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -634,5 +635,24 @@ public class PhieuThanhLyRepository : IPhieuThanhLyRepository
         }
     }
 
+    public async Task<string> GenerateRandomName()
+    {
+        string tenPhieu;
+        bool isUnique = false;
 
+        do
+        {
+            tenPhieu = $"TL-{DateTime.Now.ToString("yyyyMMdd")}-{Guid.NewGuid().ToString("N").Substring(0, 4)}";
+            var existingPhieuThanhLy = await _collection.Find(x => x.tenPhieu == tenPhieu && x.isDelete == false).FirstOrDefaultAsync();
+            isUnique = existingPhieuThanhLy == null;
+        } while (!isUnique);
+
+        return tenPhieu;
+    }
+
+    public async Task<IActionResult> CheckTenPhieuThanhLy()
+    {
+        var tenPhieu = await GenerateRandomName();
+        return new OkObjectResult(tenPhieu);
+    }
 }

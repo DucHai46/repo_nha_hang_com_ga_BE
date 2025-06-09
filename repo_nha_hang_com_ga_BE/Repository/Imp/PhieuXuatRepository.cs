@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -632,5 +633,24 @@ public class PhieuXuatRepository : IPhieuXuatRepository
         }
     }
 
+    public async Task<string> GenerateRandomName()
+    {
+        string tenPhieu;
+        bool isUnique = false;
 
+        do
+        {
+            tenPhieu = $"PX-{DateTime.Now.ToString("yyyyMMdd")}-{Guid.NewGuid().ToString("N").Substring(0, 4)}";
+            var existingPhieuXuat = await _collection.Find(x => x.tenPhieu == tenPhieu && x.isDelete == false).FirstOrDefaultAsync();
+            isUnique = existingPhieuXuat == null;
+        } while (!isUnique);
+
+        return tenPhieu;
+    }
+
+    public async Task<IActionResult> CheckTenPhieuXuat()
+    {
+        var tenPhieu = await GenerateRandomName();
+        return new OkObjectResult(tenPhieu);
+    }
 }

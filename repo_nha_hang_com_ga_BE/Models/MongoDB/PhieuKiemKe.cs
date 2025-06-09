@@ -24,7 +24,7 @@ public class nguyenLieuKiemKe
 {
     public string? id { get; set; }
     public int? soLuongNhap { get; set; }
-    public int?soLuongXuat { get; set; }
+    public int? soLuongXuat { get; set; }
     public int? soLuongThucTe { get; set; }
     public int? chenhLech { get; set; }
     public string? ghiChu { get; set; }

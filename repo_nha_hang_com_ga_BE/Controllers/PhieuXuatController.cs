@@ -43,4 +43,10 @@ public class PhieuXuatController : ControllerBase
     {
         return Ok(await _repository.DeletePhieuXuat(id));
     }
+
+    [HttpGet("check-ten-phieu-xuat")]
+    public async Task<IActionResult> CheckTenPhieuXuat()
+    {
+        return Ok(await _repository.CheckTenPhieuXuat());
+    }
 }
