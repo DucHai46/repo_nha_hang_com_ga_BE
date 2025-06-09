@@ -90,6 +90,8 @@ public class NguyenLieuRepository : INguyenLieuRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<NguyenLieu>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

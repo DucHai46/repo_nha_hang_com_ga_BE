@@ -55,6 +55,8 @@ public class DonViTinhRepository : IDonViTinhRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<DonViTinh>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

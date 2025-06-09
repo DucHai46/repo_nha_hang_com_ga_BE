@@ -55,6 +55,8 @@ public class ChucVuRepository : IChucVuRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<ChucVu>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

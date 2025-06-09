@@ -81,6 +81,8 @@ public class ThucDonRepository : IThucDonRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<ThucDon>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

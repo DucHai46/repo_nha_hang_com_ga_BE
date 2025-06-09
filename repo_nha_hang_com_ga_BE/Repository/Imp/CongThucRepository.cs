@@ -63,6 +63,8 @@ public class CongThucRepository : ICongThucRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<CongThuc>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

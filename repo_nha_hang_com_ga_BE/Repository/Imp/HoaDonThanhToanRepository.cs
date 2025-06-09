@@ -120,6 +120,8 @@ public class HoaDonThanhToanRepository : IHoaDonThanhToanRepository
                 Projection = projection
             };
 
+            // findOptions.Sort = Builders<HoaDonThanhToan>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

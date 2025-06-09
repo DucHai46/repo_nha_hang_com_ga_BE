@@ -76,6 +76,8 @@ public class LichLamViecRepository : ILichLamViecRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<LichLamViec>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

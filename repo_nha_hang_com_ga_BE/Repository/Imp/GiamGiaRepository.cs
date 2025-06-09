@@ -79,6 +79,8 @@ public class GiamGiaRepository : IGiamGiaRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<GiamGia>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

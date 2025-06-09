@@ -56,6 +56,8 @@ public class LoaiTuDoRepository : ILoaiTuDoRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<LoaiTuDo>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

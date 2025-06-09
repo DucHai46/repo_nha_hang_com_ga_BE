@@ -86,6 +86,8 @@ public class MonAnRepository : IMonAnRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<MonAn>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

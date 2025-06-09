@@ -84,6 +84,8 @@ public class NhanVienRepository : INhanVienRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<NhanVien>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

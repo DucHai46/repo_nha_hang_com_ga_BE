@@ -75,6 +75,8 @@ public class ComboRepository : IComboRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<Combo>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

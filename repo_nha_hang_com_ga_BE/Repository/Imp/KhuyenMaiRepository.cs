@@ -79,6 +79,8 @@ public class KhuyenMaiRepository : IKhuyenMaiRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<KhuyenMai>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

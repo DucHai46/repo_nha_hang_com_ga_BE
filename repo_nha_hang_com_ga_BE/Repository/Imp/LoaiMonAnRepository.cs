@@ -64,6 +64,8 @@ public class LoaiMonAnRepository : ILoaiMonAnRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<LoaiMonAn>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

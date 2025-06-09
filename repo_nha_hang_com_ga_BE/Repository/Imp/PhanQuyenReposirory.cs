@@ -59,6 +59,8 @@ public class PhanQuyenRepository : IPhanQuyenRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<PhanQuyen>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecord = await collection.CountDocumentsAsync(filter);

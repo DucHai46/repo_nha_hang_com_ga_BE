@@ -57,6 +57,8 @@ public class LoaiKhuyenMaiRepository : ILoaiKhuyenMaiRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<LoaiKhuyenMai>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

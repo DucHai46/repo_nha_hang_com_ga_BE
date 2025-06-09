@@ -55,6 +55,8 @@ public class DanhMucNguyenLieuRepository : IDanhMucNguyenLieuRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<DanhMucNguyenLieu>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

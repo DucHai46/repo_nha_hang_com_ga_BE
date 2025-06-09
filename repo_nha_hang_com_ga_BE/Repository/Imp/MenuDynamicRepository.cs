@@ -83,6 +83,8 @@ public class MenuDynamicRepository : IMenuDynamicRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<MenuDynamic>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
 

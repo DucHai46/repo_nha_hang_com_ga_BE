@@ -64,6 +64,8 @@ public class TuDoRepository : ITuDoRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<TuDo>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

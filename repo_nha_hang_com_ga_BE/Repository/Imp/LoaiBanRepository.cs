@@ -57,6 +57,8 @@ public class LoaiBanRepository : ILoaiBanRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<LoaiBan>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

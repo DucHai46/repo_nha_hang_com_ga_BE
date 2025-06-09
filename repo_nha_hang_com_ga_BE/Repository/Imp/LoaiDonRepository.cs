@@ -58,6 +58,8 @@ public class LoaiDonRepository : ILoaiDonRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<LoaiDon>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

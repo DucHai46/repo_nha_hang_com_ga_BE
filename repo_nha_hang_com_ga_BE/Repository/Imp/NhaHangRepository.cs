@@ -68,6 +68,8 @@ public class NhaHangRepository : INhaHangRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<NhaHang>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

@@ -77,6 +77,8 @@ public class NhaCungCapRepository : INhaCungCapRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<NhaCungCap>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecord = await collection.CountDocumentsAsync(filter);

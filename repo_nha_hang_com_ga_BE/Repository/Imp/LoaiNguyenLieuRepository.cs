@@ -64,6 +64,8 @@ public class LoaiNguyenLieuRepository : ILoaiNguyenLieuRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<LoaiNguyenLieu>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

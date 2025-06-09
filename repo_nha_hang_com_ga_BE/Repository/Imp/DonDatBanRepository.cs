@@ -83,6 +83,8 @@ public class DonDatBanRepository : IDonDatBanRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<DonDatBan>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
@@ -276,7 +278,7 @@ public class DonDatBanRepository : IDonDatBanRepository
                     Name = khachHangDict.ContainsKey(donDatBan.khachHang) ? khachHangDict[donDatBan.khachHang] : null
                 },
                 ngayDat = donDatBan.ngayDat,
-                gioDat= donDatBan.gioDat
+                gioDat = donDatBan.gioDat
             };
 
             return new RespondAPI<DonDatBanRespond>(

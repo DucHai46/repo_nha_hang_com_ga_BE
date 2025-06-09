@@ -84,6 +84,8 @@ public class KhachHangRepository : IKhachHangRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<KhachHang>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecord = await collection.CountDocumentsAsync(filter);

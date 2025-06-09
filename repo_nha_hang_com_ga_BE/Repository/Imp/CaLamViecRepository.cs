@@ -67,6 +67,8 @@ public class CaLamViecRepository : ICaLamViecRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<CaLamViec>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);

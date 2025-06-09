@@ -59,6 +59,8 @@ public class PhuongThucThanhToanRepository : IPhuongThucThanhToanRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<PhuongThucThanhToan>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecord = await collection.CountDocumentsAsync(filter);

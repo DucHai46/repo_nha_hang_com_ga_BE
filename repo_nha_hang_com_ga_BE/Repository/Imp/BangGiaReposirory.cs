@@ -70,6 +70,8 @@ public class BangGiaRepository : IBangGiaRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<BangGia>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecord = await collection.CountDocumentsAsync(filter);

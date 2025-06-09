@@ -55,6 +55,8 @@ public class DanhMucMonAnRepository : IDanhMucMonAnRepository
                 Projection = projection
             };
 
+            findOptions.Sort = Builders<DanhMucMonAn>.Sort.Descending(x => x.createdDate);
+
             if (request.IsPaging)
             {
                 long totalRecords = await collection.CountDocumentsAsync(filter);
